@@ -10,7 +10,7 @@ from lxml import etree
 
 
 # Data collection function
-def collection(username, password, weather, temp, wear, clearTrackRisk):
+def collection(username, password, weather, temp, wear):
 	token = "9da482f717cf1319f10f55e35ab767a5"
 	logon = "Login"
 	logonFake = "Sign in"
@@ -310,7 +310,7 @@ def collection(username, password, weather, temp, wear, clearTrackRisk):
 	wearFactors = [0.998163750229071, 0.997064844817654, 0.996380346554349, 0.995862526048112, 0.996087854384523]
 
 	for i in range(5):
-		stops[i].set(str(stopCalc(trackDst, trackWearLevel[trackTyr], Rtemp, tyreBrand[tyreSupplier], i, carLevelSus, driverAgg, driverExp, driverWei, clearTrackRisk, float(trackData[trackNam][9]), wear, wearFactors[i])))
+		stops[i].set(str(stopCalc(trackDst, trackWearLevel[trackTyr], Rtemp, tyreBrand[tyreSupplier], i, carLevelSus, driverAgg, driverExp, driverWei, float(trackData[trackNam][9]), wear, wearFactors[i])))
 
 	return setup
 
@@ -327,10 +327,10 @@ def collection(username, password, weather, temp, wear, clearTrackRisk):
 # clearTrackRisk = Clear Track Risk used, as a percentage
 # trackBaseWear = Track Base Wear from trackData.csv
 # wearLimit = The manager chosen limit for tyre wear before pitting, so at 10%, we assume the stint will end when the tyres hit 10% wear
-def stopCalc(trackDst, trackWearLevel, Rtemp, tyreBrand, tyreType, carLevelSus, driverAgg, driverExp, driverWeight, clearTrackRisk, trackBaseWear, wearLimit, tyreWearFactor):
+def stopCalc(trackDst, trackWearLevel, Rtemp, tyreBrand, tyreType, carLevelSus, driverAgg, driverExp, driverWeight, trackBaseWear, wearLimit, tyreWearFactor):
 	baseWear = 129.776458172062
-	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** Rtemp) * (1.048876356 ** tyreBrand) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSus) * (0.999670155 ** driverAgg) * (1.00022936 ** driverExp) * (0.999858329 ** driverWeight) * (tyreWearFactor ** (clearTrackRisk / 100))
-	stops = math.ceil((trackDst) / ((productFactors * (tyreWearFactor ** clearTrackRisk) * baseWear * trackBaseWear) * ((100 - wearLimit) / 100))) - 1
+	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** Rtemp) * (1.048876356 ** tyreBrand) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSus) * (0.999670155 ** driverAgg) * (1.00022936 ** driverExp) * (0.999858329 ** driverWeight)
+	stops = math.ceil((trackDst) / ((productFactors  * baseWear * trackBaseWear) * ((100 - wearLimit) / 100))) - 1
 	return stops
 
 
@@ -361,7 +361,7 @@ def calculate(*args):
 		except:
 			clearTrackRisk = 0
 
-		setup = collection(username, password, weather, session, wear, clearTrackRisk)
+		setup = collection(username, password, weather, session, wear)
 
 		if(setup[0] == 0):
 			warningLabel.set("Incorect Login Details")
@@ -478,8 +478,6 @@ ttk.Label(frameSetup, textvariable = suspension).grid(column = 2, row = 14)
 # Strategy
 ttk.Label(frameStrategy, text = "Wear:", padding = "5 10").grid(column = 1, row = 1, sticky = (W, E))
 entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 2, row = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "CTR:", padding = "5 10").grid(column = 3, row = 1, sticky = (W, E))
-entryCTR = ttk.Entry(frameStrategy, width = 10, textvariable = inputCTR).grid(column = 4, row = 1, sticky = (W, E))
 
 ttk.Label(frameStrategy, text = "Tyre", padding = "5 10").grid(column = 1, row = 2, sticky = (W, E))
 ttk.Label(frameStrategy, text = "Stops", padding = "5 10").grid(column = 2, row = 2, sticky = (W, E))
@@ -538,9 +536,10 @@ fuels = [extraFuel, softFuel, mediumFuel, hardFuel, rainFuel]
 pitTimes = [extraPitTime, softPitTime, mediumPitTime, hardPitTime, rainPitTime]
 TCDs = [extraTCD, softTCD, mediumTCD, hardTCD, rainTCD]
 FLDs = [extraFLD, softFLD, mediumFLD, hardFLD, rainFLD]
+pitTotals = [extraPitTotal, softPitTotal, mediumPitTotal, hardPitTotal, rainPitTotal]
 totals = [extraTotal, softTotal, mediumTotal, hardTotal, rainTotal]
 
-grid = [stops, fuels, pitTimes, TCDs, FLDs, totals]
+grid = [stops, fuels, pitTimes, TCDs, FLDs, pitTotals, totals]
 
 for stop in stops:
 	stop.set("0")
@@ -552,6 +551,8 @@ for TCD in TCDs:
 	TCD.set("0")
 for FLD in FLDs:
 	FLD.set("0")
+for pitTotal in pitTotals:
+	pitTotal.set("0")
 for total in totals:
 	total.set("0")
 
