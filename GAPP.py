@@ -10,123 +10,123 @@ from lxml import etree
 
 
 # Data collection function
-def collection(username, password, weather, temp, wear):
-	token = "9da482f717cf1319f10f55e35ab767a5"
-	logon = "Login"
-	logonFake = "Sign in"
+def collection(username, password, weather, sessionTemp, minimumWear):
+	# Create our logon payload. 'hiddenToken' may change at a later date.
+	logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 	
-	data = {'textLogin':username, 'textPassword':password, 'token':token, 'Logon':logon, 'LogonFake':logonFake}
-	
-	weather = weather.upper()	
-	
-	# Logon to GPRO using the logon information provided
+	# Logon to GPRO using the logon information provided and store that under our session
 	session = requests.session()
-	login_url = "https://gpro.net/gb/Login.asp"
-	logonResult = session.post(login_url, data=data, headers=dict(referer=login_url))
+	loginURL = "https://gpro.net/gb/Login.asp"
+	logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
 	
-	# After logging in, gather the home page information and collect driver ID and track ID
+	# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 	tree = html.fromstring(logonResult.content)
+	# Driver ID and check for correct login details. If login failed, then driver ID will return nothing and driverID[0] will error
 	driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 	try:
-		driver_url = "https://gpro.net/gb/" + driverID[0]
+		driverURL = "https://gpro.net/gb/" + driverID[0]
 	except:
 		return [0, 0, 0, 0, 0, 0]
+	# Team name check for verification
 	teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 	if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
 		return [1, 0, 0, 0, 0, 0]
+	# Track ID of next race
 	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
-	track_url = "https://gpro.net/gb/" + trackID[0]
-	car_url = "https://www.gpro.net/gb/UpdateCar.asp"
-	race_url = "https://www.gpro.net/gb/RaceSetup.asp"
+	trackURL = "https://gpro.net/gb/" + trackID[0]
+	# Manager ID
 	managerID = tree.xpath("//a[contains(@href, 'viewnation')]/../a[2]/@href")
-	manager_url = "https://gpro.net/gb/" + managerID[0]
+	managerURL = "https://gpro.net/gb/" + managerID[0]
+	# URLs for car and race details, for later use
+	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
+	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
 	
 	
 	# Request the driver information page and scrape the driver data
-	driverResult = session.get(driver_url, headers=dict(referer=driver_url))
+	driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 	tree = html.fromstring(driverResult.content)
-	driverOve = int(tree.xpath("normalize-space(//tr[contains(@data-step, '4')]//td/text())"))
-	driverCon = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
-	driverTal = int(tree.xpath("normalize-space(//td[contains(@id, 'Talent')]/text())"))
-	driverAgg = int(tree.xpath("normalize-space(//td[contains(@id, 'Aggr')]/text())"))
-	driverExp = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
-	driverTec = int(tree.xpath("normalize-space(//td[contains(@id, 'TechI')]/text())"))
-	driverSta = int(tree.xpath("normalize-space(//td[contains(@id, 'Stamina')]/text())"))
-	driverCha = int(tree.xpath("normalize-space(//td[contains(@id, 'Charisma')]/text())"))
-	driverMot = int(tree.xpath("normalize-space(//td[contains(@id, 'Motivation')]/text())"))
-	driverRep = int(tree.xpath("normalize-space(//tr[contains(@data-step, '13')]//td/text())"))
-	driverWei = int(tree.xpath("normalize-space(//tr[contains(@data-step, '14')]//td/text())"))
+	driverOverall = int(tree.xpath("normalize-space(//tr[contains(@data-step, '4')]//td/text())"))
+	driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
+	driverTalent = int(tree.xpath("normalize-space(//td[contains(@id, 'Talent')]/text())"))
+	driverAggressiveness = int(tree.xpath("normalize-space(//td[contains(@id, 'Aggr')]/text())"))
+	driverExperience = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
+	driverTechnicalInsight = int(tree.xpath("normalize-space(//td[contains(@id, 'TechI')]/text())"))
+	driverStamina = int(tree.xpath("normalize-space(//td[contains(@id, 'Stamina')]/text())"))
+	driverCharisma = int(tree.xpath("normalize-space(//td[contains(@id, 'Charisma')]/text())"))
+	driverMotivation = int(tree.xpath("normalize-space(//td[contains(@id, 'Motivation')]/text())"))
+	driverReputation = int(tree.xpath("normalize-space(//tr[contains(@data-step, '13')]//td/text())"))
+	driverWeight = int(tree.xpath("normalize-space(//tr[contains(@data-step, '14')]//td/text())"))
 	driverAge = int(tree.xpath("normalize-space(//tr[contains(@data-step, '15')]//td/text())"))
 
 
 	# Request the manager page and scrape tyre data
-	managerResult = session.get(manager_url, headers = dict(referer = manager_url))
+	managerResult = session.get(managerURL, headers = dict(referer = managerURL))
 	tree = html.fromstring(managerResult.content)
-	tyreSupplier = str(tree.xpath("//img[contains(@src, 'suppliers')]/@alt")[0])
+	tyreSupplierName = str(tree.xpath("//img[contains(@src, 'suppliers')]/@alt")[0])
 
 	
 	# Request the track information page and scrape the track data
-	trackResult = session.get(track_url, headers=dict(referer=track_url))
+	trackResult = session.get(trackURL, headers=dict(referer=trackURL))
 	tree = html.fromstring(trackResult.content)
-	trackNam = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
-	trackNam = trackNam.strip()
-	trackPow = int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/following-sibling::td/@title)"))
-	trackHan = int(tree.xpath("normalize-space(//td[contains(text(), 'Handling')]/following-sibling::td/@title)"))
-	trackAcc = int(tree.xpath("normalize-space(//td[contains(text(), 'Acceleration')]/following-sibling::td/@title)"))
-	trackDst = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance')]/following-sibling::td/text())"))
-	trackDst = float((re.findall("\d+.\d+", trackDst))[0])
-	trackLDs = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance')]/following-sibling::td/text())"))
-	trackLDs = float((re.findall("\d+.\d+", trackLDs))[0])
-	trackLps = int(tree.xpath("normalize-space(//td[contains(text(), 'Laps')]/following-sibling::td/text())"))
-	trackPit = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in')]/following-sibling::td/text())"))
-	trackPit = float((re.findall("\d+.\d+", trackPit))[0])
-	trackDow = str(tree.xpath("normalize-space(//td[contains(text(), 'Downforce')]/following-sibling::td/text())"))
-	trackOtk = str(tree.xpath("normalize-space(//td[contains(text(), 'Overtaking')]/following-sibling::td/text())"))
-	trackSus = str(tree.xpath("normalize-space(//td[contains(text(), 'Suspension')]/following-sibling::td/text())"))
-	trackFue = str(tree.xpath("normalize-space(//td[contains(text(), 'Fuel consumption')]/following-sibling::td/text())"))
-	trackTyr = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
-	trackGrp = str(tree.xpath("normalize-space(//td[contains(text(), 'Grip level')]/following-sibling::td/text())"))
+	trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
+	trackName = trackName.strip()
+	trackPowerProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/following-sibling::td/@title)"))
+	trackHandlingProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Handling')]/following-sibling::td/@title)"))
+	trackAccelerationProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Acceleration')]/following-sibling::td/@title)"))
+	trackDistanceTotal = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance')]/following-sibling::td/text())"))
+	trackDistanceTotal = float((re.findall("\d+.\d+", trackDistanceTotal))[0])
+	trackDistanceLap = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance')]/following-sibling::td/text())"))
+	trackDistanceLap = float((re.findall("\d+.\d+", trackDistanceLap))[0])
+	trackLapsCount = int(tree.xpath("normalize-space(//td[contains(text(), 'Laps')]/following-sibling::td/text())"))
+	trackPitTime = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in')]/following-sibling::td/text())"))
+	trackPitTime = float((re.findall("\d+.\d+", trackPitTime))[0])
+	trackDownforeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Downforce')]/following-sibling::td/text())"))
+	trackOvertakeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Overtaking')]/following-sibling::td/text())"))
+	trackSuspensionRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Suspension')]/following-sibling::td/text())"))
+	trackFuelRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Fuel consumption')]/following-sibling::td/text())"))
+	trackTyreWearRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
+	trackGripRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Grip level')]/following-sibling::td/text())"))
 
 
 	# Request race strategy pace and scrape the race weather data
-	raceResult = session.get(race_url, headers=dict(referer=race_url))
+	raceResult = session.get(raceURL, headers=dict(referer=raceURL))
 	tree = html.fromstring(raceResult.content)
-	RtempRangeOne = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[1]/text())"))
-	RtempRangeTwo = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[2]/text())"))
-	RtempRangeThr = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[1]/text())"))
-	RtempRangeFou = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[2]/text())"))
+	rTempRangeOne = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[1]/text())"))
+	rTempRangeTwo = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[2]/text())"))
+	rTempRangeThree = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[1]/text())"))
+	rTempRangeFour = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[2]/text())"))
 	# This returns results like "Temp: 12*-17*", but we want just integers, so clean up the values
-	RtempMinOne = int((re.findall("\d+", RtempRangeOne))[0])
-	RtempMaxOne = int((re.findall("\d+", RtempRangeOne))[1])
-	RtempMinTwo = int((re.findall("\d+", RtempRangeTwo))[0])
-	RtempMaxTwo = int((re.findall("\d+", RtempRangeTwo))[1])
-	RtempMinThr = int((re.findall("\d+", RtempRangeThr))[0])
-	RtempMaxThr = int((re.findall("\d+", RtempRangeThr))[1])
-	RtempMinFou = int((re.findall("\d+", RtempRangeFou))[0])
-	RtempMaxFou = int((re.findall("\d+", RtempRangeFou))[1])
+	rTempMinOne = int((re.findall("\d+", rTempRangeOne))[0])
+	rTempMaxOne = int((re.findall("\d+", rTempRangeOne))[1])
+	rTempMinTwo = int((re.findall("\d+", rTempRangeTwo))[0])
+	rTempMaxTwo = int((re.findall("\d+", rTempRangeTwo))[1])
+	rTempMinThree = int((re.findall("\d+", rTempRangeThree))[0])
+	rTempMaxThree = int((re.findall("\d+", rTempRangeThree))[1])
+	rTempMinFour = int((re.findall("\d+", rTempRangeFour))[0])
+	rTempMaxFour = int((re.findall("\d+", rTempRangeFour))[1])
 	# Find the averages of these temps for the setup
-	Rtemp = ((RtempMinOne + RtempMaxOne) + (RtempMinTwo + RtempMaxTwo) + (RtempMinThr + RtempMaxThr) + (RtempMinFou + RtempMaxFou)) / 8
+	rTemp = ((rTempMinOne + rTempMaxOne) + (rTempMinTwo + rTempMaxTwo) + (rTempMinThree + rTempMaxThree) + (rTempMinFour + rTempMaxFour)) / 8
 
-	
 	# Using the race strategy page requested earlier, scrape the qualifying weather data
-	QOneTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherQ')]/../text()[contains(., 'Temp')])"))
-	QOneTemp = int((re.findall("\d+", QOneTemp))[0])
-	QTwoTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherR')]/../text()[contains(., 'Temp')])"))
-	QTwoTemp = int((re.findall("\d+", QTwoTemp))[0])
+	qOneTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherQ')]/../text()[contains(., 'Temp')])"))
+	qOneTemp = int((re.findall("\d+", qOneTemp))[0])
+	qTwoTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherR')]/../text()[contains(., 'Temp')])"))
+	qTwoTemp = int((re.findall("\d+", qTwoTemp))[0])
 
-	if(temp == "Race"):
-		temp = Rtemp
-	elif(temp == "Q1"):
-		temp = QOneTemp
-	elif(temp == "Q2"):
-		temp = QTwoTemp
+	# Check the user selected session and assign the relevant temperature
+	if(sessionTemp == "Race"):
+		sessionTemp = rTemp
+	elif(sessionTemp == "Q1"):
+		sessionTemp = qOneTemp
+	elif(sessionTemp == "Q2"):
+		sessionTemp = qTwoTemp
 	
 	# Request the car information page and scrape the car character and part level and wear data
-	carResult = session.get(car_url, headers=dict(referer=car_url))
+	carResult = session.get(carURL, headers=dict(referer=carURL))
 	tree = html.fromstring(carResult.content)
-	carPow = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[1]/text())"))
-	carHan = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[2]/text())"))
-	carAcc = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[3]/text())"))
+	carPowerProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[1]/text())"))
+	carHandlingProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[2]/text())"))
+	carAccelerationProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[3]/text())"))
 	# Level
 	carLevelCha = int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())"))
 	carLevelEng = int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())"))
@@ -192,12 +192,12 @@ def collection(username, password, weather, temp, wear):
 	with open('trackData.csv', 'rt', newline='') as f:
 		r = csv.reader(f)
 		trackData = collections.OrderedDict((row[0], row[1:]) for row in r);
-	baseWin = float(trackData[trackNam][0]) * 2
-	baseEng = float(trackData[trackNam][1])
-	baseBra = float(trackData[trackNam][2])
-	baseGea = float(trackData[trackNam][3])
-	baseSus = float(trackData[trackNam][4])
-	baseWSp = float(trackData[trackNam][5])
+	baseWin = float(trackData[trackName][0]) * 2
+	baseEng = float(trackData[trackName][1])
+	baseBra = float(trackData[trackName][2])
+	baseGea = float(trackData[trackName][3])
+	baseSus = float(trackData[trackName][4])
+	baseWSp = float(trackData[trackName][5])
 
 		# Create the setup dictionary
 	baseOffsets = {
@@ -247,90 +247,91 @@ def collection(username, password, weather, temp, wear):
 
 	# And now calculate the actual setup for the race
 	# Wings
-	temp = int(temp)
+	sessionTemp = int(sessionTemp)
+	weather = weather.upper()
 	if(weather != "WET"):
-		setupWeather = baseOffsets["wingWeatherDry"] * temp * 2;
+		setupWeather = baseOffsets["wingWeatherDry"] * sessionTemp * 2;
 	else:
-		setupWeather = ((baseOffsets["wingWeatherWet"] * temp) + baseOffsets["wingWeatherOffset"]) * 2;
-	setupDriver = driverTal * (baseWin + setupWeather) * baseOffsets["wingDriverMultiplier"]
+		setupWeather = ((baseOffsets["wingWeatherWet"] * sessionTemp) + baseOffsets["wingWeatherOffset"]) * 2;
+	setupDriver = driverTalent * (baseWin + setupWeather) * baseOffsets["wingDriverMultiplier"]
 	setupCarLevel = (levelOffsets[0][0] * carLevelCha) + (levelOffsets[0][2] * carLevelFWi) + (levelOffsets[0][3] * carLevelRWi) + (levelOffsets[0][4] * carLevelUnd)
 	setupCarWear = ((wearOffsets[0][0] * carWearCha) + (wearOffsets[0][2] * carWearFWi) + (wearOffsets[0][3] * carWearRWi) + (wearOffsets[0][4] * carWearUnd))
 	setupWings = (baseWin + setupWeather + setupDriver + setupCarLevel + setupCarWear) / 2
 
 	# Wing Split
-	setupWingSplit = baseWSp + (driverTal * -0.246534498671854) + (3.69107049712848 * (carLevelFWi + carLevelRWi) / 2) + (setupWings * -0.189968386659174) + (temp * 0.376337780506523)
+	setupWingSplit = baseWSp + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFWi + carLevelRWi) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
 	setupFWi = setupWings + setupWingSplit
 	setupRWi = setupWings - setupWingSplit
 
 	# Engine
 	if(weather != "WET"):
-		setupWeather = baseOffsets["engineWeatherDry"] * temp;
+		setupWeather = baseOffsets["engineWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["engineWeatherWet"] * temp) + baseOffsets["engineWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[1][2] * driverAgg) + (driverExp * (((baseEng + setupWeather) * baseOffsets["engineDriverMultiplier"]) + baseOffsets["engineDriverOffset"]))
+		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]) * 2;
+	setupDriver = (driverOffsets[1][2] * driverAggressiveness) + (driverExperience * (((baseEng + setupWeather) * baseOffsets["engineDriverMultiplier"]) + baseOffsets["engineDriverOffset"]))
 	setupCarLevel = ((levelOffsets[1][1] * carLevelEng) + (levelOffsets[1][6] * carLevelCol) + (levelOffsets[1][10] * carLevelEle))
 	setupCarWear = ((wearOffsets[1][1] * carWearEng) + (wearOffsets[1][6] * carWearCol) + (wearOffsets[1][10] * carWearEle))
 	setupEng = (baseEng + setupWeather + setupDriver + setupCarLevel + setupCarWear)
 
 	# Brakes
 	if(weather != "WET"):
-		setupWeather = baseOffsets["brakesWeatherDry"] * temp;
+		setupWeather = baseOffsets["brakesWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["brakesWeatherWet"] * temp) + baseOffsets["brakesWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[2][1] * driverTal)
+		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]) * 2;
+	setupDriver = (driverOffsets[2][1] * driverTalent)
 	setupCarLevel = ((levelOffsets[2][0] * carLevelCha) + (levelOffsets[2][8] * carLevelBra) + (levelOffsets[2][10] * carLevelEle))
 	setupCarWear = ((wearOffsets[2][0] * carWearCha) + (wearOffsets[2][8] * carWearBra) + (wearOffsets[2][10] * carWearEle))
 	setupBra = (baseBra + setupWeather + setupDriver + setupCarLevel + setupCarWear)
 
 	# Gears
 	if(weather != "WET"):
-		setupWeather = baseOffsets["gearsWeatherDry"] * temp;
+		setupWeather = baseOffsets["gearsWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["gearsWeatherWet"] * temp) + baseOffsets["gearsWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[3][0] * driverCon)
+		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]) * 2;
+	setupDriver = (driverOffsets[3][0] * driverConcentration)
 	setupCarLevel = ((levelOffsets[3][7] * carLevelGea) + (levelOffsets[3][10] * carLevelEle))
 	setupCarWear = ((wearOffsets[3][7] * carWearGea) + (wearOffsets[3][10] * carWearEle))
 	setupGea = (baseGea + setupWeather + setupDriver + setupCarLevel + setupCarWear)
 
 	# Suspension
 	if(weather != "WET"):
-		setupWeather = baseOffsets["suspensionWeatherDry"] * temp;
+		setupWeather = baseOffsets["suspensionWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["suspensionWeatherWet"] * temp) + baseOffsets["suspensionWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[4][3] * driverExp) + (driverOffsets[4][4] * driverWei)
+		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]) * 2;
+	setupDriver = (driverOffsets[4][3] * driverExperience) + (driverOffsets[4][4] * driverWeight)
 	setupCarLevel = ((levelOffsets[4][0] * carLevelCha) + (levelOffsets[4][4] * carLevelUnd) + (levelOffsets[4][5] * carLevelSid) + (levelOffsets[4][9] * carLevelSus))
 	setupCarWear = ((wearOffsets[4][0] * carWearCha) + (wearOffsets[4][4] * carWearUnd) + (wearOffsets[4][5] * carWearSid) + (wearOffsets[4][9] * carWearSus))
 	setupSus = (baseSus + setupWeather + setupDriver + setupCarLevel + setupCarWear)
 
 	setup = [int(setupFWi), int(setupRWi), int(setupEng), int(setupBra), int(setupGea), int(setupSus)]
 
-	tyreBrand = {"Pipirelli": 1, "Avonn": 8, "Yokomama": 3, "Dunnolop": 4, "Contimental": 8, "Badyear": 7}
+	tyreSupplierFactor = {"Pipirelli": 1, "Avonn": 8, "Yokomama": 3, "Dunnolop": 4, "Contimental": 8, "Badyear": 7}
 	trackWearLevel = {"Very low": 0, "Low": 1, "Medium": 2, "High": 3, "Very high": 4}
 
 	wearFactors = [0.998163750229071, 0.997064844817654, 0.996380346554349, 0.995862526048112, 0.996087854384523]
 
 	for i in range(5):
-		stops[i].set(str(stopCalc(trackDst, trackWearLevel[trackTyr], Rtemp, tyreBrand[tyreSupplier], i, carLevelSus, driverAgg, driverExp, driverWei, float(trackData[trackNam][9]), wear, wearFactors[i])))
+		stops[i].set(str(stopCalc(trackDistanceTotal, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSus, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i])))
 
 	return setup
 
 # Pit Stop Calc
-# trackDst = Track Distance
+# trackDistanceTotal = Track Distance
 # tracWearLevel = Very Low, Low, Medium, High, Very High, and it's relating factor, 0, 1, 2, 3, 4 respectively
-# Rtemp = Race Temperature
-# tyreBrand = Tyre Brand Factor, 1 for Pipirello, 8 for Avonn, etc.
+# rTemp = Race Temperature
+# tyreSupplierFactor = Tyre Brand Factor, 1 for Pipirello, 8 for Avonn, etc.
 # tyreType = Tyre Compound Factor, 0.998163750229071 for Extra Soft (look at wearFactors)
 # carLevelSus = Suspension Level equipped to car
-# driverAgg = Driver Aggressiveness
-# driverExp = Driver Experience
+# driverAggressiveness = Driver Aggressiveness
+# driverExperience = Driver Experience
 # driverWeight = Driver Weight
 # clearTrackRisk = Clear Track Risk used, as a percentage
 # trackBaseWear = Track Base Wear from trackData.csv
 # wearLimit = The manager chosen limit for tyre wear before pitting, so at 10%, we assume the stint will end when the tyres hit 10% wear
-def stopCalc(trackDst, trackWearLevel, Rtemp, tyreBrand, tyreType, carLevelSus, driverAgg, driverExp, driverWeight, trackBaseWear, wearLimit, tyreWearFactor):
+def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyreType, carLevelSus, driverAggressiveness, driverExperience, driverWeight, trackBaseWear, wearLimit, tyreWearFactor):
 	baseWear = 129.776458172062
-	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** Rtemp) * (1.048876356 ** tyreBrand) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSus) * (0.999670155 ** driverAgg) * (1.00022936 ** driverExp) * (0.999858329 ** driverWeight)
-	stops = math.ceil((trackDst) / ((productFactors  * baseWear * trackBaseWear) * ((100 - wearLimit) / 100))) - 1
+	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** rTemp) * (1.048876356 ** tyreSupplierFactor) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSus) * (0.999670155 ** driverAggressiveness) * (1.00022936 ** driverExperience) * (0.999858329 ** driverWeight)
+	stops = math.ceil((trackDistanceTotal) / ((productFactors  * baseWear * trackBaseWear) * ((100 - wearLimit) / 100))) - 1
 	return stops
 
 
