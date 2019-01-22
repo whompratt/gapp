@@ -11,21 +11,21 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\datetime.py',
    'PYMODULE'),
-  ('_py_abc',
+  ('typing',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_py_abc.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\typing.py',
    'PYMODULE'),
   ('stringprep',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\stringprep.py',
    'PYMODULE'),
-  ('typing',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\typing.py',
-   'PYMODULE'),
   ('fnmatch',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\fnmatch.py',
+   'PYMODULE'),
+  ('struct',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\struct.py',
    'PYMODULE'),
   ('_compat_pickle',
    'c:\\users\\jake '
@@ -186,6 +186,14 @@
   ('platform',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\platform.py',
+   'PYMODULE'),
+  ('token',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\token.py',
+   'PYMODULE'),
+  ('tokenize',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tokenize.py',
    'PYMODULE'),
   ('urllib.parse',
    'c:\\users\\jake '
@@ -455,18 +463,6 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\doctest.py',
    'PYMODULE'),
-  ('pprint',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pprint.py',
-   'PYMODULE'),
-  ('pickle',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pickle.py',
-   'PYMODULE'),
-  ('tracemalloc',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tracemalloc.py',
-   'PYMODULE'),
   ('stat',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\stat.py',
@@ -507,21 +503,9 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\os.py',
    'PYMODULE'),
-  ('token',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\token.py',
-   'PYMODULE'),
-  ('struct',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\struct.py',
-   'PYMODULE'),
   ('gettext',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\gettext.py',
-   'PYMODULE'),
-  ('copy',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\copy.py',
    'PYMODULE'),
   ('textwrap',
    'c:\\users\\jake '
@@ -531,9 +515,25 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\argparse.py',
    'PYMODULE'),
-  ('tokenize',
+  ('pprint',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tokenize.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pprint.py',
+   'PYMODULE'),
+  ('pickle',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pickle.py',
+   'PYMODULE'),
+  ('tracemalloc',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tracemalloc.py',
+   'PYMODULE'),
+  ('_py_abc',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_py_abc.py',
+   'PYMODULE'),
+  ('copy',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\copy.py',
    'PYMODULE'),
   ('lxml.html',
    'c:\\users\\jake '
