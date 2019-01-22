@@ -109,8 +109,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	trackDistanceLap = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance')]/following-sibling::td/text())"))
 	trackDistanceLap = float((re.findall("\d+.\d+", trackDistanceLap))[0])
 	trackLapsCount = int(tree.xpath("normalize-space(//td[contains(text(), 'Laps')]/following-sibling::td/text())"))
-	trackPitTime = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in')]/following-sibling::td/text())"))
-	trackPitTime = float((re.findall("\d+.\d+", trackPitTime))[0])
+	trackPitTime = str(tree.xpath("normalize-space(//td[starts-with(text(), 'Time in')]/following-sibling::td/text())"))
+	try:
+		trackPitTime = float((re.findall("\d+.\d+", trackPitTime))[0])
+	except:
+		trackPitTime = float((re.findall("\d+", trackPitTime))[0])
 	trackDownforeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Downforce')]/following-sibling::td/text())"))
 	trackOvertakeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Overtaking')]/following-sibling::td/text())"))
 	trackSuspensionRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Suspension')]/following-sibling::td/text())"))
@@ -350,6 +353,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	setupCarWear = ((carWearOffsets[4][0] * carWearChassis) + (carWearOffsets[4][1] * carWearUnderbody) + (carWearOffsets[4][2] * carWearSidepod) + (carWearOffsets[4][3] * carWearSuspension))
 	setupSus = (trackBaseSuspensionSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear)
 
+
 	# Take that calculated setup and turn it into an array for easier handling
 	setup = [int(setupFWi), int(setupRWi), int(setupEng), int(setupBra), int(setupGea), int(setupSus)]
 
@@ -367,21 +371,39 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	# We start by defining some constants. Wear factors are just static hidden values that affect tyre wear based on compound, but only slightly.
 	# Without these the equation doesn't QUITE add up properly.
 	tyreSupplierFactor = {"Pipirelli": 1, "Avonn": 8, "Yokomama": 3, "Dunnolop": 4, "Contimental": 8, "Badyear": 7}
+	tyreCompoundSupplierFactor = {"Pipirelli": 0, "Avonn": 0.015, "Yokomama": 0.05, "Dunnolop": 0.07, "Contimental": 0.07, "Badyear": 0.09}
 	trackWearLevel = {"Very low": 0, "Low": 1, "Medium": 2, "High": 3, "Very high": 4}
 	wearFactors = [0.998163750229071, 0.997064844817654, 0.996380346554349, 0.995862526048112, 0.996087854384523]
 
 	# Calcualte the number of stops for each tyre choice
-	for i in range(5):
+	for i in range(4):
 		stops[i].set(str(stopCalc(trackDistanceTotal, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i])))
+	stops[4].set(str(math.ceil(0.73 * stopCalc(trackDistanceTotal, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4]))))
 
 	# Calculate the fuel load for each stint given the above number of stops
 	fuelFactor = (-0.000101165467155397 * driverConcentration) + (0.0000706080613787091 * driverAggressiveness) + (-0.0000866455021527332 * driverExperience) + (-0.000163915452803369 * driverTechnicalInsight) + (-0.0126912680856842 * carLevelEngine) + (-0.0083557977071091 * carLevelElectronics)
-	for i in range(5):
-		fuels[i].set(str(fuelCalc(trackDistanceTotal, float(trackData[trackName][10]), fuelFactor, int(stops[i].get()) + 1)))
+	for i in range(4):
+		fuels[i].set(str(fuelLoadCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
+	fuels[4].set(str(fuelLoadCalc(trackDistanceTotal, float(trackData[trackName][7]), fuelFactor, int(stops[4].get()) + 1)))
 
 	# Calculate the pit time for each tyre choice, given the fuel load
 	for i in range(5):
 		pitTimes[i].set(str(pitTimeCalc(int(fuels[i].get()), technicalDirectorValues[0], technicalDirectorValues[1], staffConcentration, technicalDirectorValues[2], staffStress, technicalDirectorValues[3], tdExperience, technicalDirectorValues[4], tdPitCoordination)))
+
+	for i in range(4):
+		pitTotals[i].set(round((float(stops[i].get()) * (float(pitTimes[i].get()) + float(trackData[trackName][10]))), 2))
+
+	TCDs[0].set("0")
+	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][13]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[2].set(str(2 * float(TCDs[1].get())))
+	TCDs[3].set(str(3 * float(TCDs[1].get())))
+	TCDs[4].set("-")
+
+	if(float(fuels[4].get()) < 0):
+		fuels[4].set("No Data!")
+		pitTimes[4].set("No Data!")
+		pitTotals[4].set("No Data!")
+
 
 	return setup
 
@@ -410,7 +432,7 @@ def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyre
 Fuel Load Calc
 Here we very simply calculate how much fuel we will need across the entire race (distance * fuel per km) then divide by the stints (stops + 1)
 '''
-def fuelCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
+def fuelLoadCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
 	fuelLoad = math.ceil((trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints)
 	return fuelLoad
 
@@ -431,6 +453,9 @@ lost from being on the tyre of choice for too long.
 For example, you might be able to stretch the extra soft tyre to 2 stops, over 3, by running them "bald" for a number of laps
 the idea is to take into consideration that time lost, which is roughly 1-2 seconds per lap.
 '''
+def compoundCalc(trackLapsCount, trackCornerCount, trackDistanceLap, rTemp, tyreCompoundSupplierFactor):
+	print(trackCornerCount * trackDistanceLap * 0.00018 * (50 - rTemp))
+	return (trackLapsCount * ((trackCornerCount * trackDistanceLap * 0.00018 * (50 - rTemp)) + tyreCompoundSupplierFactor))
 
 '''
 TODO: Total Time Calc
@@ -605,31 +630,37 @@ softStops = StringVar()
 mediumStops = StringVar()
 hardStops = StringVar()
 rainStops = StringVar()
+
 extraFuel = StringVar()
 softFuel = StringVar()
 mediumFuel = StringVar()
 hardFuel = StringVar()
 rainFuel = StringVar()
+
 extraPitTime = StringVar()
 softPitTime = StringVar()
 mediumPitTime = StringVar()
 hardPitTime = StringVar()
 rainPitTime = StringVar()
+
 extraTCD = StringVar()
 softTCD = StringVar()
 mediumTCD = StringVar()
 hardTCD = StringVar()
 rainTCD = StringVar()
+
 extraFLD = StringVar()
 softFLD = StringVar()
 mediumFLD = StringVar()
 hardFLD = StringVar()
 rainFLD = StringVar()
+
 extraPitTotal = StringVar()
 softPitTotal = StringVar()
 mediumPitTotal = StringVar()
 hardPitTotal = StringVar()
 rainPitTotal = StringVar()
+
 extraTotal = StringVar()
 softTotal = StringVar()
 mediumTotal = StringVar()
@@ -660,6 +691,8 @@ for pitTotal in pitTotals:
 	pitTotal.set("0")
 for total in totals:
 	total.set("0")
+
+rainTCD.set("-")
 
 x = 2
 for values in grid:
