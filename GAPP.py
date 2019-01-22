@@ -220,8 +220,8 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	# Setup calculations
 	# Begin by storig the track base values
 	with open('trackData.csv', 'rt', newline='') as f:
-		r = csv.reader(f)
-		trackData = collections.OrderedDict((row[0], row[1:]) for row in r);
+		data = csv.reader(f)
+		trackData = collections.OrderedDict((row[0], row[1:]) for row in data);
 	trackBaseWingsSetup = float(trackData[trackName][0]) * 2
 	trackBaseEngineSetup = float(trackData[trackName][1])
 	trackBaseBrakesSetup = float(trackData[trackName][2])
@@ -273,6 +273,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		[0.34, 0.23, -0.12, -0.70]
 	]
 	
+	# I know it seems a bit pointless to have this be an array of arrays, but it makes it easier to see which values affect each step.
 	driverOffsets = [
 		[0.3],
 		[-0.5],
@@ -405,12 +406,38 @@ def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyre
 	stops = math.ceil((trackDistanceTotal) / ((productFactors  * baseWear * trackBaseWear) * ((100 - wearLimit) / 100))) - 1
 	return stops
 
+'''
+Fuel Load Calc
+Here we very simply calculate how much fuel we will need across the entire race (distance * fuel per km) then divide by the stints (stops + 1)
+'''
 def fuelCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
 	fuelLoad = math.ceil((trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints)
 	return fuelLoad
 
+'''
+Pit Time Calc
+or how long we'll spend during a single pit stop, which is mainly affected by the fuel load required
+i.e. Longer stints mean more fuel but less stops so less overall time
+'''
 def pitTimeCalc(fuelLoad, tdInfluenceFuel, tdInfluenceStaffConcentration, staffConcentration, tdInfluenceStaffStress, staffStress, tdInfluenceExperience, tdExperience, tdInfluencePitCoordination, tdPitCoordination):
 	return round(((fuelLoad * tdInfluenceFuel) + 24.26 + (tdInfluenceStaffConcentration * staffConcentration) + (tdInfluenceStaffStress * staffStress) + (tdInfluenceExperience * tdExperience) + (tdInfluencePitCoordination * tdPitCoordination)), 2)
+
+'''
+TODO: Compound Time Calc
+Here we calculate how much time is lost from being on the compound of choice compared to the extra soft tyre, which is the fastest
+The idea is to get a comparison for time lost on the tyre versus time saved in the pits from fewer stops
+NOTE: Later I intend to implement some form of "wobble" calculation, which will consider how much time is
+lost from being on the tyre of choice for too long.
+For example, you might be able to stretch the extra soft tyre to 2 stops, over 3, by running them "bald" for a number of laps
+the idea is to take into consideration that time lost, which is roughly 1-2 seconds per lap.
+'''
+
+'''
+TODO: Total Time Calc
+Here we calculate the overall time lost and gained for that tyre strategy.
+The reason is so we can compare, say 3 stops on Extra Soft versus 2 stops on Soft.
+This is calculated by comparing all the other time saves and losses.
+'''
 
 # Warning window
 def warning(*args):
