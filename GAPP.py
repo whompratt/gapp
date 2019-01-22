@@ -42,11 +42,21 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
 	staffURL = "https://www.gpro.net/gb/StaffAndFacilities.asp"
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
-	if(tree.xpath("//td[contains(@class, 'staff')][contains(@rowspan, '4')]/../th/text()")[2] == "No Technical Director"):
-		technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
-		tdExperience = 0
-		tdPitCoordination = 0
-	else:
+	try:
+		tdCheck = tree.xpath("//th[contains(text(), 'No Technical Director')]/text()")[0]
+		if(tdCheck == "No Technical Director"):
+			technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
+			tdExperience = 0
+			tdPitCoordination = 0
+		else:
+			technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
+			technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
+			technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
+			technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
+			tree = html.fromstring(technicalDirectorResult.content)
+			tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
+			tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
+	except:
 		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
 		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
 		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
