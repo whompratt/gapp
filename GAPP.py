@@ -230,15 +230,15 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 
 		"engineWeatherDry": -3,
 		"engineWeatherWet": 0.7,
-		"engineWeatherOffset": -190,
+		"engineWeatherOffset": -190.0,
 
 		"brakesWeatherDry": 6,
-		"brakesWeatherWet": 3.988375441,
-		"brakesWeatherOffset": 105.5325924,
+		"brakesWeatherWet": 3.9883754414027,
+		"brakesWeatherOffset": 105.532592432347,
 
 		"gearsWeatherDry": -4,
-		"gearsWeatherWet": -8.0019964182,
-		"gearsWeatherOffset": -4.742711704,
+		"gearsWeatherWet": -8.01996418151657,
+		"gearsWeatherOffset": -4.74271170354302,
 
 		"suspensionWeatherDry": -6,
 		"suspensionWeatherWet": -1,
@@ -285,7 +285,6 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	We canculate these components in this order, then dump them into the equation to calculate setup.
 	The reason we do them in order, is that some later components are affected by earlier ones, see driver setup on any part for an example
 	'''
-
 	# Wings
 	sessionTemp = int(sessionTemp)
 	weather = weather.upper()
@@ -299,7 +298,10 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	setupWings = (trackBaseWingsSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear) / 2
 
 	# Wing Split
-	setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
+	if(weather != "WET"):
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
+	else:
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523) + 58.8818967363256
 	setupFWi = setupWings + setupWingSplit
 	setupRWi = setupWings - setupWingSplit
 
@@ -307,7 +309,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["engineWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]);
 	setupDriver = (driverOffsets[0][0] * driverAggressiveness) + (driverExperience * (((trackBaseEngineSetup + setupWeather) * baseOffsets["engineDriverMultiplier"]) + baseOffsets["engineDriverOffset"]))
 	setupCarLevel = ((carLevelOffsets[1][0] * carLevelEngine) + (carLevelOffsets[1][1] * carLevelCooling) + (carLevelOffsets[1][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[1][0] * carWearEngine) + (carWearOffsets[1][1] * carWearCooling) + (carWearOffsets[1][2] * carWearElectronics))
@@ -317,7 +319,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["brakesWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]);
 	setupDriver = (driverOffsets[1][0] * driverTalent)
 	setupCarLevel = ((carLevelOffsets[2][0] * carLevelChassis) + (carLevelOffsets[2][1] * carLevelBrakes) + (carLevelOffsets[2][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[2][0] * carWearChassis) + (carWearOffsets[2][1] * carWearBrakes) + (carWearOffsets[2][2] * carWearElectronics))
@@ -327,7 +329,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["gearsWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]);
 	setupDriver = (driverOffsets[2][0] * driverConcentration)
 	setupCarLevel = ((carLevelOffsets[3][0] * carLevelGears) + (carLevelOffsets[3][1] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[3][0] * carWearGears) + (carWearOffsets[3][1] * carWearElectronics))
@@ -337,8 +339,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["suspensionWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight)
+		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]);
+	if(weather != "WET"):
+		setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight)
+	else:
+		setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight) + (driverTechnicalInsight * 0.11)
 	setupCarLevel = ((carLevelOffsets[4][0] * carLevelChassis) + (carLevelOffsets[4][1] * carLevelUnderbody) + (carLevelOffsets[4][2] * carLevelSidepod) + (carLevelOffsets[4][3] * carLevelSuspension))
 	setupCarWear = ((carWearOffsets[4][0] * carWearChassis) + (carWearOffsets[4][1] * carWearUnderbody) + (carWearOffsets[4][2] * carWearSidepod) + (carWearOffsets[4][3] * carWearSuspension))
 	setupSus = (trackBaseSuspensionSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear)
@@ -387,19 +392,19 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		FLDs[i].set(round(fuelTimeCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
 
 	TCDs[0].set("0")
-	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][13]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][11]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2].set(str(2 * float(TCDs[1].get())))
 	TCDs[3].set(str(3 * float(TCDs[1].get())))
 	TCDs[4].set("-")
 
 	if(float(fuels[4].get()) < 0):
+		for i in range(4):
+			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
 		fuels[4].set("No Data!")
 		pitTimes[4].set("No Data!")
 		pitTotals[4].set("No Data!")
 		FLDs[4].set("No Data!")
 		totals[4].set("No Data!")
-		for i in range(4):
-			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
 	else:
 		for i in range(5):
 			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
