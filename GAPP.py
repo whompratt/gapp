@@ -34,36 +34,26 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	# Track ID of next race
 	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
 	trackURL = "https://gpro.net/gb/" + trackID[0]
-	# Manager ID
-	managerID = tree.xpath("//a[contains(@href, 'viewnation')]/../a[2]/@href")
-	managerURL = "https://gpro.net/gb/" + managerID[0]
 	# URLs for car and race details, for later use
 	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
 	staffURL = "https://www.gpro.net/gb/StaffAndFacilities.asp"
+	tyreURL = "https://www.gpro.net/gb/Suppliers.asp"
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
-		tdCheck = tree.xpath("//th[contains(text(), 'No Technical Director')]/text()")[0]
-		if(tdCheck == "No Technical Director"):
-			technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
-			tdExperience = 0
-			tdPitCoordination = 0
-		else:
-			technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
-			technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
-			technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
-			technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
-			tree = html.fromstring(technicalDirectorResult.content)
-			tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
-			tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
-	except:
-		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
 		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
-		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
+		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
 		technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
+		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
 		tree = html.fromstring(technicalDirectorResult.content)
 		tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
 		tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
+	except:
+		technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
+		tdExperience = 0
+		tdPitCoordination = 0
+
+
 	
 	
 	# Request the driver information page and scrape the driver data
@@ -84,9 +74,9 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 
 
 	# Request the manager page and scrape tyre data
-	managerResult = session.get(managerURL, headers = dict(referer = managerURL))
-	tree = html.fromstring(managerResult.content)
-	tyreSupplierName = str(tree.xpath("//img[contains(@src, 'suppliers')]/@alt")[0])
+	tyreResult = session.get(tyreURL, headers = dict(referer = tyreURL))
+	tree = html.fromstring(tyreResult.content)
+	tyreSupplierName = str(tree.xpath("//div[contains(@class, 'chosen')]/h2/text()")[0])
 
 
 	# Request the staff page and scrape staff data
@@ -393,6 +383,9 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	for i in range(4):
 		pitTotals[i].set(round((float(stops[i].get()) * (float(pitTimes[i].get()) + float(trackData[trackName][10]))), 2))
 
+	for i in range(5):
+		FLDs[i].set(round(fuelTimeCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
+
 	TCDs[0].set("0")
 	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][13]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2].set(str(2 * float(TCDs[1].get())))
@@ -403,6 +396,13 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		fuels[4].set("No Data!")
 		pitTimes[4].set("No Data!")
 		pitTotals[4].set("No Data!")
+		FLDs[4].set("No Data!")
+		totals[4].set("No Data!")
+		for i in range(4):
+			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
+	else:
+		for i in range(5):
+			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
 
 
 	return setup
@@ -445,7 +445,7 @@ def pitTimeCalc(fuelLoad, tdInfluenceFuel, tdInfluenceStaffConcentration, staffC
 	return round(((fuelLoad * tdInfluenceFuel) + 24.26 + (tdInfluenceStaffConcentration * staffConcentration) + (tdInfluenceStaffStress * staffStress) + (tdInfluenceExperience * tdExperience) + (tdInfluencePitCoordination * tdPitCoordination)), 2)
 
 '''
-TODO: Compound Time Calc
+Compound Time Calc
 Here we calculate how much time is lost from being on the compound of choice compared to the extra soft tyre, which is the fastest
 The idea is to get a comparison for time lost on the tyre versus time saved in the pits from fewer stops
 NOTE: Later I intend to implement some form of "wobble" calculation, which will consider how much time is
@@ -454,15 +454,25 @@ For example, you might be able to stretch the extra soft tyre to 2 stops, over 3
 the idea is to take into consideration that time lost, which is roughly 1-2 seconds per lap.
 '''
 def compoundCalc(trackLapsCount, trackCornerCount, trackDistanceLap, rTemp, tyreCompoundSupplierFactor):
-	print(trackCornerCount * trackDistanceLap * 0.00018 * (50 - rTemp))
 	return (trackLapsCount * ((trackCornerCount * trackDistanceLap * 0.00018 * (50 - rTemp)) + tyreCompoundSupplierFactor))
+
+'''
+Fuel Time Calc
+Here we calculate how much time is lost by being on the fuel load required to run our choice of tyre.
+The idea here is that running longer stints means carrying around more fuel which loses you time.
+'''
+def fuelTimeCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
+	return (0.0025 * ((trackDistanceTotal * trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints))
 
 '''
 TODO: Total Time Calc
 Here we calculate the overall time lost and gained for that tyre strategy.
 The reason is so we can compare, say 3 stops on Extra Soft versus 2 stops on Soft.
 This is calculated by comparing all the other time saves and losses.
+Painfully simple function
 '''
+def totalTimeCalc(pitTime, compoundTime, fuelTime):
+	return round(pitTime + compoundTime + fuelTime, 2)
 
 # Warning window
 def warning(*args):
@@ -611,12 +621,12 @@ entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(
 
 ttk.Label(frameStrategy, text = "Tyre", padding = "5 10").grid(column = 1, row = 2, sticky = (W, E))
 ttk.Label(frameStrategy, text = "Stops", padding = "5 10").grid(column = 2, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Load", padding = "5 10").grid(column = 3, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Time", padding = "5 10").grid(column = 4, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Compound Loss", padding = "5 10").grid(column = 5, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Loss", padding = "5 10").grid(column = 6, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Total", padding = "5 10").grid(column = 7, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Total", padding = "5 10").grid(column = 8, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "5 10").grid(column = 3, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "5 10").grid(column = 4, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "5 10").grid(column = 5, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "5 10").grid(column = 6, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "5 10").grid(column = 7, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Total (s)", padding = "5 10").grid(column = 8, row = 2, sticky = (W, E))
 
 ttk.Label(frameStrategy, text = "Extra Soft").grid(column = 1, sticky = (W, E))
 ttk.Label(frameStrategy, text = "Soft").grid(column = 1, sticky = (W, E))

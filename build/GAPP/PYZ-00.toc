@@ -11,25 +11,13 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\datetime.py',
    'PYMODULE'),
-  ('typing',
+  ('_py_abc',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\typing.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_py_abc.py',
    'PYMODULE'),
-  ('stringprep',
+  ('tracemalloc',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\stringprep.py',
-   'PYMODULE'),
-  ('fnmatch',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\fnmatch.py',
-   'PYMODULE'),
-  ('struct',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\struct.py',
-   'PYMODULE'),
-  ('_compat_pickle',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_compat_pickle.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tracemalloc.py',
    'PYMODULE'),
   ('__future__',
    'c:\\users\\jake '
@@ -255,10 +243,6 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\uu.py',
    'PYMODULE'),
-  ('quopri',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\quopri.py',
-   'PYMODULE'),
   ('email.feedparser',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\email\\feedparser.py',
@@ -306,10 +290,6 @@
   ('email.charset',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\email\\charset.py',
-   'PYMODULE'),
-  ('base64',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\base64.py',
    'PYMODULE'),
   ('email._encoded_words',
    'c:\\users\\jake '
@@ -363,17 +343,9 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\email\\message.py',
    'PYMODULE'),
-  ('bz2',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\bz2.py',
-   'PYMODULE'),
   ('lzma',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\lzma.py',
-   'PYMODULE'),
-  ('_compression',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_compression.py',
    'PYMODULE'),
   ('gzip',
    'c:\\users\\jake '
@@ -407,10 +379,6 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pydoc.py',
    'PYMODULE'),
-  ('getopt',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\getopt.py',
-   'PYMODULE'),
   ('pdb',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pdb.py',
@@ -427,9 +395,21 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\string.py',
    'PYMODULE'),
+  ('_compat_pickle',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_compat_pickle.py',
+   'PYMODULE'),
+  ('pickle',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pickle.py',
+   'PYMODULE'),
   ('logging',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\logging\\__init__.py',
+   'PYMODULE'),
+  ('pprint',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pprint.py',
    'PYMODULE'),
   ('unittest.case',
    'c:\\users\\jake '
@@ -438,6 +418,10 @@
   ('unittest.suite',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\unittest\\suite.py',
+   'PYMODULE'),
+  ('fnmatch',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\fnmatch.py',
    'PYMODULE'),
   ('unittest.loader',
    'c:\\users\\jake '
@@ -459,9 +443,41 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\unittest\\__init__.py',
    'PYMODULE'),
+  ('textwrap',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\textwrap.py',
+   'PYMODULE'),
+  ('argparse',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\argparse.py',
+   'PYMODULE'),
   ('doctest',
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\doctest.py',
+   'PYMODULE'),
+  ('typing',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\typing.py',
+   'PYMODULE'),
+  ('_compression',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_compression.py',
+   'PYMODULE'),
+  ('bz2',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\bz2.py',
+   'PYMODULE'),
+  ('stringprep',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\stringprep.py',
+   'PYMODULE'),
+  ('quopri',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\quopri.py',
+   'PYMODULE'),
+  ('struct',
+   'c:\\users\\jake '
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\struct.py',
    'PYMODULE'),
   ('stat',
    'c:\\users\\jake '
@@ -507,29 +523,13 @@
    'c:\\users\\jake '
    'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\gettext.py',
    'PYMODULE'),
-  ('textwrap',
+  ('getopt',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\textwrap.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\getopt.py',
    'PYMODULE'),
-  ('argparse',
+  ('base64',
    'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\argparse.py',
-   'PYMODULE'),
-  ('pprint',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pprint.py',
-   'PYMODULE'),
-  ('pickle',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\pickle.py',
-   'PYMODULE'),
-  ('tracemalloc',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\tracemalloc.py',
-   'PYMODULE'),
-  ('_py_abc',
-   'c:\\users\\jake '
-   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\_py_abc.py',
+   'ratcliffe\\appdata\\local\\programs\\python\\python37-32\\lib\\base64.py',
    'PYMODULE'),
   ('copy',
    'c:\\users\\jake '
