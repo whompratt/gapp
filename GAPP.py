@@ -465,7 +465,6 @@ def fuelTimeCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
 	return (0.0025 * ((trackDistanceTotal * trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints))
 
 '''
-TODO: Total Time Calc
 Here we calculate the overall time lost and gained for that tyre strategy.
 The reason is so we can compare, say 3 stops on Extra Soft versus 2 stops on Soft.
 This is calculated by comparing all the other time saves and losses.
