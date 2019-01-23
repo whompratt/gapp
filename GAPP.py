@@ -9,6 +9,74 @@ from lxml import html
 from lxml import etree
 
 
+'''
+Track Data
+Here we store all the data for all the tracks.
+I was originally doing this in a .csv file, however this was causing issues with builds, so is now stored inside the program.
+'''
+trackData = {
+	"A1-Ring": [249.22, 714.42, 676.29, 789.1, 511.89, 141.46, 0.875, 0.7829, 307.1, 0.89211, 21, 9],
+	"Adelaide": [631.9, 496.9, 358.33, 549.99, 652.05, 79.46, 0.807, 0.6774, 298.6, 0.94557, 19.5, 12],
+	"Ahvenisto": [993.04, 466.54, 699.74, 766.1, 240.15, 228.29, 0.8455, 0.796, 243.2, 0.9336, 11.5, 10],
+	"Anderstorp": [250.72, 699.88, 769.29, 611.18, 107.05, 75.32, 0.9042, 0.785, 281.8, 0.971, 13.5, 10],
+	"Austin": [521.56, 605.59, 608.9, 640.62, 786.9, 173.6, 0.8617, 0.752, 308.9, 1.00374, 17.5, 20],
+	"Avus": [302.56, 636.26, 412.4, 387.41, 821.34, 103.25, 0.90563, 0, 312.3, 1.18641, 13, 4],
+	"Baku City": [362.08, 615.56, 611.02, 706, 716.97, 96.71, 0.89345, 0, 306.3, 1.00055, 17, 20],
+	"Barcelona": [457.87, 673.95, 503.46, 676.11, 315.93, 140.56, 0.874, 0, 307.3, 1.0933, 21, 16],
+	"Brands Hatch": [475.32, 647.54, 386.69, 709.4, 641.47, 121.1, 0.8305, 0.6357, 315.5, 1.04047, 25.5, 12],
+	"Brasilia": [577.88, 409.23, 697.76, 849.61, 784.06, 46.69, 0.8911, 0.6221, 301.1, 1.04035, 13.5, 12],
+	"Bremgarten": [713.7, 594.03, 589.41, 697.91, 539.29, 138.55, 0.858, 0, 305.8, 1.0813, 17, 16],
+	"Brno": [489.73, 515.49, 378.53, 555.53, 490.25, 73.58, 0.8324, 0.7015, 308, 0.98793, 14, 15],
+	"Bucharest Ring": [269.73, 654.11, 711.39, 593.83, 744.57, 77.48, 0.9118, 0.7706, 245.7, 0.9947, 24, 14],
+	"Buenos Aires": [901.29, 516.57, 272.05, 654.41, 706.34, 190.08, 0.7853, 0.572, 306.6, 0.9795, 19.5, 16],
+	"Estoril": [438.52, 652.28, 302.24, 705, 575.42, 79.46, 0.8379, 0.7148, 305.2, 1.05901, 22.5, 13],
+	"Fiorano": [449.29, 619.66, 301.15, 374.52, 895.1, 99.31, 0.9327, 0.872, 238.6, 0.95633, 16.5, 14],
+	"Fuji": [271.38, 590.54, 633.87, 689.16, 500.84, 117.72, 0.8491, 0.6228, 305.4, 0.976, 18.5, 16],
+	"Grobnik": [646.19, 384.37, 524.55, 768.66, 500.29, 128.82, 0.8224, 0, 308.4, 1.03798, 13, 15],
+	"Hockenheim": [444.92, 647.63, 329.61, 789.21, 291.96	-98.2, 0.8693, 0.899, 306.4, 0.96074, 16.5, 12],
+	"Hungaroring": [853.49, 439.1, 571.56, 434.45, 416.73, 62.53, 0.7657, 0.649, 305.5, 1.06388, 16.5, 14],
+	"Imola": [459.77, 599.72, 672.31, 615.44, 455.84, 19.18, 0.8557, 0.6079, 305.6, 1.0555, 12, 16],
+	"Indianapolis": [207.55, 706.52, 465.52, 648.5, 518.59	-35, 0.893, 0, 306.6, 1.01319, 25.5, 13],
+	"Indianapolis Oval": [-58.62, 730.49, 21.69, 901.36, 304.75, 67.6, 0.9042, 0.749, 321.8, 0.9953, 45, 4],
+	"Interlagos, 460.91": [578.03, 555.34, 568.26, 318.88	-26.27, 0.8492, 0.6853, 305.9, 1.04207, 18, 14],
+	"Irungattukottai": [680.12, 470.29, 626.79, 620.22, 536.55, 13.95, 0.8412, 0, 293.6, 0.97159, 14, 12],
+	"Istanbul": [387.85, 544.46, 700.97, 543.97, 636.53, 118.92, 0.856, 0.694, 309.4, 1.11647, 16, 14],
+	"Jerez": [717.6, 608.07, 626.86, 701.3, 321.26, 143.33, 0.889, 0.6178, 306.4, 0.9, 18, 14],
+	"Jyllands-Ringen": [769.66, 414.13, 556.76, 743.56, 524.72, 106.93, 0.826, 0, 184, 0.98582, 19.5, 20],
+	"Kaunas": [387.37, 635.17, 515.42, 685, 362.96, 91.1, 0.8461, 0.7649, 264.1, 1.0395, 11, 10],
+	"Kyalami": [777.15, 534.3, 557.47, 528.95, 749.84, 206.85, 0.8016, 0, 306.8, 1.02227, 15, 14],
+	"Laguna Seca": [481.06, 401.03, 585.51, 619.45, 50.81, 54.38, 0.902, 0.751, 284.5, 1.015, 16.7, 11],
+	"Magny Cours": [453.62, 564.81, 294.88, 588.24, 560.43, 147.77, 0.865, 0, 305.8, 0.94099, 18, 14],
+	"Melbourne": [403.36, 619, 614.44, 757.14, 294.52, 8.04, 0.8553, 0, 307.6, 0.97952, 16.5, 17],
+	"Mexico City": [632.08, 700.96, 470.54, 671.13, 323.13, 48.62, 0.8353, 0.6893, 305, 0.99074, 24, 9],
+	"Monte Carlo": [1024.73, 373.43, 471.04, 374.23, 494.38, 100.89, 0.8141, 0.621, 262.8, 1.05986, 18, 19],
+	"Montreal": [335.19, 677.82, 566.84, 718.1, 237.85	-98.13, 0.8553, 0.7349, 305, 1.0831, 16.5, 12],
+	"Monza": [124.19, 735.83, 496, 868.17, 610.97, 24.64, 0.913, 0, 306.7, 1.0733, 25.5, 13],
+	"Mugello": [517.88, 805.54, 879.84, 901.34, 590.54	-69.4, 0.8474, 0.6958, 304.3, 1.0235, 13.5, 14],
+	"New Delhi": [649.99, 556.92, 556.38, 720.3, 150.9	-97.64, 0.8363, 0.768, 308.2, 1.03303, 19, 16],
+	"Nurburgring": [650.81, 451.94, 626.71, 598, 149.86, 244.17, 0.799, 0, 308.7, 1.0645, 15, 16],
+	"Oesterreichring": [442.09, 675.58, 496.59, 729.98, 508.34, 85.42, 0.8686, 0.6529, 308.9, 1.08664, 21, 11],
+	"Paul Ricard": [362.79, 732.67, 301.68, 784.37, 575.27, 182.33, 0.8965, 0.771, 305, 1.09121, 19.5, 11],
+	"Portimao": [784.36, 392.27, 486.5, 490, 295.42, 180.52, 0.8361, 0.7061, 309.7, 1.0578, 15.5, 18],
+	"Poznan": [742, 546.02, 379.02, 718.46, 529.96, 182.04, 0.8239, 0, 306.2, 1.08634, 14, 14],
+	"Rafaela Oval": [86.6, 645.37, 144.79, 781.23, 354.81, 67.6, 0.9058, 0.7695, 317.3, 1.06418, 10, 8],
+	"Sakhir": [126.91, 406.55, 716.34, 609.56, 240.96	-21.44, 0.912, 0.7124, 308.5, 1.10363, 25.5, 14],
+	"Sepang": [554, 590.12, 653.69, 746.34, 466.41, 24.6, 0.8422, 0.6161, 310.4, 0.9926, 24, 17],
+	"Serres": [927.25, 414.83, 503.01, 477.94, 522.69, 177, 0.8633, 0, 254.9, 0.92879, 12, 16],
+	"Shanghai": [416.43, 529.77, 641.35, 354.61, 114.21, 114.9, 0.9052, 0.6744, 305.2, 1.05878, 24, 10],
+	"Silverstone": [283.41, 699.48, 590.85, 823.25, 415.1, 18.87, 0.8693, 0.681, 308.3, 1.1123, 22.5, 14],
+	"Singapore": [865.61, 438.19, 578.15, 598.96, 801.2, 202.04, 0.854, 0.5521, 309.1, 1.04688, 17, 23],
+	"Slovakiaring": [735.82, 439.66, 609.73, 491.45, 431.92, 184.08, 0.9069, 0.79, 313.9, 1.0652, 19.5, 14],
+	"Sochi": [675.39, 588.26, 587.66, 696.24, 456.11, 137.97, 0.8404, 0, 310.1, 1.04166, 23, 19],
+	"Spa": [585.64, 716.49, 446.82, 609.47, 372.54, 50.4, 0.8835, 0.4519, 306.6, 1.04803, 13.5, 22],
+	"Suzuka": [413.56, 639.98, 515.88, 550.25, 531.13, 47.12, 0.857, 0.5508, 310.6, 1.0326, 15, 14],
+	"Valencia": [837.83, 445.95, 657.26, 652.58, 335.82, 209.76, 0.8459, 0.56, 310.1, 0.95518, 14.5, 25],
+	"Yas Marina": [730.05, 459.7, 557.69, 476.1, 419.98, 175.25, 0.8117, 0.7014, 305.5, 0.95151, 18.5, 21],
+	"Yeongam": [781.67, 480.86, 719.53, 689.5, 420.63, 207.41, 0.8365, 0.7399, 309.2, 1.0452, 23.5, 18],
+	"Zandvoort": [551.15, 653.24, 415.91, 779.13, 709.95, 5.57, 0.8402, 0.583, 301.8, 1.01818, 22.5, 14],
+	"Zolder": [669.24, 616.83, 466.06, 628.62, 539.48, 193.3, 0.8286, 0.6365, 298.3, 0.99094, 19.5, 17]
+}
+
 # Data collection function
 def collection(username, password, weather, sessionTemp, minimumWear):
 	# Create our logon payload. 'hiddenToken' may change at a later date.
@@ -212,9 +280,6 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	
 	# Setup calculations
 	# Begin by storig the track base values
-	with open('trackData.csv', 'rt', newline='') as f:
-		data = csv.reader(f)
-		trackData = collections.OrderedDict((row[0], row[1:]) for row in data);
 	trackBaseWingsSetup = float(trackData[trackName][0]) * 2
 	trackBaseEngineSetup = float(trackData[trackName][1])
 	trackBaseBrakesSetup = float(trackData[trackName][2])
@@ -299,7 +364,10 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	setupWings = (trackBaseWingsSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear) / 2
 
 	# Wing Split
-	setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
+	if(weather != "WET"):
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
+	else:
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523) + 58.8818967363256
 	setupFWi = setupWings + setupWingSplit
 	setupRWi = setupWings - setupWingSplit
 
@@ -307,7 +375,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["engineWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]);
 	setupDriver = (driverOffsets[0][0] * driverAggressiveness) + (driverExperience * (((trackBaseEngineSetup + setupWeather) * baseOffsets["engineDriverMultiplier"]) + baseOffsets["engineDriverOffset"]))
 	setupCarLevel = ((carLevelOffsets[1][0] * carLevelEngine) + (carLevelOffsets[1][1] * carLevelCooling) + (carLevelOffsets[1][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[1][0] * carWearEngine) + (carWearOffsets[1][1] * carWearCooling) + (carWearOffsets[1][2] * carWearElectronics))
@@ -317,7 +385,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["brakesWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]);
 	setupDriver = (driverOffsets[1][0] * driverTalent)
 	setupCarLevel = ((carLevelOffsets[2][0] * carLevelChassis) + (carLevelOffsets[2][1] * carLevelBrakes) + (carLevelOffsets[2][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[2][0] * carWearChassis) + (carWearOffsets[2][1] * carWearBrakes) + (carWearOffsets[2][2] * carWearElectronics))
@@ -327,7 +395,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["gearsWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]);
 	setupDriver = (driverOffsets[2][0] * driverConcentration)
 	setupCarLevel = ((carLevelOffsets[3][0] * carLevelGears) + (carLevelOffsets[3][1] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[3][0] * carWearGears) + (carWearOffsets[3][1] * carWearElectronics))
@@ -337,8 +405,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	if(weather != "WET"):
 		setupWeather = baseOffsets["suspensionWeatherDry"] * sessionTemp;
 	else:
-		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]) * 2;
-	setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight)
+		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]);
+	if(weather != "WET"):
+		setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight)
+	else:
+		setupDriver = (driverOffsets[3][0] * float(driverExperience)) + (driverOffsets[3][1] * driverWeight) + (driverTechnicalInsight * 0.11)
 	setupCarLevel = ((carLevelOffsets[4][0] * carLevelChassis) + (carLevelOffsets[4][1] * carLevelUnderbody) + (carLevelOffsets[4][2] * carLevelSidepod) + (carLevelOffsets[4][3] * carLevelSuspension))
 	setupCarWear = ((carWearOffsets[4][0] * carWearChassis) + (carWearOffsets[4][1] * carWearUnderbody) + (carWearOffsets[4][2] * carWearSidepod) + (carWearOffsets[4][3] * carWearSuspension))
 	setupSus = (trackBaseSuspensionSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear)
@@ -383,13 +454,14 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	for i in range(4):
 		pitTotals[i].set(round((float(stops[i].get()) * (float(pitTimes[i].get()) + float(trackData[trackName][10]))), 2))
 
-	for i in range(5):
+	for i in range(4):
 		FLDs[i].set(round(fuelTimeCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
+	FLDs[4].set(round(fuelTimeCalc(trackDistanceTotal, trackData[trackName][7], fuelFactor, int(stops[4].get()) + 1)))
 
 	TCDs[0].set("0")
-	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][13]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
-	TCDs[2].set(str(2 * float(TCDs[1].get())))
-	TCDs[3].set(str(3 * float(TCDs[1].get())))
+	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][9]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[2].set(str(round(2 * float(TCDs[1].get()), 2)))
+	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
 	TCDs[4].set("-")
 
 	if(float(fuels[4].get()) < 0):
