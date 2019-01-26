@@ -15,70 +15,70 @@ Here we store all the data for all the tracks.
 I was originally doing this in a .csv file, however this was causing issues with builds, so is now stored inside the program.
 '''
 trackData = {
-	"A1-Ring": [249.22, 714.42, 676.29, 789.1, 511.89, 141.46, 0.875, 0.7829, 307.1, 0.89211, 21, 9],
-	"Adelaide": [631.9, 496.9, 358.33, 549.99, 652.05, 79.46, 0.807, 0.6774, 298.6, 0.94557, 19.5, 12],
-	"Ahvenisto": [993.04, 466.54, 699.74, 766.1, 240.15, 228.29, 0.8455, 0.796, 243.2, 0.9336, 11.5, 10],
-	"Anderstorp": [250.72, 699.88, 769.29, 611.18, 107.05, 75.32, 0.9042, 0.785, 281.8, 0.971, 13.5, 10],
-	"Austin": [521.56, 605.59, 608.9, 640.62, 786.9, 173.6, 0.8617, 0.752, 308.9, 1.00374, 17.5, 20],
-	"Avus": [302.56, 636.26, 412.4, 387.41, 821.34, 103.25, 0.90563, 0, 312.3, 1.18641, 13, 4],
-	"Baku City": [362.08, 615.56, 611.02, 706, 716.97, 96.71, 0.89345, 0, 306.3, 1.00055, 17, 20],
-	"Barcelona": [457.87, 673.95, 503.46, 676.11, 315.93, 140.56, 0.874, 0, 307.3, 1.0933, 21, 16],
-	"Brands Hatch": [475.32, 647.54, 386.69, 709.4, 641.47, 121.1, 0.8305, 0.6357, 315.5, 1.04047, 25.5, 12],
-	"Brasilia": [577.88, 409.23, 697.76, 849.61, 784.06, 46.69, 0.8911, 0.6221, 301.1, 1.04035, 13.5, 12],
-	"Bremgarten": [713.7, 594.03, 589.41, 697.91, 539.29, 138.55, 0.858, 0, 305.8, 1.0813, 17, 16],
-	"Brno": [489.73, 515.49, 378.53, 555.53, 490.25, 73.58, 0.8324, 0.7015, 308, 0.98793, 14, 15],
-	"Bucharest Ring": [269.73, 654.11, 711.39, 593.83, 744.57, 77.48, 0.9118, 0.7706, 245.7, 0.9947, 24, 14],
-	"Buenos Aires": [901.29, 516.57, 272.05, 654.41, 706.34, 190.08, 0.7853, 0.572, 306.6, 0.9795, 19.5, 16],
-	"Estoril": [438.52, 652.28, 302.24, 705, 575.42, 79.46, 0.8379, 0.7148, 305.2, 1.05901, 22.5, 13],
-	"Fiorano": [449.29, 619.66, 301.15, 374.52, 895.1, 99.31, 0.9327, 0.872, 238.6, 0.95633, 16.5, 14],
-	"Fuji": [271.38, 590.54, 633.87, 689.16, 500.84, 117.72, 0.8491, 0.6228, 305.4, 0.976, 18.5, 16],
-	"Grobnik": [646.19, 384.37, 524.55, 768.66, 500.29, 128.82, 0.8224, 0, 308.4, 1.03798, 13, 15],
-	"Hockenheim": [444.92, 647.63, 329.61, 789.21, 291.96	-98.2, 0.8693, 0.899, 306.4, 0.96074, 16.5, 12],
-	"Hungaroring": [853.49, 439.1, 571.56, 434.45, 416.73, 62.53, 0.7657, 0.649, 305.5, 1.06388, 16.5, 14],
-	"Imola": [459.77, 599.72, 672.31, 615.44, 455.84, 19.18, 0.8557, 0.6079, 305.6, 1.0555, 12, 16],
-	"Indianapolis": [207.55, 706.52, 465.52, 648.5, 518.59	-35, 0.893, 0, 306.6, 1.01319, 25.5, 13],
-	"Indianapolis Oval": [-58.62, 730.49, 21.69, 901.36, 304.75, 67.6, 0.9042, 0.749, 321.8, 0.9953, 45, 4],
-	"Interlagos, 460.91": [578.03, 555.34, 568.26, 318.88	-26.27, 0.8492, 0.6853, 305.9, 1.04207, 18, 14],
-	"Irungattukottai": [680.12, 470.29, 626.79, 620.22, 536.55, 13.95, 0.8412, 0, 293.6, 0.97159, 14, 12],
-	"Istanbul": [387.85, 544.46, 700.97, 543.97, 636.53, 118.92, 0.856, 0.694, 309.4, 1.11647, 16, 14],
-	"Jerez": [717.6, 608.07, 626.86, 701.3, 321.26, 143.33, 0.889, 0.6178, 306.4, 0.9, 18, 14],
-	"Jyllands-Ringen": [769.66, 414.13, 556.76, 743.56, 524.72, 106.93, 0.826, 0, 184, 0.98582, 19.5, 20],
-	"Kaunas": [387.37, 635.17, 515.42, 685, 362.96, 91.1, 0.8461, 0.7649, 264.1, 1.0395, 11, 10],
-	"Kyalami": [777.15, 534.3, 557.47, 528.95, 749.84, 206.85, 0.8016, 0, 306.8, 1.02227, 15, 14],
-	"Laguna Seca": [481.06, 401.03, 585.51, 619.45, 50.81, 54.38, 0.902, 0.751, 284.5, 1.015, 16.7, 11],
-	"Magny Cours": [453.62, 564.81, 294.88, 588.24, 560.43, 147.77, 0.865, 0, 305.8, 0.94099, 18, 14],
-	"Melbourne": [403.36, 619, 614.44, 757.14, 294.52, 8.04, 0.8553, 0, 307.6, 0.97952, 16.5, 17],
-	"Mexico City": [632.08, 700.96, 470.54, 671.13, 323.13, 48.62, 0.8353, 0.6893, 305, 0.99074, 24, 9],
-	"Monte Carlo": [1024.73, 373.43, 471.04, 374.23, 494.38, 100.89, 0.8141, 0.621, 262.8, 1.05986, 18, 19],
-	"Montreal": [335.19, 677.82, 566.84, 718.1, 237.85	-98.13, 0.8553, 0.7349, 305, 1.0831, 16.5, 12],
-	"Monza": [124.19, 735.83, 496, 868.17, 610.97, 24.64, 0.913, 0, 306.7, 1.0733, 25.5, 13],
-	"Mugello": [517.88, 805.54, 879.84, 901.34, 590.54	-69.4, 0.8474, 0.6958, 304.3, 1.0235, 13.5, 14],
-	"New Delhi": [649.99, 556.92, 556.38, 720.3, 150.9	-97.64, 0.8363, 0.768, 308.2, 1.03303, 19, 16],
-	"Nurburgring": [650.81, 451.94, 626.71, 598, 149.86, 244.17, 0.799, 0, 308.7, 1.0645, 15, 16],
-	"Oesterreichring": [442.09, 675.58, 496.59, 729.98, 508.34, 85.42, 0.8686, 0.6529, 308.9, 1.08664, 21, 11],
-	"Paul Ricard": [362.79, 732.67, 301.68, 784.37, 575.27, 182.33, 0.8965, 0.771, 305, 1.09121, 19.5, 11],
-	"Portimao": [784.36, 392.27, 486.5, 490, 295.42, 180.52, 0.8361, 0.7061, 309.7, 1.0578, 15.5, 18],
-	"Poznan": [742, 546.02, 379.02, 718.46, 529.96, 182.04, 0.8239, 0, 306.2, 1.08634, 14, 14],
-	"Rafaela Oval": [86.6, 645.37, 144.79, 781.23, 354.81, 67.6, 0.9058, 0.7695, 317.3, 1.06418, 10, 8],
-	"Sakhir": [126.91, 406.55, 716.34, 609.56, 240.96	-21.44, 0.912, 0.7124, 308.5, 1.10363, 25.5, 14],
-	"Sepang": [554, 590.12, 653.69, 746.34, 466.41, 24.6, 0.8422, 0.6161, 310.4, 0.9926, 24, 17],
-	"Serres": [927.25, 414.83, 503.01, 477.94, 522.69, 177, 0.8633, 0, 254.9, 0.92879, 12, 16],
-	"Shanghai": [416.43, 529.77, 641.35, 354.61, 114.21, 114.9, 0.9052, 0.6744, 305.2, 1.05878, 24, 10],
-	"Silverstone": [283.41, 699.48, 590.85, 823.25, 415.1, 18.87, 0.8693, 0.681, 308.3, 1.1123, 22.5, 14],
-	"Singapore": [865.61, 438.19, 578.15, 598.96, 801.2, 202.04, 0.854, 0.5521, 309.1, 1.04688, 17, 23],
-	"Slovakiaring": [735.82, 439.66, 609.73, 491.45, 431.92, 184.08, 0.9069, 0.79, 313.9, 1.0652, 19.5, 14],
-	"Sochi": [675.39, 588.26, 587.66, 696.24, 456.11, 137.97, 0.8404, 0, 310.1, 1.04166, 23, 19],
-	"Spa": [585.64, 716.49, 446.82, 609.47, 372.54, 50.4, 0.8835, 0.4519, 306.6, 1.04803, 13.5, 22],
-	"Suzuka": [413.56, 639.98, 515.88, 550.25, 531.13, 47.12, 0.857, 0.5508, 310.6, 1.0326, 15, 14],
-	"Valencia": [837.83, 445.95, 657.26, 652.58, 335.82, 209.76, 0.8459, 0.56, 310.1, 0.95518, 14.5, 25],
-	"Yas Marina": [730.05, 459.7, 557.69, 476.1, 419.98, 175.25, 0.8117, 0.7014, 305.5, 0.95151, 18.5, 21],
-	"Yeongam": [781.67, 480.86, 719.53, 689.5, 420.63, 207.41, 0.8365, 0.7399, 309.2, 1.0452, 23.5, 18],
-	"Zandvoort": [551.15, 653.24, 415.91, 779.13, 709.95, 5.57, 0.8402, 0.583, 301.8, 1.01818, 22.5, 14],
-	"Zolder": [669.24, 616.83, 466.06, 628.62, 539.48, 193.3, 0.8286, 0.6365, 298.3, 0.99094, 19.5, 17]
+	"A1-Ring": [249.22, 714.42, 676.29, 789.1, 511.89, 141.46, 0.875, 0.7829, 307.1, 0.89211, 21, 9, 71, 4.33],
+	"Adelaide": [631.9, 496.9, 358.33, 549.99, 652.05, 79.46, 0.807, 0.6774, 298.6, 0.94557, 19.5, 12, 79, 3.78],
+	"Ahvenisto": [993.04, 466.54, 699.74, 766.1, 240.15, 228.29, 0.8455, 0.796, 243.2, 0.9336, 11.5, 10, 80, 3.04],
+	"Anderstorp": [250.72, 699.88, 769.29, 611.18, 107.05, 75.32, 0.9042, 0.785, 281.8, 0.971, 13.5, 10, 70, 4.03],
+	"Austin": [521.56, 605.59, 608.9, 640.62, 786.9, 173.6, 0.8617, 0.752, 308.9, 1.00374, 17.5, 20, 56, 5.52],
+	"Avus": [302.56, 636.26, 412.4, 387.41, 821.34, 103.25, 0.90563, 0, 312.3, 1.18641, 13, 4, 64, 4.88],
+	"Baku City": [362.08, 615.56, 611.02, 706, 716.97, 96.71, 0.89345, 0, 306.3, 1.00055, 17, 20, 51, 6.01],
+	"Barcelona": [457.87, 673.95, 503.46, 676.11, 315.93, 140.56, 0.874, 0, 307.3, 1.0933, 21, 16, 65, 4.73],
+	"Brands Hatch": [475.32, 647.54, 386.69, 709.4, 641.47, 121.1, 0.8305, 0.6357, 315.5, 1.04047, 25.5, 12, 75, 4.21],
+	"Brasilia": [577.88, 409.23, 697.76, 849.61, 784.06, 46.69, 0.8911, 0.6221, 301.1, 1.04035, 13.5, 12, 55, 5.48],
+	"Bremgarten": [713.7, 594.03, 589.41, 697.91, 539.29, 138.55, 0.858, 0, 305.8, 1.0813, 17, 16, 42, 7.28],
+	"Brno": [489.73, 515.49, 378.53, 555.53, 490.25, 73.58, 0.8324, 0.7015, 308, 0.98793, 14, 15, 57, 5.40],
+	"Bucharest Ring": [269.73, 654.11, 711.39, 593.83, 744.57, 77.48, 0.9118, 0.7706, 245.7, 0.9947, 24, 14, 80, 3.07],
+	"Buenos Aires": [901.29, 516.57, 272.05, 654.41, 706.34, 190.08, 0.7853, 0.572, 306.6, 0.9795, 19.5, 16, 72, 4.26],
+	"Estoril": [438.52, 652.28, 302.24, 705, 575.42, 79.46, 0.8379, 0.7148, 305.2, 1.05901, 22.5, 13, 70, 4.36],
+	"Fiorano": [449.29, 619.66, 301.15, 374.52, 895.1, 99.31, 0.9327, 0.872, 238.6, 0.95633, 16.5, 14, 67, 3.02],
+	"Fuji": [271.38, 590.54, 633.87, 689.16, 500.84, 117.72, 0.8491, 0.6228, 305.4, 0.976, 18.5, 16, 79, 4.56],
+	"Grobnik": [646.19, 384.37, 524.55, 768.66, 500.29, 128.82, 0.8224, 0, 308.4, 1.03798, 13, 15, 74, 4.17],
+	"Hockenheim": [444.92, 647.63, 329.61, 789.21, 291.96, -98.2, 0.8693, 0.899, 306.4, 0.96074, 16.5, 12, 67, 4.57],
+	"Hungaroring": [853.49, 439.1, 571.56, 434.45, 416.73, 62.53, 0.7657, 0.649, 305.5, 1.06388, 16.5, 14, 77, 3.97],
+	"Imola": [459.77, 599.72, 672.31, 615.44, 455.84, 19.18, 0.8557, 0.6079, 305.6, 1.0555, 12, 16, 62, 4.93],
+	"Indianapolis": [207.55, 706.52, 465.52, 648.5, 518.59, -35, 0.893, 0, 306.6, 1.01319, 25.5, 13, 73, 4.20],
+	"Indianapolis Oval": [-58.62, 730.49, 21.69, 901.36, 304.75, 67.6, 0.9042, 0.749, 321.8, 0.9953, 45, 4, 80, 4.02],
+	"Interlagos": [460.91, 578.03, 555.34, 568.26, 318.88, -26.27, 0.8492, 0.6853, 305.9, 1.04207, 18, 14, 71, 4.31],
+	"Irungattukottai": [680.12, 470.29, 626.79, 620.22, 536.55, 13.95, 0.8412, 0, 293.6, 0.97159, 14, 12, 79, 3.72],
+	"Istanbul": [387.85, 544.46, 700.97, 543.97, 636.53, 118.92, 0.856, 0.694, 309.4, 1.11647, 16, 14, 58, 5.33],
+	"Jerez": [717.6, 608.07, 626.86, 701.3, 321.26, 143.33, 0.889, 0.6178, 306.4, 0.9, 18, 14, 69, 4.44],
+	"Jyllands-Ringen": [769.66, 414.13, 556.76, 743.56, 524.72, 106.93, 0.826, 0, 184, 0.98582, 19.5, 20, 80, 2.30],
+	"Kaunas": [387.37, 635.17, 515.42, 685, 362.96, 91.1, 0.8461, 0.7649, 264.1, 1.0395, 11, 10, 80, 3.30],
+	"Kyalami": [777.15, 534.3, 557.47, 528.95, 749.84, 206.85, 0.8016, 0, 306.8, 1.02227, 15, 14, 72, 4.26],
+	"Laguna Seca": [481.06, 401.03, 585.51, 619.45, 50.81, 54.38, 0.902, 0.751, 284.5, 1.015, 16.7, 11, 79, 3.60],
+	"Magny Cours": [453.62, 564.81, 294.88, 588.24, 560.43, 147.77, 0.865, 0, 305.8, 0.94099, 18, 14, 72, 4.25],
+	"Melbourne": [403.36, 619, 614.44, 757.14, 294.52, 8.04, 0.8553, 0, 307.6, 0.97952, 16.5, 17, 58, 5.30],
+	"Mexico City": [632.08, 700.96, 470.54, 671.13, 323.13, 48.62, 0.8353, 0.6893, 305, 0.99074, 24, 9, 69, 4.42],
+	"Monte Carlo": [1024.73, 373.43, 471.04, 374.23, 494.38, 100.89, 0.8141, 0.621, 262.8, 1.05986, 18, 19, 78, 3.37],
+	"Montreal": [335.19, 677.82, 566.84, 718.1, 237.85, -98.13, 0.8553, 0.7349, 305, 1.0831, 16.5, 12, 69, 4.42],
+	"Monza": [124.19, 735.83, 496, 868.17, 610.97, 24.64, 0.913, 0, 306.7, 1.0733, 25.5, 13, 53, 5.79],
+	"Mugello": [517.88, 805.54, 879.84, 901.34, 590.54, -69.4, 0.8474, 0.6958, 304.3, 1.0235, 13.5, 14, 58, 5.25],
+	"New Delhi": [649.99, 556.92, 556.38, 720.3, 150.9, -97.64, 0.8363, 0.768, 308.2, 1.03303, 19, 16, 60, 5.14],
+	"Nurburgring": [650.81, 451.94, 626.71, 598, 149.86, 244.17, 0.799, 0, 308.7, 1.0645, 15, 16, 60, 5.15],
+	"Oesterreichring": [442.09, 675.58, 496.59, 729.98, 508.34, 85.42, 0.8686, 0.6529, 308.9, 1.08664, 21, 11, 52, 5.94],
+	"Paul Ricard": [362.79, 732.67, 301.68, 784.37, 575.27, 182.33, 0.8965, 0.771, 305, 1.09121, 19.5, 11, 79, 3.86],
+	"Portimao": [784.36, 392.27, 486.5, 490, 295.42, 180.52, 0.8361, 0.7061, 309.7, 1.0578, 15.5, 18, 66, 4.69],
+	"Poznan": [742, 546.02, 379.02, 718.46, 529.96, 182.04, 0.8239, 0, 306.2, 1.08634, 14, 14, 75, 4.08],
+	"Rafaela Oval": [86.6, 645.37, 144.79, 781.23, 354.81, 67.6, 0.9058, 0.7695, 317.3, 1.06418, 10, 8, 67, 4.74],
+	"Sakhir": [126.91, 406.55, 716.34, 609.56, 240.96, -21.44, 0.912, 0.7124, 308.5, 1.10363, 25.5, 14, 57, 5.41],
+	"Sepang": [554, 590.12, 653.69, 746.34, 466.41, 24.6, 0.8422, 0.6161, 310.4, 0.9926, 24, 17, 55, 5.64],
+	"Serres": [927.25, 414.83, 503.01, 477.94, 522.69, 177, 0.8633, 0, 254.9, 0.92879, 12, 16, 80, 3.19],
+	"Shanghai": [416.43, 529.77, 641.35, 354.61, 114.21, 114.9, 0.9052, 0.6744, 305.2, 1.05878, 24, 10, 56, 5.45],
+	"Silverstone": [283.41, 699.48, 590.85, 823.25, 415.1, 18.87, 0.8693, 0.681, 308.3, 1.1123, 22.5, 14, 60, 5.14],
+	"Singapore": [865.61, 438.19, 578.15, 598.96, 801.2, 202.04, 0.854, 0.5521, 309.1, 1.04688, 17, 23, 61, 5.07],
+	"Slovakiaring": [735.82, 439.66, 609.73, 491.45, 431.92, 184.08, 0.9069, 0.79, 313.9, 1.0652, 19.5, 14, 53, 5.92],
+	"Sochi": [675.39, 588.26, 587.66, 696.24, 456.11, 137.97, 0.8404, 0, 310.1, 1.04166, 23, 19, 53, 5.85],
+	"Spa": [585.64, 716.49, 446.82, 609.47, 372.54, 50.4, 0.8835, 0.4519, 306.6, 1.04803, 13.5, 22, 44, 6.97],
+	"Suzuka": [413.56, 639.98, 515.88, 550.25, 531.13, 47.12, 0.857, 0.5508, 310.6, 1.0326, 15, 14, 53, 5.86],
+	"Valencia": [837.83, 445.95, 657.26, 652.58, 335.82, 209.76, 0.8459, 0.56, 310.1, 0.95518, 14.5, 25, 57, 5.44],
+	"Yas Marina": [730.05, 459.7, 557.69, 476.1, 419.98, 175.25, 0.8117, 0.7014, 305.5, 0.95151, 18.5, 21, 55, 5.56],
+	"Yeongam": [781.67, 480.86, 719.53, 689.5, 420.63, 207.41, 0.8365, 0.7399, 309.2, 1.0452, 23.5, 18, 55, 5.62],
+	"Zandvoort": [551.15, 653.24, 415.91, 779.13, 709.95, 5.57, 0.8402, 0.583, 301.8, 1.01818, 22.5, 14, 71, 4.25],
+	"Zolder": [669.24, 616.83, 466.06, 628.62, 539.48, 193.3, 0.8286, 0.6365, 298.3, 0.99094, 19.5, 17, 70, 4.26]
 }
 
 # Data collection function
-def collection(username, password, weather, sessionTemp, minimumWear):
+def setupCalc(username, password, weather, sessionTemp):
 	# Create our logon payload. 'hiddenToken' may change at a later date.
 	logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 	
@@ -89,69 +89,36 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	
 	# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 	tree = html.fromstring(logonResult.content)
+
 	# Driver ID and check for correct login details. If login failed, then driver ID will return nothing and driverID[0] will error
 	driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 	try:
 		driverURL = "https://gpro.net/gb/" + driverID[0]
 	except:
 		return [0, 0, 0, 0, 0, 0]
+
 	# Team name check for verification
 	teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 	if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
 		return [1, 0, 0, 0, 0, 0]
+
 	# Track ID of next race
 	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
 	trackURL = "https://gpro.net/gb/" + trackID[0]
+
 	# URLs for car and race details, for later use
 	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
-	staffURL = "https://www.gpro.net/gb/StaffAndFacilities.asp"
-	tyreURL = "https://www.gpro.net/gb/Suppliers.asp"
-	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
-	try:
-		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
-		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
-		technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
-		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
-		tree = html.fromstring(technicalDirectorResult.content)
-		tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
-		tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
-	except:
-		technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
-		tdExperience = 0
-		tdPitCoordination = 0
-
-
-	
 	
 	# Request the driver information page and scrape the driver data
 	driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 	tree = html.fromstring(driverResult.content)
-	driverOverall = int(tree.xpath("normalize-space(//tr[contains(@data-step, '4')]//td/text())"))
 	driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
 	driverTalent = int(tree.xpath("normalize-space(//td[contains(@id, 'Talent')]/text())"))
 	driverAggressiveness = int(tree.xpath("normalize-space(//td[contains(@id, 'Aggr')]/text())"))
 	driverExperience = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
 	driverTechnicalInsight = int(tree.xpath("normalize-space(//td[contains(@id, 'TechI')]/text())"))
-	driverStamina = int(tree.xpath("normalize-space(//td[contains(@id, 'Stamina')]/text())"))
-	driverCharisma = int(tree.xpath("normalize-space(//td[contains(@id, 'Charisma')]/text())"))
-	driverMotivation = int(tree.xpath("normalize-space(//td[contains(@id, 'Motivation')]/text())"))
-	driverReputation = int(tree.xpath("normalize-space(//tr[contains(@data-step, '13')]//td/text())"))
 	driverWeight = int(tree.xpath("normalize-space(//tr[contains(@data-step, '14')]//td/text())"))
-	driverAge = int(tree.xpath("normalize-space(//tr[contains(@data-step, '15')]//td/text())"))
-
-
-	# Request the manager page and scrape tyre data
-	tyreResult = session.get(tyreURL, headers = dict(referer = tyreURL))
-	tree = html.fromstring(tyreResult.content)
-	tyreSupplierName = str(tree.xpath("//div[contains(@class, 'chosen')]/h2/text()")[0])
-
-
-	# Request the staff page and scrape staff data
-	staffResult = session.get(staffURL, headers = dict(referer = staffURL))
-	tree = html.fromstring(staffResult.content)
-	staffConcentration = int(tree.xpath("//th[contains(text(), 'Concentration:')]/../td/text()")[0])
-	staffStress = int(tree.xpath("//th[contains(text(), 'Stress handling:')]/../td/text()")[0])
 
 	
 	# Request the track information page and scrape the track data
@@ -159,25 +126,6 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	tree = html.fromstring(trackResult.content)
 	trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
 	trackName = trackName.strip()
-	trackPowerProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/following-sibling::td/@title)"))
-	trackHandlingProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Handling')]/following-sibling::td/@title)"))
-	trackAccelerationProfile = int(tree.xpath("normalize-space(//td[contains(text(), 'Acceleration')]/following-sibling::td/@title)"))
-	trackDistanceTotal = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance')]/following-sibling::td/text())"))
-	trackDistanceTotal = float((re.findall("\d+.\d+", trackDistanceTotal))[0])
-	trackDistanceLap = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance')]/following-sibling::td/text())"))
-	trackDistanceLap = float((re.findall("\d+.\d+", trackDistanceLap))[0])
-	trackLapsCount = int(tree.xpath("normalize-space(//td[contains(text(), 'Laps')]/following-sibling::td/text())"))
-	trackPitTime = str(tree.xpath("normalize-space(//td[starts-with(text(), 'Time in')]/following-sibling::td/text())"))
-	try:
-		trackPitTime = float((re.findall("\d+.\d+", trackPitTime))[0])
-	except:
-		trackPitTime = float((re.findall("\d+", trackPitTime))[0])
-	trackDownforeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Downforce')]/following-sibling::td/text())"))
-	trackOvertakeRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Overtaking')]/following-sibling::td/text())"))
-	trackSuspensionRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Suspension')]/following-sibling::td/text())"))
-	trackFuelRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Fuel consumption')]/following-sibling::td/text())"))
-	trackTyreWearRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
-	trackGripRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Grip level')]/following-sibling::td/text())"))
 
 
 	# Request race strategy pace and scrape the race weather data
@@ -198,7 +146,6 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	rTempMaxFour = int((re.findall("\d+", rTempRangeFour))[1])
 	# Find the averages of these temps for the setup
 	rTemp = ((rTempMinOne + rTempMaxOne) + (rTempMinTwo + rTempMaxTwo) + (rTempMinThree + rTempMaxThree) + (rTempMinFour + rTempMaxFour)) / 8
-
 	# Using the race strategy page requested earlier, scrape the qualifying weather data
 	qOneTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherQ')]/../text()[contains(., 'Temp')])"))
 	qOneTemp = int((re.findall("\d+", qOneTemp))[0])
@@ -216,14 +163,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	# Request the car information page and scrape the car character and part level and wear data
 	carResult = session.get(carURL, headers=dict(referer=carURL))
 	tree = html.fromstring(carResult.content)
-	carPowerProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[1]/text())"))
-	carHandlingProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[2]/text())"))
-	carAccelerationProfile = int(tree.xpath("normalize-space(//table[contains(@data-step, '1')]/tr[3]/td[3]/text())"))
 	# Level
 	carLevelChassis = int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())"))
 	carLevelEngine = int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())"))
 	carLevelFrontWing = int(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[2]/text())"))
-	carLevelReadWing = int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())"))
+	carLevelRearWing = int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())"))
 	carLevelUnderbody = int(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[2]/text())"))
 	carLevelSidepod = int(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[2]/text())"))
 	carLevelCooling = int(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[2]/text())"))
@@ -231,7 +175,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	carLevelBrakes = int(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[2]/text())"))
 	carLevelSuspension = int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())"))
 	carLevelElectronics = int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())"))
-	# And wear
+	# And wear. The IF statements here are because if a part is over 90% worn, it's get a "font" container that breaks the normal check
 	carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/text())"))
 	if(carWearChassis == ""):
 		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"));
@@ -360,15 +304,15 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	else:
 		setupWeather = ((baseOffsets["wingWeatherWet"] * sessionTemp) + baseOffsets["wingWeatherOffset"]) * 2;
 	setupDriver = driverTalent * (trackBaseWingsSetup + setupWeather) * baseOffsets["wingDriverMultiplier"]
-	setupCarLevel = (carLevelOffsets[0][0] * carLevelChassis) + (carLevelOffsets[0][1] * carLevelFrontWing) + (carLevelOffsets[0][1] * carLevelReadWing) + (carLevelOffsets[0][2] * carLevelUnderbody)
+	setupCarLevel = (carLevelOffsets[0][0] * carLevelChassis) + (carLevelOffsets[0][1] * carLevelFrontWing) + (carLevelOffsets[0][1] * carLevelRearWing) + (carLevelOffsets[0][2] * carLevelUnderbody)
 	setupCarWear = ((carWearOffsets[0][0] * carWearChassis) + (carWearOffsets[0][1] * carWearFrontWing) + (carWearOffsets[0][1] * carWearRearWing) + (carWearOffsets[0][2] * carWearUnderbody))
 	setupWings = (trackBaseWingsSetup + setupWeather + setupDriver + setupCarLevel + setupCarWear) / 2
 
 	# Wing Split
 	if(weather != "WET"):
-		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelRearWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523)
 	else:
-		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelReadWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523) + 58.8818967363256
+		setupWingSplit = trackBaseWingSlitSetup + (driverTalent * -0.246534498671854) + (3.69107049712848 * (carLevelFrontWing + carLevelRearWing) / 2) + (setupWings * -0.189968386659174) + (sessionTemp * 0.376337780506523) + 58.8818967363256
 	setupFWi = setupWings + setupWingSplit
 	setupRWi = setupWings - setupWingSplit
 
@@ -418,10 +362,10 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 
 	# Take that calculated setup and turn it into an array for easier handling
 	setup = [int(setupFWi), int(setupRWi), int(setupEng), int(setupBra), int(setupGea), int(setupSus)]
+	return setup
 
-
+def strategyCalc(username, password, minimumWear):
 	'''
-	Once we have the setup calculated, we can move on to the strategy calculation.
 	There are many factors that influence strategy:
 		1. Tyre Supplier
 		2. Track Wear on the Tyre
@@ -429,6 +373,113 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	and many more, simply see the function "stopCalc" for most, and that only deals with the number of stops
 	We would LIKE to also take clear track risk into account, but I don't know how risk fits into the equation, so simply cannot add it accurately.
 	'''
+
+	# Create our logon payload. 'hiddenToken' may change at a later date.
+	logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+	
+	# Logon to GPRO using the logon information provided and store that under our session
+	session = requests.session()
+	loginURL = "https://gpro.net/gb/Login.asp"
+	logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+
+	# Gather the home page information and collect driver ID, track ID, team name, and manager ID
+	tree = html.fromstring(logonResult.content)
+
+	# Driver ID and check for correct login details. If login failed, then driver ID will return nothing and driverID[0] will error
+	driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
+	try:
+		driverURL = "https://gpro.net/gb/" + driverID[0]
+	except:
+		return 1
+
+	# Team name check for verification
+	teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
+	if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
+		return 2
+
+	# Track ID of next race
+	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
+	trackURL = "https://gpro.net/gb/" + trackID[0]
+
+	# URLs for car and race details, for later use
+	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
+	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
+	staffURL = "https://www.gpro.net/gb/StaffAndFacilities.asp"
+	tyreURL = "https://www.gpro.net/gb/Suppliers.asp"
+
+
+	# Request the track information page and scrape the track data
+	trackResult = session.get(trackURL, headers=dict(referer=trackURL))
+	tree = html.fromstring(trackResult.content)
+	trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
+	trackName = trackName.strip()
+	trackTyreWearRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
+	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
+	try:
+		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
+		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
+		technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
+		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
+		tree = html.fromstring(technicalDirectorResult.content)
+		tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
+		tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
+	except:
+		technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
+		tdExperience = 0
+		tdPitCoordination = 0
+
+
+	# Request the staff page and scrape staff data
+	staffResult = session.get(staffURL, headers = dict(referer = staffURL))
+	tree = html.fromstring(staffResult.content)
+	staffConcentration = int(tree.xpath("//th[contains(text(), 'Concentration:')]/../td/text()")[0])
+	staffStress = int(tree.xpath("//th[contains(text(), 'Stress handling:')]/../td/text()")[0])
+
+
+	# Request race strategy pace and scrape the race weather data
+	raceResult = session.get(raceURL, headers=dict(referer=raceURL))
+	tree = html.fromstring(raceResult.content)
+	rTempRangeOne = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[1]/text())"))
+	rTempRangeTwo = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[2]/td[2]/text())"))
+	rTempRangeThree = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[1]/text())"))
+	rTempRangeFour = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[2]/text())"))
+	# This returns results like "Temp: 12*-17*", but we want just integers, so clean up the values
+	rTempMinOne = int((re.findall("\d+", rTempRangeOne))[0])
+	rTempMaxOne = int((re.findall("\d+", rTempRangeOne))[1])
+	rTempMinTwo = int((re.findall("\d+", rTempRangeTwo))[0])
+	rTempMaxTwo = int((re.findall("\d+", rTempRangeTwo))[1])
+	rTempMinThree = int((re.findall("\d+", rTempRangeThree))[0])
+	rTempMaxThree = int((re.findall("\d+", rTempRangeThree))[1])
+	rTempMinFour = int((re.findall("\d+", rTempRangeFour))[0])
+	rTempMaxFour = int((re.findall("\d+", rTempRangeFour))[1])
+	# Find the averages of these temps for the setup
+	rTemp = ((rTempMinOne + rTempMaxOne) + (rTempMinTwo + rTempMaxTwo) + (rTempMinThree + rTempMaxThree) + (rTempMinFour + rTempMaxFour)) / 8
+
+
+	# Request the manager page and scrape tyre data
+	tyreResult = session.get(tyreURL, headers = dict(referer = tyreURL))
+	tree = html.fromstring(tyreResult.content)
+	tyreSupplierName = str(tree.xpath("//div[contains(@class, 'chosen')]/h2/text()")[0])
+
+
+		# Request the car information page and scrape the car character and part level and wear data
+	carResult = session.get(carURL, headers=dict(referer=carURL))
+	tree = html.fromstring(carResult.content)
+	# Level
+	carLevelEngine = int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())"))
+	carLevelSuspension = int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())"))
+	carLevelElectronics = int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())"))
+
+
+	# Request the driver information page and scrape the driver data
+	driverResult = session.get(driverURL, headers=dict(referer=driverURL))
+	tree = html.fromstring(driverResult.content)
+	driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
+	driverAggressiveness = int(tree.xpath("normalize-space(//td[contains(@id, 'Aggr')]/text())"))
+	driverExperience = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
+	driverTechnicalInsight = int(tree.xpath("normalize-space(//td[contains(@id, 'TechI')]/text())"))
+	driverWeight = int(tree.xpath("normalize-space(//tr[contains(@data-step, '14')]//td/text())"))
+
 
 	# We start by defining some constants. Wear factors are just static hidden values that affect tyre wear based on compound, but only slightly.
 	# Without these the equation doesn't QUITE add up properly.
@@ -439,14 +490,14 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 
 	# Calcualte the number of stops for each tyre choice
 	for i in range(4):
-		stops[i].set(str(stopCalc(trackDistanceTotal, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i])))
-	stops[4].set(str(math.ceil(0.73 * stopCalc(trackDistanceTotal, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4]))))
+		stops[i].set(str(stopCalc(trackData[trackName][8], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i])))
+	stops[4].set(str(math.ceil(0.73 * stopCalc(trackData[trackName][12], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4]))))
 
 	# Calculate the fuel load for each stint given the above number of stops
 	fuelFactor = (-0.000101165467155397 * driverConcentration) + (0.0000706080613787091 * driverAggressiveness) + (-0.0000866455021527332 * driverExperience) + (-0.000163915452803369 * driverTechnicalInsight) + (-0.0126912680856842 * carLevelEngine) + (-0.0083557977071091 * carLevelElectronics)
 	for i in range(4):
-		fuels[i].set(str(fuelLoadCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
-	fuels[4].set(str(fuelLoadCalc(trackDistanceTotal, float(trackData[trackName][7]), fuelFactor, int(stops[4].get()) + 1)))
+		fuels[i].set(str(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
+	fuels[4].set(str(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][7]), fuelFactor, int(stops[4].get()) + 1)))
 
 	# Calculate the pit time for each tyre choice, given the fuel load
 	for i in range(5):
@@ -457,11 +508,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		# + float(trackData[trackName][10])
 
 	for i in range(4):
-		FLDs[i].set(round(fuelTimeCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
-	FLDs[4].set(round(fuelTimeCalc(trackDistanceTotal, trackData[trackName][7], fuelFactor, int(stops[4].get()) + 1)))
+		FLDs[i].set(round(fuelTimeCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1), 2))
+	FLDs[4].set(round(fuelTimeCalc(trackData[trackName][8], trackData[trackName][7], fuelFactor, int(stops[4].get()) + 1), 2))
 
 	TCDs[0].set("0")
-	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][11]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[1].set(round(compoundCalc(trackData[trackName][12], float(trackData[trackName][11]), trackData[trackName][13], rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2].set(str(round(2 * float(TCDs[1].get()), 2)))
 	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
 	TCDs[4].set("-")
@@ -480,11 +531,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		pitTotals[4].set(round((float(stops[4].get()) * (float(pitTimes[4].get()))), 2))
 		totals[4].set(totalTimeCalc(float(pitTotals[4].get()), 0, float(FLDs[4].get())))
 
-	return setup
+	return 0
 
 '''
 Pit Stop Calc
-trackDistanceTotal = Track Distance
+trackData[trackName][12] = Track Distance
 tracWearLevel = Very Low, Low, Medium, High, Very High, and it's relating factor, 0, 1, 2, 3, 4 respectively
 rTemp = Race Temperature
 tyreSupplierFactor = Tyre Brand Factor, 1 for Pipirello, 8 for Avonn, etc.
@@ -497,6 +548,7 @@ clearTrackRisk = Clear Track Risk used, as a percentage
 trackBaseWear = Track Base Wear from trackData.csv
 wearLimit = The manager chosen limit for tyre wear before pitting, so at 10%, we assume the stint will end when the tyres hit 10% wear
 '''
+#trackData[trackName][12], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i]
 def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyreType, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, trackBaseWear, wearLimit, tyreWearFactor):
 	baseWear = 129.776458172062
 	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** rTemp) * (1.048876356 ** tyreSupplierFactor) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSuspension) * (0.999670155 ** driverAggressiveness) * (1.00022936 ** driverExperience) * (0.999858329 ** driverWeight)
@@ -507,8 +559,8 @@ def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyre
 Fuel Load Calc
 Here we very simply calculate how much fuel we will need across the entire race (distance * fuel per km) then divide by the stints (stops + 1)
 '''
-def fuelLoadCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
-	fuelLoad = math.ceil((trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints)
+def fuelLoadCalc(trackLapsCount, trackFuelBase, fuelFactor, stints):
+	fuelLoad = math.ceil((trackLapsCount * (trackFuelBase + fuelFactor)) / stints)
 	return fuelLoad
 
 '''
@@ -536,8 +588,8 @@ Fuel Time Calc
 Here we calculate how much time is lost by being on the fuel load required to run our choice of tyre.
 The idea here is that running longer stints means carrying around more fuel which loses you time.
 '''
-def fuelTimeCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
-	return (0.0025 * ((trackDistanceTotal * trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints))
+def fuelTimeCalc(trackLapsCount, trackFuelBase, fuelFactor, stints):
+	return (0.0025 * ((trackLapsCount * trackLapsCount * (trackFuelBase + fuelFactor)) / stints))
 
 '''
 TODO: Total Time Calc
@@ -557,81 +609,88 @@ def warning(*args):
 def exit():
 	warning.Toplevel.destroy()
 
-# Precheck to handle errors nicely
+# Calculate the setup and others
 def calculate(*args):
+	tab = notebook.tab(notebook.select(), "text")
 	try:
 		username = str(inputUsername.get())
 		password = str(inputPassword.get())
-		weather = str(inputWeather.get())
-		session = str(inputSession.get())
-
-		try:
-			wear = float(re.findall('\d+.\d+', inputWear.get())[0])
-		except:
+		if(tab == "Setup"):
+			weather = str(inputWeather.get())
+			session = str(inputSession.get())
+			setup = setupCalc(username, password, weather, session)		
+			if(setup[0] == 0):
+				warningLabel.set("Incorect Login Details")
+			elif(setup[0] == 1):
+				warningLabel.set("VIPER Family Team Only")
+			else:
+				warningLabel.set("")
+				frontWing.set(str(setup[0]))
+				rearWing.set(str(setup[1]))
+				engine.set(str(setup[2]))
+				brakes.set(str(setup[3]))
+				gear.set(str(setup[4]))
+				suspension.set(str(setup[5]))
+		elif(tab == "Strategy"):
 			try:
-				wear = float(re.findall('\d+', inputWear.get())[0])
+				wear = float(re.findall('\d+.\d+', inputWear.get())[0])
 			except:
-				wear = 0.0
+				try:
+					wear = float(re.findall('\d+', inputWear.get())[0])
+				except:
+					wear = 0.0	
 
-		setup = collection(username, password, weather, session, wear)
+			strategy = strategyCalc(username, password, wear)
 
-		if(setup[0] == 0):
-			warningLabel.set("Incorect Login Details")
-		elif(setup[0] == 1):
-			warningLabel.set("VIPER Family Team Only")
-		else:
-			warningLabel.set("")
-			frontWing.set(str(setup[0]))
-			rearWing.set(str(setup[1]))
-			engine.set(str(setup[2]))
-			brakes.set(str(setup[3]))
-			gear.set(str(setup[4]))
-			suspension.set(str(setup[5]))
-		
+			if(strategy == 1):
+				warningLabel.set("Incorect Login Details")
+			elif(strategy == 2):
+				warningLabel.set("VIPER Family Team Only")
 	except ValueError:
 		pass
 
-
-# Create the window
+# Create the root window
 root = Tk()
 root.title("GAPP")
 
+# Create the tab controller
+notebook = ttk.Notebook(root)
 
-# and build the frame
-frameSetup = ttk.LabelFrame(root, padding = "3 3 12 12")
-frameSetup.grid(column = 0, row = 0, sticky = (N, W, E, S))
-frameStrategy = ttk.LabelFrame(root, padding = "3 3 12 12")
-frameStrategy.grid(column = 1, row = 0, sticky = (N, W, E))
+# Create the pages
+frameSetup = ttk.Frame(notebook)
+frameStrategy = ttk.Frame(notebook)
+frameWear = ttk.Frame(notebook)
+
+# Add the pages to notebook
+notebook.add(frameSetup, text = "Setup")
+notebook.add(frameStrategy, text = "Strategy")
+notebook.add(frameWear, text = "Car Wear")
+
+# Configure root layout
 root.columnconfigure(0, weight = 1)
 root.rowconfigure(0, weight = 1)
-frameSetup.columnconfigure(0, weight = 1)
-frameSetup.rowconfigure(0, weight = 1)
-frameStrategy.columnconfigure(0, weight = 1)
-frameStrategy.rowconfigure(0, weight = 1)
 
-
-# Declare our userful variables
-inputUsername = StringVar()
-inputPassword = StringVar()
-inputWeather = StringVar()
-inputWeather.set("Dry")
-inputTemp = IntVar()
-inputSession = StringVar()
-inputSession.set("Race")
+# Global variables
 warningLabel = StringVar()
 
-inputWear = StringVar()
-inputWear.set("20")
-inputCTR = StringVar()
-inputCTR.set("0")
+# Setup page variables
+# Input
+inputUsername = StringVar()
+inputPassword = StringVar()
+inputUsername.set("JakeR1342@gmail.com")
+inputPassword.set("Alicej 1342")
+inputWeather = StringVar()
+inputWeather.set("Dry")
+inputSession = StringVar()
+inputSession.set("Race")
 
+# Output
 frontWing = StringVar()
 rearWing = StringVar()
 engine = StringVar()
 brakes = StringVar()
 gear = StringVar()
 suspension = StringVar()
-
 frontWing.set("0")
 rearWing.set("0")
 engine.set("0")
@@ -639,74 +698,12 @@ brakes.set("0")
 gear.set("0")
 suspension.set("0")
 
+# Strategy variables
+# Input
+inputWear = StringVar()
+inputWear.set("20")
 
-# INPUT
-# Build the entry boxes
-entryUsername = ttk.Entry(frameSetup, width = 30, textvariable = inputUsername)
-entryUsername.grid(column = 2, row = 1, sticky = (W, E))
-
-entryPassword = ttk.Entry(frameSetup, width = 30, show = "*", textvariable = inputPassword)
-entryPassword.grid(column = 2, row = 2, sticky = (W, E))
-
-radioQ1 = ttk.Radiobutton(frameSetup, text = "Q1", variable = inputSession, value = "Q1").grid(column = 2, row = 3, sticky = (W, E))
-radioQ2 = ttk.Radiobutton(frameSetup, text = "Q2", variable = inputSession, value = "Q2").grid(column = 2, row = 4, sticky = (W, E))
-radioRace = ttk.Radiobutton(frameSetup, text = "Race", variable = inputSession, value = "Race").grid(column = 2, row = 5, sticky = (W, E))
-
-radioDry = ttk.Radiobutton(frameSetup, text = "Dry", variable = inputWeather, value = "Dry")
-radioDry.grid(column = 2, row = 6, sticky = (W, E))
-radioWet = ttk.Radiobutton(frameSetup, text = "Wet", variable = inputWeather, value = "Wet")
-radioWet.grid(column = 2, row = 7, sticky = (W, E))
-
-
-# Add labels to the entry boxes
-ttk.Label(frameSetup, text = "Username: ").grid(column = 1, row = 1, sticky = (W, E))
-ttk.Label(frameSetup, text = "Password: ").grid(column = 1, row = 2, sticky = (W, E))
-ttk.Label(frameSetup, text = "Session: ").grid(column = 1, row = 3, sticky = (W, E))
-ttk.Label(frameSetup, text = "Weather: ").grid(column = 1, row = 6, sticky = (W, E))
-
-
-# Add a button to calculate the setup
-ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 8)
-ttk.Label(frameSetup, textvariable = warningLabel).grid(column = 2, row = 8)
-
-
-
-# OUTPUT
-ttk.Label(frameSetup, text = "Front Wing: ").grid(column = 1, row = 9, sticky = (W, E))
-ttk.Label(frameSetup, text = "Rear Wing: ").grid(column = 1, row = 10, sticky = (W, E))
-ttk.Label(frameSetup, text = "Engine: ").grid(column = 1, row = 11, sticky = (W, E))
-ttk.Label(frameSetup, text = "Brakes: ").grid(column = 1, row = 12, sticky = (W, E))
-ttk.Label(frameSetup, text = "Gear: ").grid(column = 1, row = 13, sticky = (W, E))
-ttk.Label(frameSetup, text = "Suspension: ").grid(column = 1, row = 14, sticky = (W, E))
-
-ttk.Label(frameSetup, textvariable = frontWing).grid(column = 2, row = 9)
-ttk.Label(frameSetup, textvariable = rearWing).grid(column = 2, row = 10)
-ttk.Label(frameSetup, textvariable = engine).grid(column = 2, row = 11)
-ttk.Label(frameSetup, textvariable = brakes).grid(column = 2, row = 12)
-ttk.Label(frameSetup, textvariable = gear).grid(column = 2, row = 13)
-ttk.Label(frameSetup, textvariable = suspension).grid(column = 2, row = 14)
-
-
-# Strategy
-ttk.Label(frameStrategy, text = "Wear:", padding = "5 10").grid(column = 1, row = 1, sticky = (W, E))
-entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 2, row = 1, sticky = (W, E))
-
-ttk.Label(frameStrategy, text = "Tyre", padding = "5 10").grid(column = 1, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Stops", padding = "5 10").grid(column = 2, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "5 10").grid(column = 3, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "5 10").grid(column = 4, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "5 10").grid(column = 5, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "5 10").grid(column = 6, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "5 10").grid(column = 7, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Total (s)", padding = "5 10").grid(column = 8, row = 2, sticky = (W, E))
-
-ttk.Label(frameStrategy, text = "Extra Soft").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Soft").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Medium").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Hard").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Rain").grid(column = 1, sticky = (W, E))
-
-# Strategy grid variables
+# Output
 extraStops = StringVar()
 softStops = StringVar()
 mediumStops = StringVar()
@@ -776,6 +773,75 @@ for total in totals:
 
 rainTCD.set("-")
 
+# Build the pages
+# Setup page
+# BUTTONS
+ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 3, sticky = E+W)
+
+# RADIO
+radioQ1 = ttk.Radiobutton(frameSetup, text = "Q1", variable = inputSession, value = "Q1").grid(column = 3, row = 0, sticky = (W, E))
+radioQ2 = ttk.Radiobutton(frameSetup, text = "Q2", variable = inputSession, value = "Q2").grid(column = 3, row = 1, sticky = (W, E))
+radioRace = ttk.Radiobutton(frameSetup, text = "Race", variable = inputSession, value = "Race").grid(column = 3, row = 2, sticky = (W, E))
+radioDry = ttk.Radiobutton(frameSetup, text = "Dry", variable = inputWeather, value = "Dry")
+radioDry.grid(column = 3, row = 4, sticky = (W, E))
+radioWet = ttk.Radiobutton(frameSetup, text = "Wet", variable = inputWeather, value = "Wet")
+radioWet.grid(column = 3, row = 5, sticky = (W, E))
+
+# ENTRY
+entryUsername = ttk.Entry(frameSetup, width = 30, textvariable = inputUsername)
+entryUsername.grid(column = 1, row = 0, sticky = (W, E))
+entryPassword = ttk.Entry(frameSetup, width = 30, show = "*", textvariable = inputPassword)
+entryPassword.grid(column = 1, row = 1, sticky = (W, E))
+
+# LABELS
+ttk.Label(frameSetup, text = "Username: ").grid(column = 0, row = 0, sticky = (W, E))
+ttk.Label(frameSetup, text = "Password: ").grid(column = 0, row = 1, sticky = (W, E))
+ttk.Label(frameSetup, text = "Session: ", padding = "40 0 0 0").grid(column = 2, row = 0, sticky = E)
+ttk.Label(frameSetup, text = "Weather: ").grid(column = 2, row = 4, sticky = E)
+ttk.Label(frameSetup, textvariable = warningLabel).grid(column = 1, row = 2)
+
+ttk.Label(frameSetup, text = "Front Wing: ", padding = "40 0 0 0").grid(column = 5, row = 0, sticky = W+E)
+ttk.Label(frameSetup, text = "Rear Wing: ", padding = "40 0 0 0").grid(column = 5, row = 1, sticky = W+E)
+ttk.Label(frameSetup, text = "Engine: ", padding = "40 0 0 0").grid(column = 5, row = 2, sticky = W+E)
+ttk.Label(frameSetup, text = "Brakes: ", padding = "40 0 0 0").grid(column = 5, row = 3, sticky = W+E)
+ttk.Label(frameSetup, text = "Gear: ", padding = "40 0 0 0").grid(column = 5, row = 4, sticky = W+E)
+ttk.Label(frameSetup, text = "Suspension: ", padding = "40 0 0 0").grid(column = 5, row = 5, sticky = W+E)
+
+ttk.Label(frameSetup, textvariable = frontWing).grid(column = 6, row = 0)
+ttk.Label(frameSetup, textvariable = rearWing).grid(column = 6, row = 1)
+ttk.Label(frameSetup, textvariable = engine).grid(column = 6, row = 2)
+ttk.Label(frameSetup, textvariable = brakes).grid(column = 6, row = 3)
+ttk.Label(frameSetup, textvariable = gear).grid(column = 6, row = 4)
+ttk.Label(frameSetup, textvariable = suspension).grid(column = 6, row = 5)
+
+# Strategy page
+# BUTTONS
+ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column = 3, columnspan = 2, row = 1, sticky = E+W)
+
+# RADIO
+
+# ENTRY
+entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 2, row = 1, sticky = (W, E))
+
+# LABELS
+ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 5, row = 1, columnspan = 2)
+ttk.Label(frameStrategy, text = "Wear:", padding = "5 10").grid(column = 1, row = 1, sticky = (W, E))
+
+ttk.Label(frameStrategy, text = "Tyre", padding = "5 10").grid(column = 1, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Stops", padding = "5 10").grid(column = 2, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "5 10").grid(column = 3, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "5 10").grid(column = 4, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "5 10").grid(column = 5, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "5 10").grid(column = 6, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "5 10").grid(column = 7, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Total (s)", padding = "5 10").grid(column = 8, row = 2, sticky = (W, E))
+
+ttk.Label(frameStrategy, text = "Extra Soft").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Soft").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Medium").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Hard").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Rain").grid(column = 1, sticky = (W, E))
+
 x = 2
 for values in grid:
 	y = 3
@@ -788,12 +854,13 @@ for values in grid:
 for child in frameSetup.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameStrategy.winfo_children(): child.grid_configure(padx=5, pady=5)
 
-
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
 root.bind('<Return>', calculate)
 root.resizable(False, False)
 
+# Pack the notebook after doing everything else to set the window size and organize everything
+notebook.pack(expand = True, fill = BOTH)
 
-# Create the window
+# Open the window
 root.mainloop()
