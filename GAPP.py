@@ -354,6 +354,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	# Wings
 	sessionTemp = int(sessionTemp)
 	weather = weather.upper()
+
 	if(weather != "WET"):
 		setupWeather = baseOffsets["wingWeatherDry"] * sessionTemp * 2;
 	else:
@@ -449,10 +450,11 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 
 	# Calculate the pit time for each tyre choice, given the fuel load
 	for i in range(5):
-		pitTimes[i].set(str(pitTimeCalc(int(fuels[i].get()), technicalDirectorValues[0], technicalDirectorValues[1], staffConcentration, technicalDirectorValues[2], staffStress, technicalDirectorValues[3], tdExperience, technicalDirectorValues[4], tdPitCoordination)))
+		pitTimes[i].set(str(pitTimeCalc(int(fuels[i].get()), technicalDirectorValues[0], technicalDirectorValues[1], staffConcentration, technicalDirectorValues[2], staffStress, technicalDirectorValues[3], tdExperience, technicalDirectorValues[4], tdPitCoordination, trackData[trackName][10])))
 
 	for i in range(4):
-		pitTotals[i].set(round((float(stops[i].get()) * (float(pitTimes[i].get()) + float(trackData[trackName][10]))), 2))
+		pitTotals[i].set(round((float(stops[i].get()) * (float(pitTimes[i].get()))), 2))
+		# + float(trackData[trackName][10])
 
 	for i in range(4):
 		FLDs[i].set(round(fuelTimeCalc(trackDistanceTotal, float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
@@ -473,9 +475,10 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 		for i in range(4):
 			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
 	else:
-		for i in range(5):
+		for i in range(4):
 			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
-
+		pitTotals[4].set(round((float(stops[4].get()) * (float(pitTimes[4].get()))), 2))
+		totals[4].set(totalTimeCalc(float(pitTotals[4].get()), 0, float(FLDs[4].get())))
 
 	return setup
 
@@ -513,8 +516,8 @@ Pit Time Calc
 or how long we'll spend during a single pit stop, which is mainly affected by the fuel load required
 i.e. Longer stints mean more fuel but less stops so less overall time
 '''
-def pitTimeCalc(fuelLoad, tdInfluenceFuel, tdInfluenceStaffConcentration, staffConcentration, tdInfluenceStaffStress, staffStress, tdInfluenceExperience, tdExperience, tdInfluencePitCoordination, tdPitCoordination):
-	return round(((fuelLoad * tdInfluenceFuel) + 24.26 + (tdInfluenceStaffConcentration * staffConcentration) + (tdInfluenceStaffStress * staffStress) + (tdInfluenceExperience * tdExperience) + (tdInfluencePitCoordination * tdPitCoordination)), 2)
+def pitTimeCalc(fuelLoad, tdInfluenceFuel, tdInfluenceStaffConcentration, staffConcentration, tdInfluenceStaffStress, staffStress, tdInfluenceExperience, tdExperience, tdInfluencePitCoordination, tdPitCoordination, pitInOut):
+	return round(((fuelLoad * tdInfluenceFuel) + 24.26 + (tdInfluenceStaffConcentration * staffConcentration) + (tdInfluenceStaffStress * staffStress) + (tdInfluenceExperience * tdExperience) + (tdInfluencePitCoordination * tdPitCoordination) + pitInOut), 2)
 
 '''
 Compound Time Calc
@@ -561,6 +564,7 @@ def calculate(*args):
 		password = str(inputPassword.get())
 		weather = str(inputWeather.get())
 		session = str(inputSession.get())
+
 		try:
 			wear = float(re.findall('\d+.\d+', inputWear.get())[0])
 		except:
@@ -568,10 +572,6 @@ def calculate(*args):
 				wear = float(re.findall('\d+', inputWear.get())[0])
 			except:
 				wear = 0.0
-		try:
-			clearTrackRisk = int(re.findall('\d+', inputCTR.get())[0])
-		except:
-			clearTrackRisk = 0
 
 		setup = collection(username, password, weather, session, wear)
 
