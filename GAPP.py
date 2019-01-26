@@ -461,7 +461,7 @@ def collection(username, password, weather, sessionTemp, minimumWear):
 	FLDs[4].set(round(fuelTimeCalc(trackDistanceTotal, trackData[trackName][7], fuelFactor, int(stops[4].get()) + 1)))
 
 	TCDs[0].set("0")
-	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][9]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[1].set(round(compoundCalc(trackLapsCount, float(trackData[trackName][11]), trackDistanceLap, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2].set(str(round(2 * float(TCDs[1].get()), 2)))
 	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
 	TCDs[4].set("-")
