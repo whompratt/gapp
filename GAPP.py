@@ -77,6 +77,69 @@ trackData = {
 	"Zolder": [669.24, 616.83, 466.06, 628.62, 539.48, 193.3, 0.8286, 0.6365, 298.3, 0.99094, 19.5, 17, 70, 4.26]
 }
 
+trackWearData = {
+	"A1-Ring": [28.36, 50.05, 20.16, 21.20, 20.95, 24.11, 18.28, 35.53, 41.42, 26.86, 21.23],
+	"Adelaide": [37.70, 19.20, 39.87, 46.94, 42.56, 25.70, 30.00, 29.09, 23.68, 14.93, 21.45],
+	"Ahvenisto": [19.01, 24.24, 26.23, 25.40, 21.43, 19.07, 15.14, 23.54, 30.80, 21.99, 11.30],
+	"Anderstorp": [24.06, 49.52, 19.01, 17.68, 41.68, 26.54, 14.50, 40.33, 51.84, 20.75, 12.06],
+	"Austin": [17.44, 36.61, 28.31, 28.37, 19.71, 18.62, 19.18, 29.87, 35.69, 15.27, 15.17],
+	"Avus": [29.64, 82.95, 16.89, 18.29, 35.86, 17.70, 19.19, 26.28, 23.16, 58.77, 21.23],
+	"Baku City": [20.60, 57.51, 19.98, 21.81, 18.45, 23.86, 17.28, 26.63, 46.20, 18.92, 14.28],
+	"Barcelona": [26.34, 56.33, 42.82, 50.24, 32.36, 23.23, 22.65, 34.65, 51.35, 40.25, 19.98],
+	"Brands Hatch": [11.23, 31.31, 19.87, 24.59, 27.84, 15.26, 12.63, 21.21, 38.03, 38.17, 19.27],
+	"Brasilia": [19.54, 38.86, 25.23, 30.88, 20.55, 18.98, 21.96, 32.39, 44.36, 20.66, 17.34],
+	"Bremgarten": [38.56, 21.32, 19.58, 18.67, 43.39, 31.77, 13.82, 35.36, 30.61, 42.35, 11.94],
+	"Brno": [26.35, 44.57, 28.76, 23.72, 28.54, 27.06, 25.52, 31.26, 35.52, 28.32, 20.39],
+	"Bucharest Ring": [27.74, 60.35, 27.63, 30.11, 36.69, 25.61, 21.08, 43.33, 54.42, 31.36, 25.19],
+	"Buenos Aires": [30.50, 53.57, 23.70, 29.80, 21.51, 18.41, 25.46, 56.63, 71.40, 50.26, 20.26],
+	"Estoril": [22.18, 50.82, 29.57, 24.94, 28.03, 19.58, 14.88, 37.58, 43.71, 33.96, 13.84],
+	"Fiorano": [28.04, 44.72, 28.03, 31.01, 23.74, 19.57, 22.70, 36.52, 46.85, 32.30, 22.81],
+	"Fuji": [31.62, 36.67, 20.21, 23.61, 23.73, 22.88, 31.20, 27.72, 52.08, 21.95, 20.20],
+	"Grobnik": [30.62, 32.49, 21.91, 20.54, 22.98, 29.01, 26.17, 36.01, 20.85, 41.46, 17.98],
+	"Hockenheim": [29.56, 61.45, 21.08, 23.00, 23.91, 19.98, 20.60, 36.73, 50.18, 26.15, 17.55],
+	"Hungaroring": [25.36, 35.67, 76.04, 69.27, 35.48, 18.68, 15.21, 48.39, 31.48, 52.33, 12.68],
+	"Imola": [23.24, 40.44, 39.13, 42.27, 32.05, 18.02, 20.62, 38.27, 47.41, 38.54, 19.74],
+	"Indianapolis": [46.17, 59.60, 27.55, 33.99, 40.73, 37.43, 18.05, 46.73, 53.59, 52.02, 15.32],
+	"Indianapolis Oval": [28.95, 104.06, 17.52, 20.81, 34.49, 22.38, 26.35, 16.67, 11.85, 31.39, 18.81],
+	"Interlagos": [39.75, 54.08, 31.63, 23.78, 45.93, 23.31, 21.24, 32.32, 57.65, 40.91, 19.77],
+	"Irungattukottai": [27.62, 49.49, 43.48, 41.08, 36.10, 32.41, 35.08, 44.11, 52.30, 34.09, 20.33],
+	"Istanbul": [27.30, 29.74, 17.29, 19.40, 20.07, 20.84, 26.82, 21.30, 44.76, 19.76, 17.08],
+	"Jerez": [36.69, 57.14, 38.05, 41.69, 34.46, 29.92, 20.89, 32.79, 50.80, 47.78, 23.66],
+	"Jyllands-Ringen": [13.52, 21.75, 28.74, 27.26, 12.18, 10.82, 9.40, 23.12, 33.00, 14.91, 13.35],
+	"Kaunas": [24.49, 41.33, 29.17, 25.86, 30.55, 20.88, 14.69, 21.75, 13.33, 44.14, 13.05],
+	"Kyalami": [23.08, 33.00, 35.70, 39.81, 20.62, 18.51, 32.57, 46.16, 28.46, 24.41, 21.71],
+	"Laguna Seca": [30.15, 37.57, 26.36, 17.55, 17.19, 15.80, 24.43, 39.46, 43.06, 34.92, 9.33],
+	"Magny Cours": [23.46, 42.80, 29.12, 25.74, 27.43, 20.76, 21.25, 34.84, 48.36, 37.87, 13.49],
+	"Melbourne": [23.02, 47.60, 27.28, 29.87, 22.38, 21.97, 20.66, 32.35, 39.02, 22.36, 18.01],
+	"Mexico City": [12.71, 24.40, 16.46, 14.55, 20.39, 14.08, 19.80, 31.90, 13.54, 38.08, 17.14],
+	"Monte Carlo": [15.54, 18.39, 56.17, 56.54, 29.15, 10.91, 15.67, 30.24, 49.78, 39.45, 13.51],
+	"Montreal": [27.57, 48.18, 28.37, 18.38, 26.64, 19.91, 14.69, 38.86, 51.21, 45.24, 14.35],
+	"Monza": [28.95, 55.71, 19.44, 14.83, 26.67, 23.47, 18.02, 42.24, 51.81, 28.46, 19.82],
+	"Mugello": [22.47, 21.70, 26.50, 19.14, 27.38, 30.36, 32.44, 36.71, 33.22, 28.03, 17.90],
+	"New Delhi": [26.94, 45.64, 37.83, 32.68, 24.35, 16.21, 20.76, 33.69, 45.60, 41.58, 13.05],
+	"Nurburgring": [31.20, 46.89, 26.37, 34.61, 29.26, 16.35, 16.63, 31.12, 50.16, 46.50, 11.74],
+	"Oesterreichring": [22.07, 49.05, 28.26, 32.38, 23.71, 20.46, 23.16, 27.15, 39.24, 22.56, 13.55],
+	"Paul Ricard": [29.27, 59.92, 28.35, 36.55, 32.32, 16.35, 19.74, 30.91, 50.35, 25.54, 12.80],
+	"Portimao": [24.21, 21.99, 24.17, 26.23, 45.30, 22.01, 21.43, 23.00, 33.10, 48.73, 18.42],
+	"Poznan": [29.64, 41.17, 34.02, 40.39, 36.14, 29.96, 25.52, 31.24, 33.66, 26.08, 21.88],
+	"Rafaela Oval": [25.05, 92.29, 14.66, 17.15, 30.10, 17.85, 23.09, 26.84, 25.52, 35.83, 17.32],
+	"Sakhir": [27.17, 59.89, 33.04, 25.88, 26.28, 30.85, 36.21, 30.80, 36.12, 35.28, 17.69],
+	"Sepang": [25.28, 44.99, 32.81, 26.30, 32.94, 18.28, 31.83, 36.60, 43.17, 26.01, 18.79],
+	"Serres": [24.93, 30.63, 25.18, 27.54, 24.22, 20.05, 23.07, 34.23, 28.93, 29.66, 20.60],
+	"Shanghai": [20.68, 57.90, 34.12, 39.61, 35.05, 28.21, 26.74, 38.84, 43.94, 48.88, 18.48],
+	"Silverstone": [25.02, 53.24, 22.38, 26.88, 28.29, 17.12, 16.41, 37.58, 27.51, 22.26, 12.32],
+	"Singapore": [29.44, 22.24, 34.67, 30.37, 34.04, 23.70, 29.27, 29.46, 45.58, 26.95, 25.68],
+	"Slovakiaring": [21.45, 46.63, 25.38, 28.82, 37.89, 18.70, 16.21, 45.57, 31.48, 39.40, 15.19],
+	"Sochi": [20.78, 44.42, 26.86, 25.93, 24.36, 15.80, 19.08, 30.56, 41.04, 21.77, 16.77],
+	"Spa": [28.52, 48.91, 28.05, 32.09, 31.56, 21.31, 18.47, 38.36, 43.34, 46.58, 17.77],
+	"Suzuka": [17.35, 33.58, 22.04, 28.97, 23.44, 15.56, 14.46, 37.84, 29.29, 31.75, 15.14],
+	"Valencia": [26.29, 26.26, 45.89, 45.89, 21.53, 31.13, 16.20, 26.08, 31.92, 36.84, 21.26],
+	"Yas Marina": [22.65, 15.01, 34.76, 39.49, 28.35, 21.12, 28.91, 35.28, 41.03, 30.03, 20.79],
+	"Yeongam": [28.45, 43.18, 30.23, 33.70, 20.65, 22.44, 23.28, 25.36, 33.09, 27.45, 19.01],
+	"Zandvoort": [39.47, 63.41, 48.26, 38.22, 33.24, 28.26, 26.17, 36.99, 69.52, 54.04, 22.42],
+	"Zolder": [17.44, 19.86, 25.24, 22.78, 20.51, 22.81, 21.45, 40.97, 29.02, 31.95, 18.46]
+}
+
 # Data collection function
 def setupCalc(username, password, weather, sessionTemp):
 	# Create our logon payload. 'hiddenToken' may change at a later date.
@@ -511,7 +574,7 @@ def strategyCalc(username, password, minimumWear):
 		FLDs[i].set(round(fuelTimeCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1), 2))
 	FLDs[4].set(round(fuelTimeCalc(trackData[trackName][8], trackData[trackName][7], fuelFactor, int(stops[4].get()) + 1), 2))
 
-	TCDs[0].set("0")
+	TCDs[0].set("-")
 	TCDs[1].set(round(compoundCalc(trackData[trackName][12], float(trackData[trackName][11]), trackData[trackName][13], rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2].set(str(round(2 * float(TCDs[1].get()), 2)))
 	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
@@ -526,10 +589,11 @@ def strategyCalc(username, password, minimumWear):
 		for i in range(4):
 			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
 	else:
-		for i in range(4):
-			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
+		for i in range(3):
+			totals[i + 1].set(totalTimeCalc(float(pitTotals[i + 1].get()), float(TCDs[i + 1].get()), float(FLDs[i + 1].get())))
 		pitTotals[4].set(round((float(stops[4].get()) * (float(pitTimes[4].get()))), 2))
 		totals[4].set(totalTimeCalc(float(pitTotals[4].get()), 0, float(FLDs[4].get())))
+	totals[0].set(str(float(pitTotals[0].get()) + float(FLDs[0].get())))
 
 	return 0
 
@@ -601,6 +665,10 @@ Painfully simple function
 def totalTimeCalc(pitTime, compoundTime, fuelTime):
 	return round(pitTime + compoundTime + fuelTime, 2)
 
+def wearCalc(startWear, partLevel, driverFactor, trackName, clearTrackRisk, i):
+	levelFactors = [1.0193, 1.0100, 1.0073, 1.0053, 1.0043, 1.0037, 1.0043, 1.0097, 1.0052]
+	return (trackWearData[trackName][i] * (levelFactors[partLevel - 1] ** clearTrackRisk) * driverFactor)
+
 # Warning window
 def warning(*args):
 	frontWing.set("Login")
@@ -646,6 +714,140 @@ def calculate(*args):
 				warningLabel.set("Incorect Login Details")
 			elif(strategy == 2):
 				warningLabel.set("VIPER Family Team Only")
+		elif(tab == "Car Wear"):
+			# Get user and password
+			username = entryUsername.get()
+			password = entryPassword.get()
+			# Create our logon payload. 'hiddenToken' may change at a later date.
+			logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+			
+			# Logon to GPRO using the logon information provided and store that under our session
+			session = requests.session()
+			loginURL = "https://gpro.net/gb/Login.asp"
+			logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+
+			# Gather the home page information and collect driver ID, track ID, team name, and manager ID
+			tree = html.fromstring(logonResult.content)
+
+			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
+			trackURL = "https://gpro.net/gb/" + trackID[0]
+			driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
+			try:
+				driverURL = "https://gpro.net/gb/" + driverID[0]
+			except:
+				warningLabel.set("Incorect Login Details")
+
+			teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
+			if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
+				warningLabel.set("VIPER Family Team Only")
+
+			driverResult = session.get(driverURL, headers=dict(referer=driverURL))
+			tree = html.fromstring(driverResult.content)
+			driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
+			driverTalent = int(tree.xpath("normalize-space(//td[contains(@id, 'Talent')]/text())"))
+			driverExperience = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
+			driverFactor = (0.998789138 ** driverConcentration) * (0.998751839 ** driverTalent) * (0.998707677 ** driverExperience)
+
+			# Track ID of next race
+			trackResult = session.get(trackURL, headers=dict(referer=trackURL))
+			tree = html.fromstring(trackResult.content)
+			trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
+			trackName = trackName.strip()
+
+			for i in range(len(startWears)):
+				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(levels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
+				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
+	except ValueError:
+		pass
+
+def fillWear():
+	try:
+		username = entryUsername.get()
+		password = entryPassword.get()
+		# Create our logon payload. 'hiddenToken' may change at a later date.
+		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+		
+		# Logon to GPRO using the logon information provided and store that under our session
+		session = requests.session()
+		loginURL = "https://gpro.net/gb/Login.asp"
+		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+
+		# Gather the home page information and collect driver ID, track ID, team name, and manager ID
+		tree = html.fromstring(logonResult.content)
+
+		# URL for car
+		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
+
+		# Request the car information page and scrape the car character and part level and wear data
+		carResult = session.get(carURL, headers=dict(referer=carURL))
+		tree = html.fromstring(carResult.content)
+
+		levelChassis.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())")))
+		levelEngine.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())")))
+		levelFWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[2]/text())")))
+		levelRWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())")))
+		levelUnderbody.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[2]/text())")))
+		levelSidepods.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[2]/text())")))
+		levelCooling.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[2]/text())")))
+		levelGearbox.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[2]/text())")))
+		levelBrakes.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[2]/text())")))
+		levelSuspension.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())")))
+		levelElectronics.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())")))
+
+		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/text())"))
+		if(carWearChassis == ""):
+			carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"));
+		wearChassis.set(int((re.findall("\d+", carWearChassis))[0]))
+
+		carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/text())"))
+		if(carWearEngine == ""):
+			carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/font/text())"));
+		wearEngine.set(int((re.findall("\d+", carWearEngine))[0]))
+
+		carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/text())"))
+		if(carWearFrontWing == ""):
+			carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/font/text())"));
+		wearFWing.set(int((re.findall("\d+", carWearFrontWing))[0]))
+
+		carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/text())"))
+		if(carWearRearWing == ""):
+			carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/font/text())"));
+		wearRWing.set(int((re.findall("\d+", carWearRearWing))[0]))
+
+		carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/text())"))
+		if(carWearUnderbody == ""):
+			carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/font/text())"));
+		wearUnderbody.set(int((re.findall("\d+", carWearUnderbody))[0]))
+
+		carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/text())"))
+		if(carWearSidepod == ""):
+			carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/font/text())"));
+		wearSidepods.set(int((re.findall("\d+", carWearSidepod))[0]))
+
+		carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/text())"))
+		if(carWearCooling == ""):
+			carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/font/text())"));
+		wearCooling.set(int((re.findall("\d+", carWearCooling))[0]))
+
+		carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/text())"))
+		if(carWearGears == ""):
+			carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/font/text())"));
+		wearGearbox.set(int((re.findall("\d+", carWearGears))[0]))
+
+		carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/text())"))
+		if(carWearBrakes == ""):
+			carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/font/text())"));
+		wearBrakes.set(int((re.findall("\d+", carWearBrakes))[0]))
+
+		carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/text())"))
+		if(carWearSuspension == ""):
+			carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/font/text())"));
+		wearSuspension.set(int((re.findall("\d+", carWearSuspension))[0]))
+
+		carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/text())"))
+		if(carWearElectronics == ""):
+			carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"));
+		wearElectronics.set(int((re.findall("\d+", carWearElectronics))[0]))
 	except ValueError:
 		pass
 
@@ -677,8 +879,6 @@ warningLabel = StringVar()
 # Input
 inputUsername = StringVar()
 inputPassword = StringVar()
-inputUsername.set("JakeR1342@gmail.com")
-inputPassword.set("Alicej 1342")
 inputWeather = StringVar()
 inputWeather.set("Dry")
 inputSession = StringVar()
@@ -771,7 +971,116 @@ for pitTotal in pitTotals:
 for total in totals:
 	total.set("0")
 
+extraTCD.set("-")
 rainTCD.set("-")
+
+# Wear variables
+# Input
+wearClearTrackRisk = IntVar()
+wearClearTrackRisk.set(0)
+
+wearChassis = IntVar()
+wearEngine = IntVar()
+wearFWing = IntVar()
+wearRWing = IntVar()
+wearUnderbody = IntVar()
+wearSidepods = IntVar()
+wearCooling = IntVar()
+wearGearbox = IntVar()
+wearBrakes = IntVar()
+wearSuspension = IntVar()
+wearElectronics = IntVar()
+
+wearChassis.set(0)
+wearEngine.set(0)
+wearFWing.set(0)
+wearRWing.set(0)
+wearUnderbody.set(0)
+wearSidepods.set(0)
+wearCooling.set(0)
+wearGearbox.set(0)
+wearBrakes.set(0)
+wearSuspension.set(0)
+wearElectronics.set(0)
+
+levelChassis = IntVar()
+levelEngine = IntVar()
+levelFWing = IntVar()
+levelRWing = IntVar()
+levelUnderbody = IntVar()
+levelSidepods = IntVar()
+levelCooling = IntVar()
+levelGearbox = IntVar()
+levelBrakes = IntVar()
+levelSuspension = IntVar()
+levelElectronics = IntVar()
+
+levelChassis.set(0)
+levelEngine.set(0)
+levelFWing.set(0)
+levelRWing.set(0)
+levelUnderbody.set(0)
+levelSidepods.set(0)
+levelCooling.set(0)
+levelGearbox.set(0)
+levelBrakes.set(0)
+levelSuspension.set(0)
+levelElectronics.set(0)
+
+# Output
+raceChassis = DoubleVar()
+raceEngine = DoubleVar()
+raceFWing = DoubleVar()
+raceRWing = DoubleVar()
+raceUnderbody = DoubleVar()
+raceSidepods = DoubleVar()
+raceCooling = DoubleVar()
+raceGearbox = DoubleVar()
+raceBrakes = DoubleVar()
+raceSuspension = DoubleVar()
+raceElectronics = DoubleVar()
+
+raceChassis.set(0.0)
+raceEngine.set(0.0)
+raceFWing.set(0.0)
+raceRWing.set(0.0)
+raceUnderbody.set(0.0)
+raceSidepods.set(0.0)
+raceCooling.set(0.0)
+raceGearbox.set(0.0)
+raceBrakes.set(0.0)
+raceSuspension.set(0.0)
+raceElectronics.set(0.0)
+
+endChassis = IntVar()
+endEngine = IntVar()
+endFWing = IntVar()
+endRWing = IntVar()
+endUnderbody = IntVar()
+endSidepods = IntVar()
+endCooling = IntVar()
+endGearbox = IntVar()
+endBrakes = IntVar()
+endSuspension = IntVar()
+endElectronics = IntVar()
+
+endChassis.set(0)
+endEngine.set(0)
+endFWing.set(0)
+endRWing.set(0)
+endUnderbody.set(0)
+endSidepods.set(0)
+endCooling.set(0)
+endGearbox.set(0)
+endBrakes.set(0)
+endSuspension.set(0)
+endElectronics.set(0)
+
+# Group the wear values for easy getting/setting
+startWears = [wearChassis, wearEngine, wearFWing, wearRWing, wearUnderbody, wearSidepods, wearCooling, wearGearbox, wearBrakes, wearSuspension, wearElectronics]
+levels = [levelChassis, levelEngine, levelFWing, levelRWing, levelUnderbody, levelSidepods, levelCooling, levelGearbox, levelBrakes, levelSuspension, levelElectronics]
+raceWears = [raceChassis, raceEngine, raceFWing, raceRWing, raceUnderbody, raceSidepods, raceCooling, raceGearbox, raceBrakes, raceSuspension, raceElectronics]
+endWears = [endChassis, endEngine, endFWing, endRWing, endUnderbody, endSidepods, endCooling, endGearbox, endBrakes, endSuspension, endElectronics]
 
 # Build the pages
 # Setup page
@@ -794,7 +1103,7 @@ entryPassword = ttk.Entry(frameSetup, width = 30, show = "*", textvariable = inp
 entryPassword.grid(column = 1, row = 1, sticky = (W, E))
 
 # LABELS
-ttk.Label(frameSetup, text = "Username: ").grid(column = 0, row = 0, sticky = (W, E))
+ttk.Label(frameSetup, text = "Email: ").grid(column = 0, row = 0, sticky = (W, E))
 ttk.Label(frameSetup, text = "Password: ").grid(column = 0, row = 1, sticky = (W, E))
 ttk.Label(frameSetup, text = "Session: ", padding = "40 0 0 0").grid(column = 2, row = 0, sticky = E)
 ttk.Label(frameSetup, text = "Weather: ").grid(column = 2, row = 4, sticky = E)
@@ -825,22 +1134,22 @@ entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(
 
 # LABELS
 ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 5, row = 1, columnspan = 2)
-ttk.Label(frameStrategy, text = "Wear:", padding = "5 10").grid(column = 1, row = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Wear:", padding = "0 10 5 5").grid(column = 1, row = 1, sticky = (W))
 
-ttk.Label(frameStrategy, text = "Tyre", padding = "5 10").grid(column = 1, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Stops", padding = "5 10").grid(column = 2, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "5 10").grid(column = 3, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "5 10").grid(column = 4, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "5 10").grid(column = 5, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "5 10").grid(column = 6, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "5 10").grid(column = 7, row = 2, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Total (s)", padding = "5 10").grid(column = 8, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Tyre", padding = "0 10").grid(column = 1, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 2, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "0 10").grid(column = 5, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10").grid(column = 6, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10").grid(column = 7, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10").grid(column = 8, row = 2, sticky = (W))
 
-ttk.Label(frameStrategy, text = "Extra Soft").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Soft").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Medium").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Hard").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Rain").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Extra Soft", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Soft", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Medium", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Hard", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Rain", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
 
 x = 2
 for values in grid:
@@ -850,9 +1159,86 @@ for values in grid:
 		y = y + 1
 	x = x + 1
 
+# Wear page
+# BUTTONS
+ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+# RADIO
+# ENTRY
+ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, justify = "center").grid(column = 6, row = 0, sticky = W+E)
+
+ttk.Entry(frameWear, width = 5, textvariable = wearChassis, justify = "center").grid(column = 1, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearEngine, justify = "center").grid(column = 2, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearFWing, justify = "center").grid(column = 3, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearRWing, justify = "center").grid(column = 4, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearUnderbody, justify = "center").grid(column = 5, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearSidepods, justify = "center").grid(column = 6, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearCooling, justify = "center").grid(column = 7, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearGearbox, justify = "center").grid(column = 8, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearBrakes, justify = "center").grid(column = 9, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearSuspension, justify = "center").grid(column = 10, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearElectronics, justify = "center").grid(column = 11, row = 2, sticky = E)
+
+ttk.Entry(frameWear, width = 5, textvariable = levelChassis, justify = "center").grid(column = 1, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelEngine, justify = "center").grid(column = 2, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelFWing, justify = "center").grid(column = 3, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelRWing, justify = "center").grid(column = 4, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelUnderbody, justify = "center").grid(column = 5, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelSidepods, justify = "center").grid(column = 6, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelCooling, justify = "center").grid(column = 7, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelGearbox, justify = "center").grid(column = 8, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center").grid(column = 9, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center").grid(column = 10, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center").grid(column = 11, row = 3, sticky = E)
+# LABELS
+ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 5, row = 0, sticky = W)
+
+ttk.Label(frameWear, text = "Chassis", padding = "2 0 2 10").grid(column = 1, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Engine", padding = "2 0 2 10").grid(column = 2, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Front Wing", padding = "2 0 2 10").grid(column = 3, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Read Wing", padding = "2 0 2 10").grid(column = 4, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Underboy", padding = "2 0 2 10").grid(column = 5, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Sidepods", padding = "2 0 2 10").grid(column = 6, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Cooling", padding = "2 0 2 10").grid(column = 7, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Gearbox", padding = "2 0 2 10").grid(column = 8, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Brakes", padding = "2 0 2 10").grid(column = 9, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Suspension", padding = "2 0 2 10").grid(column = 10, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Electronics", padding = "2 0 2 10").grid(column = 11, row = 1, sticky = E)
+
+ttk.Label(frameWear, text = "Wear Before", padding = "5").grid(column = 0, row = 2, sticky = W)
+ttk.Label(frameWear, text = "Level", padding = "5").grid(column = 0, row = 3, sticky = W)
+ttk.Label(frameWear, text = "Race Wear", padding = "5").grid(column = 0, row = 4, sticky = W)
+ttk.Label(frameWear, text = "Wear After", padding = "5").grid(column = 0, row = 5, sticky = W)
+
+ttk.Label(frameWear, textvariable = raceChassis, padding = "5 0").grid(column = 1, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceEngine, padding = "5 0").grid(column = 2, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceFWing, padding = "5 0").grid(column = 3, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceRWing, padding = "5 0").grid(column = 4, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceUnderbody, padding = "5 0").grid(column = 5, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceSidepods, padding = "5 0").grid(column = 6, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceCooling, padding = "5 0").grid(column = 7, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceGearbox, padding = "5 0").grid(column = 8, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceBrakes, padding = "5 0").grid(column = 9, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceSuspension, padding = "5 0").grid(column = 10, row = 4, sticky = E)
+ttk.Label(frameWear, textvariable = raceElectronics, padding = "5 0").grid(column = 11, row = 4, sticky = E)
+
+ttk.Label(frameWear, textvariable = endChassis, padding = "5 0").grid(column = 1, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endEngine, padding = "5 0").grid(column = 2, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endFWing, padding = "5 0").grid(column = 3, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endRWing, padding = "5 0").grid(column = 4, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endUnderbody, padding = "5 0").grid(column = 5, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endSidepods, padding = "5 0").grid(column = 6, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endCooling, padding = "5 0").grid(column = 7, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endGearbox, padding = "5 0").grid(column = 8, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endBrakes, padding = "5 0").grid(column = 9, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endSuspension, padding = "5 0").grid(column = 10, row = 5, sticky = E)
+ttk.Label(frameWear, textvariable = endElectronics, padding = "5 0").grid(column = 11, row = 5, sticky = E)
+
+
 # Automatically organize the window
 for child in frameSetup.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameStrategy.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in frameWear.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
