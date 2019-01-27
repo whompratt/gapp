@@ -427,7 +427,7 @@ def setupCalc(username, password, weather, sessionTemp):
 	setup = [int(setupFWi), int(setupRWi), int(setupEng), int(setupBra), int(setupGea), int(setupSus)]
 	return setup
 
-def strategyCalc(username, password, minimumWear):
+def strategyCalc(username, password, minimumWear, laps):
 	'''
 	There are many factors that influence strategy:
 		1. Tyre Supplier
@@ -556,11 +556,16 @@ def strategyCalc(username, password, minimumWear):
 		stops[i].set(str(stopCalc(trackData[trackName][8], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i])))
 	stops[4].set(str(math.ceil(0.73 * stopCalc(trackData[trackName][12], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4]))))
 
+	for i in range(5):
+		stintlaps[i].set(str(math.ceil(trackData[trackName][12] / (int(stops[i].get()) + 1))))
+
 	# Calculate the fuel load for each stint given the above number of stops
 	fuelFactor = (-0.000101165467155397 * driverConcentration) + (0.0000706080613787091 * driverAggressiveness) + (-0.0000866455021527332 * driverExperience) + (-0.000163915452803369 * driverTechnicalInsight) + (-0.0126912680856842 * carLevelEngine) + (-0.0083557977071091 * carLevelElectronics)
 	for i in range(4):
 		fuels[i].set(str(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, int(stops[i].get()) + 1)))
 	fuels[4].set(str(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][7]), fuelFactor, int(stops[4].get()) + 1)))
+	lapsFuelLoadLower.set(str(math.ceil(customLapFuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, trackData[trackName][12], laps))) + " L")
+	lapsFuelLoadUpper.set(str(math.floor(customLapFuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, trackData[trackName][12], laps + 1))) + " L")
 
 	# Calculate the pit time for each tyre choice, given the fuel load
 	for i in range(5):
@@ -623,8 +628,12 @@ def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyre
 Fuel Load Calc
 Here we very simply calculate how much fuel we will need across the entire race (distance * fuel per km) then divide by the stints (stops + 1)
 '''
-def fuelLoadCalc(trackLapsCount, trackFuelBase, fuelFactor, stints):
-	fuelLoad = math.ceil((trackLapsCount * (trackFuelBase + fuelFactor)) / stints)
+def fuelLoadCalc(trackDistanceTotal, trackFuelBase, fuelFactor, stints):
+	fuelLoad = math.ceil((trackDistanceTotal * (trackFuelBase + fuelFactor)) / stints)
+	return fuelLoad
+
+def customLapFuelLoadCalc(trackDistanceTotal, trackFuelBase, fuelFactor, trackLapsCount, laps):
+	fuelLoad = (laps * (trackDistanceTotal * (trackFuelBase + fuelFactor)) / trackLapsCount)
 	return fuelLoad
 
 '''
@@ -688,7 +697,7 @@ def calculate(*args):
 			session = str(inputSession.get())
 			setup = setupCalc(username, password, weather, session)		
 			if(setup[0] == 0):
-				warningLabel.set("Incorect Login Details")
+				warningLabel.set("Incorrect Login Details")
 			elif(setup[0] == 1):
 				warningLabel.set("VIPER Family Team Only")
 			else:
@@ -706,12 +715,24 @@ def calculate(*args):
 				try:
 					wear = float(re.findall('\d+', inputWear.get())[0])
 				except:
-					wear = 0.0	
+					wear = 0.0
+					inputWear.set(0)
 
-			strategy = strategyCalc(username, password, wear)
+			try:
+				laps = int(re.findall('\d+', inputLaps.get())[0])
+			except:
+				try:
+					laps = inputLaps.get()
+				except:
+					laps = 0
+					inputLaps.set(0)
+
+			lapsUpper.set(laps + 1)
+
+			strategy = strategyCalc(username, password, wear, laps)
 
 			if(strategy == 1):
-				warningLabel.set("Incorect Login Details")
+				warningLabel.set("Incorrect Login Details")
 			elif(strategy == 2):
 				warningLabel.set("VIPER Family Team Only")
 		elif(tab == "Car Wear"):
@@ -729,13 +750,14 @@ def calculate(*args):
 			# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 			tree = html.fromstring(logonResult.content)
 
-			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
-			trackURL = "https://gpro.net/gb/" + trackID[0]
 			driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 			try:
 				driverURL = "https://gpro.net/gb/" + driverID[0]
 			except:
-				warningLabel.set("Incorect Login Details")
+				warningLabel.set("Incorrect Login Details")
+				return
+			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
+			trackURL = "https://gpro.net/gb/" + trackID[0]
 
 			teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 			if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
@@ -774,6 +796,13 @@ def fillWear():
 
 		# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 		tree = html.fromstring(logonResult.content)
+
+		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
+		try:
+			driverURL = "https://gpro.net/gb/" + driverID[0]
+		except:
+			warningLabel.set("Incorrect Login Details")
+			return
 
 		# URL for car
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
@@ -902,13 +931,31 @@ suspension.set("0")
 # Input
 inputWear = StringVar()
 inputWear.set("20")
+inputLaps = IntVar()
+inputLaps.set(1)
 
 # Output
+lapsFuelLoadLower = StringVar()
+lapsFuelLoadLower.set("0 L")
+lapsFuelLoadUpper = StringVar()
+lapsFuelLoadUpper.set("1 L")
+
+lapsLower = IntVar()
+lapsLower.set(0)
+lapsUpper = IntVar()
+lapsUpper.set(0)
+
 extraStops = StringVar()
 softStops = StringVar()
 mediumStops = StringVar()
 hardStops = StringVar()
 rainStops = StringVar()
+
+extraLaps = StringVar()
+softLaps = StringVar()
+mediumLaps = StringVar()
+hardLaps = StringVar()
+rainLaps = StringVar()
 
 extraFuel = StringVar()
 softFuel = StringVar()
@@ -947,6 +994,7 @@ hardTotal = StringVar()
 rainTotal = StringVar()
 
 stops = [extraStops, softStops, mediumStops, hardStops, rainStops]
+stintlaps = [extraLaps, softLaps, mediumLaps, hardLaps, rainLaps]
 fuels = [extraFuel, softFuel, mediumFuel, hardFuel, rainFuel]
 pitTimes = [extraPitTime, softPitTime, mediumPitTime, hardPitTime, rainPitTime]
 TCDs = [extraTCD, softTCD, mediumTCD, hardTCD, rainTCD]
@@ -954,10 +1002,12 @@ FLDs = [extraFLD, softFLD, mediumFLD, hardFLD, rainFLD]
 pitTotals = [extraPitTotal, softPitTotal, mediumPitTotal, hardPitTotal, rainPitTotal]
 totals = [extraTotal, softTotal, mediumTotal, hardTotal, rainTotal]
 
-grid = [stops, fuels, pitTimes, TCDs, FLDs, pitTotals, totals]
+grid = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals]
 
 for stop in stops:
 	stop.set("0")
+for lap in stintlaps:
+	lap.set("0")
 for fuel in fuels:
 	fuel.set("0")
 for pitTime in pitTimes:
@@ -1125,37 +1175,45 @@ ttk.Label(frameSetup, textvariable = suspension).grid(column = 6, row = 5)
 
 # Strategy page
 # BUTTONS
-ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column = 3, columnspan = 2, row = 1, sticky = E+W)
+ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column = 9, columnspan = 2, row = 1, sticky = E+W)
 
 # RADIO
 
 # ENTRY
-entryWear = ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 2, row = 1, sticky = (W, E))
+ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 10, row = 0, sticky = (W, E))
+ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, justify = "center").grid(column = 9, row = 4, sticky = W+E)
 
 # LABELS
-ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 5, row = 1, columnspan = 2)
-ttk.Label(frameStrategy, text = "Wear:", padding = "0 10 5 5").grid(column = 1, row = 1, sticky = (W))
+ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 9, row = 2, columnspan = 2)
+ttk.Label(frameStrategy, text = "Wear:", padding = "0 10 5 5").grid(column = 9, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Laps", padding = "0 0 10 0").grid(column = 9, row = 3, sticky = W+E)
+ttk.Label(frameStrategy, text = "Fuel", padding = "0 0 10 0").grid(column = 10, row = 3, sticky = W+E)
 
-ttk.Label(frameStrategy, text = "Tyre", padding = "0 10").grid(column = 1, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 2, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "0 10").grid(column = 5, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10").grid(column = 6, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10").grid(column = 7, row = 2, sticky = (W))
-ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10").grid(column = 8, row = 2, sticky = (W))
+ttk.Label(frameStrategy, text = "Tyre", padding = "0 10").grid(column = 0, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 1, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Stint Laps", padding = "0 10").grid(column = 2, row = 0, sticky = W)
+ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "0 10").grid(column = 5, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10").grid(column = 6, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10").grid(column = 7, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10").grid(column = 8, row = 0, sticky = (W))
 
-ttk.Label(frameStrategy, text = "Extra Soft", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Soft", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Medium", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Hard", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
-ttk.Label(frameStrategy, text = "Rain", padding = "0 0 10 0").grid(column = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Extra Soft", padding = "0 0 10 0").grid(column = 0, row = 1, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Soft", padding = "0 0 10 0").grid(column = 0, row = 2, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Medium", padding = "0 0 10 0").grid(column = 0, row = 3, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Hard", padding = "0 0 10 0").grid(column = 0, row = 4, sticky = (W, E))
+ttk.Label(frameStrategy, text = "Rain", padding = "0 0 10 0").grid(column = 0, row = 5, sticky = (W, E))
 
-x = 2
+ttk.Label(frameStrategy, textvariable = lapsUpper, justify = "center").grid(column = 9, row = 5)
+ttk.Label(frameStrategy, textvariable = lapsFuelLoadLower, justify = "center").grid(column = 10, row = 4)
+ttk.Label(frameStrategy, textvariable = lapsFuelLoadUpper, justify = "center").grid(column = 10, row = 5)
+
+x = 1
 for values in grid:
-	y = 3
+	y = 1
 	for value in values:
-		ttk.Label(frameStrategy, textvariable = value).grid(column = x, row = y, sticky = (W))
+		ttk.Label(frameStrategy, textvariable = value).grid(column = x, row = y, sticky = (E))
 		y = y + 1
 	x = x + 1
 
@@ -1165,7 +1223,7 @@ ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 0, 
 ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
 # RADIO
 # ENTRY
-ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, justify = "center").grid(column = 6, row = 0, sticky = W+E)
+ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, justify = "center").grid(column = 7, row = 0, sticky = W+E)
 
 ttk.Entry(frameWear, width = 5, textvariable = wearChassis, justify = "center").grid(column = 1, row = 2, sticky = E)
 ttk.Entry(frameWear, width = 5, textvariable = wearEngine, justify = "center").grid(column = 2, row = 2, sticky = E)
@@ -1191,7 +1249,8 @@ ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center").
 ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center").grid(column = 10, row = 3, sticky = E)
 ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center").grid(column = 11, row = 3, sticky = E)
 # LABELS
-ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 5, row = 0, sticky = W)
+ttk.Label(frameWear, textvariable = warningLabel).grid(column = 4, row = 0, columnspan = 2)
+ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 6, row = 0, sticky = W)
 
 ttk.Label(frameWear, text = "Chassis", padding = "2 0 2 10").grid(column = 1, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Engine", padding = "2 0 2 10").grid(column = 2, row = 1, sticky = E)
