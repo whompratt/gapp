@@ -585,7 +585,7 @@ def strategyCalc(username, password, minimumWear, laps):
 	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
 	TCDs[4].set("-")
 
-	totals[0].set(str(float(pitTotals[0].get()) + float(FLDs[0].get())))
+	totals[0].set(str(round(float(pitTotals[0].get()) + float(FLDs[0].get()), 2)))
 
 	if(float(fuels[4].get()) < 0):
 		fuels[4].set("No Data!")
