@@ -777,6 +777,22 @@ def calculate(*args):
 			trackName = trackName.strip()
 
 			for i in range(len(startWears)):
+				try:
+					int(startWears[i].get())
+				except:
+					startWears[i].set(0)
+
+				try:
+					int(levels[i].get())
+				except:
+					levels[i].set(1)
+
+			try:
+				int(wearClearTrackRisk.get())
+			except:
+				wearClearTrackRisk.set(0)
+
+			for i in range(len(startWears)):
 				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(levels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
 	except ValueError:
@@ -880,9 +896,37 @@ def fillWear():
 	except ValueError:
 		pass
 
+def validateFloat(P):
+	if(P == ""):
+		return True
+	else:
+		try:
+			int(P)
+			return True
+		except:
+			try:
+				float(P)
+				return True
+			except:
+				return False
+
+def validateInt(P):
+	if(P == ""):
+		return True
+	else:
+		try:
+			int(P)
+			return True
+		except:
+			return False
+
 # Create the root window
 root = Tk()
 root.title("GAPP")
+
+vcmdInt = root.register(validateInt)
+vcmdFloat = root.register(validateFloat)
+
 
 # Create the tab controller
 notebook = ttk.Notebook(root)
@@ -1180,8 +1224,8 @@ ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column =
 # RADIO
 
 # ENTRY
-ttk.Entry(frameStrategy, width = 10, textvariable = inputWear).grid(column = 10, row = 0, sticky = (W, E))
-ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, justify = "center").grid(column = 9, row = 4, sticky = W+E)
+ttk.Entry(frameStrategy, width = 10, textvariable = inputWear, validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 0, sticky = (W, E))
+ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 9, row = 4, sticky = W+E)
 
 # LABELS
 ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 9, row = 2, columnspan = 2)
@@ -1223,31 +1267,31 @@ ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 0, 
 ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
 # RADIO
 # ENTRY
-ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, justify = "center").grid(column = 7, row = 0, sticky = W+E)
+ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 7, row = 0, sticky = W+E)
 
-ttk.Entry(frameWear, width = 5, textvariable = wearChassis, justify = "center").grid(column = 1, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearEngine, justify = "center").grid(column = 2, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearFWing, justify = "center").grid(column = 3, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearRWing, justify = "center").grid(column = 4, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearUnderbody, justify = "center").grid(column = 5, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearSidepods, justify = "center").grid(column = 6, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearCooling, justify = "center").grid(column = 7, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearGearbox, justify = "center").grid(column = 8, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearBrakes, justify = "center").grid(column = 9, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearSuspension, justify = "center").grid(column = 10, row = 2, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = wearElectronics, justify = "center").grid(column = 11, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearEngine, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 2, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearFWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 3, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearRWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 4, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearUnderbody, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 5, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearSidepods, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 6, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearCooling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 7, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearGearbox, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 8, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearBrakes, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 9, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 2, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = wearElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 2, sticky = E)
 
-ttk.Entry(frameWear, width = 5, textvariable = levelChassis, justify = "center").grid(column = 1, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelEngine, justify = "center").grid(column = 2, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelFWing, justify = "center").grid(column = 3, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelRWing, justify = "center").grid(column = 4, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelUnderbody, justify = "center").grid(column = 5, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelSidepods, justify = "center").grid(column = 6, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelCooling, justify = "center").grid(column = 7, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelGearbox, justify = "center").grid(column = 8, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center").grid(column = 9, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center").grid(column = 10, row = 3, sticky = E)
-ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center").grid(column = 11, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelEngine, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 2, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelFWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 3, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelRWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 4, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelUnderbody, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 5, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelSidepods, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 6, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelCooling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 7, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelGearbox, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 8, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 9, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 3, sticky = E)
+ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 3, sticky = E)
 # LABELS
 ttk.Label(frameWear, textvariable = warningLabel).grid(column = 4, row = 0, columnspan = 2)
 ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 6, row = 0, sticky = W)
