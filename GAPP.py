@@ -585,20 +585,21 @@ def strategyCalc(username, password, minimumWear, laps):
 	TCDs[3].set(str(round(3 * float(TCDs[1].get()), 2)))
 	TCDs[4].set("-")
 
+	totals[0].set(str(float(pitTotals[0].get()) + float(FLDs[0].get())))
+
 	if(float(fuels[4].get()) < 0):
 		fuels[4].set("No Data!")
 		pitTimes[4].set("No Data!")
 		pitTotals[4].set("No Data!")
 		FLDs[4].set("No Data!")
 		totals[4].set("No Data!")
-		for i in range(4):
-			totals[i].set(totalTimeCalc(float(pitTotals[i].get()), float(TCDs[i].get()), float(FLDs[i].get())))
+		for i in range(3):
+			totals[i + 1].set(totalTimeCalc(float(pitTotals[i + 1].get()), float(TCDs[i + 1].get()), float(FLDs[i + 1].get())))
 	else:
 		for i in range(3):
 			totals[i + 1].set(totalTimeCalc(float(pitTotals[i + 1].get()), float(TCDs[i + 1].get()), float(FLDs[i + 1].get())))
 		pitTotals[4].set(round((float(stops[4].get()) * (float(pitTimes[4].get()))), 2))
 		totals[4].set(totalTimeCalc(float(pitTotals[4].get()), 0, float(FLDs[4].get())))
-	totals[0].set(str(float(pitTotals[0].get()) + float(FLDs[0].get())))
 
 	return 0
 
@@ -912,6 +913,7 @@ inputWeather = StringVar()
 inputWeather.set("Dry")
 inputSession = StringVar()
 inputSession.set("Race")
+inputRememberCredentials = IntVar()
 
 # Output
 frontWing = StringVar()
@@ -1135,7 +1137,7 @@ endWears = [endChassis, endEngine, endFWing, endRWing, endUnderbody, endSidepods
 # Build the pages
 # Setup page
 # BUTTONS
-ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 3, sticky = E+W)
+ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 4, sticky = E+W)
 
 # RADIO
 radioQ1 = ttk.Radiobutton(frameSetup, text = "Q1", variable = inputSession, value = "Q1").grid(column = 3, row = 0, sticky = (W, E))
@@ -1219,8 +1221,8 @@ for values in grid:
 
 # Wear page
 # BUTTONS
-ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
-ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
 # RADIO
 # ENTRY
 ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, justify = "center").grid(column = 7, row = 0, sticky = W+E)
@@ -1255,8 +1257,8 @@ ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 6, row = 0, 
 ttk.Label(frameWear, text = "Chassis", padding = "2 0 2 10").grid(column = 1, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Engine", padding = "2 0 2 10").grid(column = 2, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Front Wing", padding = "2 0 2 10").grid(column = 3, row = 1, sticky = E)
-ttk.Label(frameWear, text = "Read Wing", padding = "2 0 2 10").grid(column = 4, row = 1, sticky = E)
-ttk.Label(frameWear, text = "Underboy", padding = "2 0 2 10").grid(column = 5, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Rear Wing", padding = "2 0 2 10").grid(column = 4, row = 1, sticky = E)
+ttk.Label(frameWear, text = "Underbody", padding = "2 0 2 10").grid(column = 5, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Sidepods", padding = "2 0 2 10").grid(column = 6, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Cooling", padding = "2 0 2 10").grid(column = 7, row = 1, sticky = E)
 ttk.Label(frameWear, text = "Gearbox", padding = "2 0 2 10").grid(column = 8, row = 1, sticky = E)
