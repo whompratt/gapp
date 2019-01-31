@@ -3,6 +3,9 @@
 # Edit at https://www.gitignore.io/?templates=python
 
 ### Python ###
+# Custom
+data.dat
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -5,9 +5,33 @@ import re
 import csv
 import collections
 import math
+import os
+import sys
 from lxml import html
 from lxml import etree
 
+'''
+Data Storage Setup
+'''
+relfilename = "data.dat"
+try:
+	base_path = sys._MEIPASS
+except:
+	base_path = os.path.abspath(".")
+filename = os.path.join(base_path, relfilename)
+try:
+	file = open(filename, "x")
+	file.close()
+except:
+	pass
+file = open(filename, "r")
+try:
+	credentialCheck = int(float(file.readline()))
+except:
+	credentialCheck = 0
+username = file.readline()
+password = file.readline()
+file.close()
 
 '''
 Track Data
@@ -699,6 +723,27 @@ def exit():
 
 # Calculate the setup and others
 def calculate(*args):
+	if(inputRememberCredentials.get() == 1):
+		try:
+			file = open(filename, "w")
+			file.close()
+		except:
+			pass
+		try:
+			file = open(filename, "a")
+			file.write("1\n")
+			file.write(inputUsername.get() + "\n")
+			file.write(inputPassword.get() + "\n")
+			file.close()
+		except:
+			pass
+	else:
+		try:
+			file.open(filename, "w")
+			file.close()
+		except:
+			pass
+
 	tab = notebook.tab(notebook.select(), "text")
 	try:
 		username = str(inputUsername.get())
@@ -1001,12 +1046,15 @@ warningLabel = StringVar()
 # Setup page variables
 # Input
 inputUsername = StringVar()
+inputUsername.set(username.strip())
 inputPassword = StringVar()
+inputPassword.set(password.strip())
 inputWeather = StringVar()
 inputWeather.set("Dry")
 inputSession = StringVar()
 inputSession.set("Race")
 inputRememberCredentials = IntVar()
+inputRememberCredentials.set(credentialCheck)
 
 # Output
 frontWing = StringVar()
@@ -1241,6 +1289,8 @@ labelsWarning = []
 # Setup page
 # BUTTONS
 ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 4, sticky = E+W)
+rememberCredentials = ttk.Checkbutton(frameSetup, text = "Remember Credentials", onvalue = 1, offvalue = 0, variable = inputRememberCredentials)
+rememberCredentials.grid(column = 1, row = 2, sticky = E+W)
 
 # RADIO
 radioQ1 = ttk.Radiobutton(frameSetup, text = "Q1", variable = inputSession, value = "Q1").grid(column = 3, row = 0, sticky = (W, E))
@@ -1258,13 +1308,12 @@ entryPassword = ttk.Entry(frameSetup, width = 30, show = "*", textvariable = inp
 entryPassword.grid(column = 1, row = 1, sticky = (W, E))
 
 # LABELS
-
 ttk.Label(frameSetup, text = "Email: ").grid(column = 0, row = 0, sticky = (W, E))
 ttk.Label(frameSetup, text = "Password: ").grid(column = 0, row = 1, sticky = (W, E))
 ttk.Label(frameSetup, text = "Session: ", padding = "40 0 0 0").grid(column = 2, row = 0, sticky = E)
 ttk.Label(frameSetup, text = "Weather: ").grid(column = 2, row = 4, sticky = E)
 labelSetupWarning = ttk.Label(frameSetup, textvariable = warningLabel)
-labelSetupWarning.grid(column = 1, row = 2)
+labelSetupWarning.grid(column = 1, row = 3)
 labelsWarning.append(labelSetupWarning)
 
 ttk.Label(frameSetup, text = "Front Wing: ", padding = "40 0 0 0").grid(column = 5, row = 0, sticky = W+E)
