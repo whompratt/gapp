@@ -601,6 +601,16 @@ def strategyCalc(username, password, minimumWear, laps):
 		pitTotals[4].set(round((float(stops[4].get()) * (float(pitTimes[4].get()))), 2))
 		totals[4].set(totalTimeCalc(float(pitTotals[4].get()), 0, float(FLDs[4].get())))
 
+	fastestStrategy = 3
+
+	for i in range(len(totals) - 1):
+		if(float(totals[i].get()) < float(totals[fastestStrategy].get())):
+			fastestStrategy = i
+
+	for i in range(len(labelsTotal)):
+		labelsTotal[i].configure(style = "Black.Label")
+	labelsTotal[fastestStrategy].configure(style = "Green.Label")
+
 	return 0
 
 '''
@@ -699,10 +709,16 @@ def calculate(*args):
 			setup = setupCalc(username, password, weather, session)		
 			if(setup[0] == 0):
 				warningLabel.set("Incorrect Login Details")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
 			elif(setup[0] == 1):
 				warningLabel.set("VIPER Family Team Only")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
 			else:
 				warningLabel.set("")
+				for label in labelsWarning:
+					label.configure(style = "Black.Label")
 				frontWing.set(str(setup[0]))
 				rearWing.set(str(setup[1]))
 				engine.set(str(setup[2]))
@@ -734,8 +750,16 @@ def calculate(*args):
 
 			if(strategy == 1):
 				warningLabel.set("Incorrect Login Details")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
 			elif(strategy == 2):
 				warningLabel.set("VIPER Family Team Only")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
+			else:
+				warningLabel.set("")
+				for label in labelsWarning:
+					label.configure(style = "Black.Label")
 		elif(tab == "Car Wear"):
 			# Get user and password
 			username = entryUsername.get()
@@ -754,15 +778,23 @@ def calculate(*args):
 			driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 			try:
 				driverURL = "https://gpro.net/gb/" + driverID[0]
+				warningLabel.set("")
+				for label in labelsWarning:
+					label.configure(style = "Black.Label")
 			except:
 				warningLabel.set("Incorrect Login Details")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
 				return
+
 			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
 			trackURL = "https://gpro.net/gb/" + trackID[0]
 
 			teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 			if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
 				warningLabel.set("VIPER Family Team Only")
+				for label in labelsWarning:
+					label.configure(style = "Red.Label")
 
 			driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 			tree = html.fromstring(driverResult.content)
@@ -796,6 +828,12 @@ def calculate(*args):
 			for i in range(len(startWears)):
 				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(levels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
+				if(endWears[i].get() >= 90):
+					endLabels[i].configure(style = "Red.Label")
+				elif(endWears[i].get() >= 80):
+					endLabels[i].configure(style = "Orange.Label")
+				else:
+					endLabels[i].configure(style = "Black.Label")
 	except ValueError:
 		pass
 
@@ -817,9 +855,20 @@ def fillWear():
 		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 		try:
 			driverURL = "https://gpro.net/gb/" + driverID[0]
+			warningLabel.set("")
+			for label in labelsWarning:
+				label.configure(style = "Red.Label")
 		except:
 			warningLabel.set("Incorrect Login Details")
+			for label in labelsWarning:
+				label.configure(style = "Red.Label")
 			return
+
+		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
+		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
+			warningLabel.set("VIPER Family Team Only")
+			for label in labelsWarning:
+				label.configure(style = "Red.Label")
 
 		# URL for car
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
@@ -1048,7 +1097,7 @@ FLDs = [extraFLD, softFLD, mediumFLD, hardFLD, rainFLD]
 pitTotals = [extraPitTotal, softPitTotal, mediumPitTotal, hardPitTotal, rainPitTotal]
 totals = [extraTotal, softTotal, mediumTotal, hardTotal, rainTotal]
 
-grid = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals]
+grid = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals]
 
 for stop in stops:
 	stop.set("0")
@@ -1178,6 +1227,16 @@ levels = [levelChassis, levelEngine, levelFWing, levelRWing, levelUnderbody, lev
 raceWears = [raceChassis, raceEngine, raceFWing, raceRWing, raceUnderbody, raceSidepods, raceCooling, raceGearbox, raceBrakes, raceSuspension, raceElectronics]
 endWears = [endChassis, endEngine, endFWing, endRWing, endUnderbody, endSidepods, endCooling, endGearbox, endBrakes, endSuspension, endElectronics]
 
+# Creating Styles
+style = ttk.Style()
+style.configure("Red.Label", foreground = "red")
+style.configure("Black.Label", foreground = "black")
+style.configure("Orange.Label", foreground = "orange")
+style.configure("Green.Label", foreground = "green")
+
+# And a list of labels to apply the warnings
+labelsWarning = []
+
 # Build the pages
 # Setup page
 # BUTTONS
@@ -1199,11 +1258,14 @@ entryPassword = ttk.Entry(frameSetup, width = 30, show = "*", textvariable = inp
 entryPassword.grid(column = 1, row = 1, sticky = (W, E))
 
 # LABELS
+
 ttk.Label(frameSetup, text = "Email: ").grid(column = 0, row = 0, sticky = (W, E))
 ttk.Label(frameSetup, text = "Password: ").grid(column = 0, row = 1, sticky = (W, E))
 ttk.Label(frameSetup, text = "Session: ", padding = "40 0 0 0").grid(column = 2, row = 0, sticky = E)
 ttk.Label(frameSetup, text = "Weather: ").grid(column = 2, row = 4, sticky = E)
-ttk.Label(frameSetup, textvariable = warningLabel).grid(column = 1, row = 2)
+labelSetupWarning = ttk.Label(frameSetup, textvariable = warningLabel)
+labelSetupWarning.grid(column = 1, row = 2)
+labelsWarning.append(labelSetupWarning)
 
 ttk.Label(frameSetup, text = "Front Wing: ", padding = "40 0 0 0").grid(column = 5, row = 0, sticky = W+E)
 ttk.Label(frameSetup, text = "Rear Wing: ", padding = "40 0 0 0").grid(column = 5, row = 1, sticky = W+E)
@@ -1230,7 +1292,9 @@ ttk.Entry(frameStrategy, width = 10, textvariable = inputWear, validate = "key",
 ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 9, row = 4, sticky = W+E)
 
 # LABELS
-ttk.Label(frameStrategy, textvariable = warningLabel).grid(column = 9, row = 2, columnspan = 2)
+labelStrategyWarning = ttk.Label(frameStrategy, textvariable = warningLabel)
+labelStrategyWarning.grid(column = 9, row = 2, columnspan = 2)
+labelsWarning.append(labelStrategyWarning)
 ttk.Label(frameStrategy, text = "Wear:", padding = "0 10 5 5").grid(column = 9, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Laps", padding = "0 0 10 0").grid(column = 9, row = 3, sticky = W+E)
 ttk.Label(frameStrategy, text = "Fuel", padding = "0 0 10 0").grid(column = 10, row = 3, sticky = W+E)
@@ -1262,6 +1326,18 @@ for values in grid:
 		ttk.Label(frameStrategy, textvariable = value).grid(column = x, row = y, sticky = (E))
 		y = y + 1
 	x = x + 1
+
+labelExtraTotal = ttk.Label(frameStrategy, textvariable = totals[0])
+labelExtraTotal.grid(column = 8, row = 1, sticky = E)
+labelSoftTotal = ttk.Label(frameStrategy, textvariable = totals[1])
+labelSoftTotal.grid(column = 8, row = 2, sticky = E)
+labelMediumTotal = ttk.Label(frameStrategy, textvariable = totals[2])
+labelMediumTotal.grid(column = 8, row = 3, sticky = E)
+labelHardTotal = ttk.Label(frameStrategy, textvariable = totals[3])
+labelHardTotal.grid(column = 8, row = 4, sticky = E)
+labelRainTotal = ttk.Label(frameStrategy, textvariable = totals[4])
+labelRainTotal.grid(column = 8, row = 5, sticky = E)
+labelsTotal = [labelExtraTotal, labelSoftTotal, labelMediumTotal, labelHardTotal, labelRainTotal]
 
 # Wear page
 # BUTTONS
@@ -1295,7 +1371,10 @@ ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center", 
 ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 3, sticky = E)
 ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 3, sticky = E)
 # LABELS
-ttk.Label(frameWear, textvariable = warningLabel).grid(column = 4, row = 0, columnspan = 2)
+labelWearWarning = ttk.Label(frameWear, textvariable = warningLabel)
+labelWearWarning.grid(column = 4, row = 0, columnspan = 2)
+labelsWarning.append(labelWearWarning)
+
 ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 6, row = 0, sticky = W)
 
 ttk.Label(frameWear, text = "Chassis", padding = "2 0 2 10").grid(column = 1, row = 1, sticky = E)
@@ -1327,17 +1406,30 @@ ttk.Label(frameWear, textvariable = raceBrakes, padding = "5 0").grid(column = 9
 ttk.Label(frameWear, textvariable = raceSuspension, padding = "5 0").grid(column = 10, row = 4, sticky = E)
 ttk.Label(frameWear, textvariable = raceElectronics, padding = "5 0").grid(column = 11, row = 4, sticky = E)
 
-ttk.Label(frameWear, textvariable = endChassis, padding = "5 0").grid(column = 1, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endEngine, padding = "5 0").grid(column = 2, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endFWing, padding = "5 0").grid(column = 3, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endRWing, padding = "5 0").grid(column = 4, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endUnderbody, padding = "5 0").grid(column = 5, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endSidepods, padding = "5 0").grid(column = 6, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endCooling, padding = "5 0").grid(column = 7, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endGearbox, padding = "5 0").grid(column = 8, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endBrakes, padding = "5 0").grid(column = 9, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endSuspension, padding = "5 0").grid(column = 10, row = 5, sticky = E)
-ttk.Label(frameWear, textvariable = endElectronics, padding = "5 0").grid(column = 11, row = 5, sticky = E)
+labelEndChassis = ttk.Label(frameWear, textvariable = endChassis, padding = "5 0")
+labelEndChassis.grid(column = 1, row = 5, sticky = E)
+labelEndEngine = ttk.Label(frameWear, textvariable = endEngine, padding = "5 0")
+labelEndEngine.grid(column = 2, row = 5, sticky = E)
+labelEndFWing = ttk.Label(frameWear, textvariable = endFWing, padding = "5 0")
+labelEndFWing.grid(column = 3, row = 5, sticky = E)
+labelEndRWing = ttk.Label(frameWear, textvariable = endRWing, padding = "5 0")
+labelEndRWing.grid(column = 4, row = 5, sticky = E)
+labelEndUnderbody = ttk.Label(frameWear, textvariable = endUnderbody, padding = "5 0")
+labelEndUnderbody.grid(column = 5, row = 5, sticky = E)
+labelEndSidepods = ttk.Label(frameWear, textvariable = endSidepods, padding = "5 0")
+labelEndSidepods.grid(column = 6, row = 5, sticky = E)
+labelEndCooling = ttk.Label(frameWear, textvariable = endCooling, padding = "5 0")
+labelEndCooling.grid(column = 7, row = 5, sticky = E)
+labelEndGearbox = ttk.Label(frameWear, textvariable = endGearbox, padding = "5 0")
+labelEndGearbox.grid(column = 8, row = 5, sticky = E)
+labelEndBrakes = ttk.Label(frameWear, textvariable = endBrakes, padding = "5 0")
+labelEndBrakes.grid(column = 9, row = 5, sticky = E)
+labelEndSuspension = ttk.Label(frameWear, textvariable = endSuspension, padding = "5 0")
+labelEndSuspension.grid(column = 10, row = 5, sticky = E)
+labelEndElectronics = ttk.Label(frameWear, textvariable = endElectronics, padding = "5 0")
+labelEndElectronics.grid(column = 11, row = 5, sticky = E)
+
+endLabels = [labelEndChassis, labelEndElectronics, labelEndFWing, labelEndRWing, labelEndUnderbody, labelEndSidepods, labelEndCooling, labelEndGearbox, labelEndBrakes, labelEndSuspension, labelEndElectronics]
 
 
 # Automatically organize the window
