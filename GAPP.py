@@ -7,31 +7,41 @@ import collections
 import math
 import os
 import sys
+from pathlib import Path
 from lxml import html
 from lxml import etree
 
 '''
 Data Storage Setup
 '''
-relfilename = "data.dat"
-try:
-	base_path = sys._MEIPASS
-except:
-	base_path = os.path.abspath(".")
-filename = os.path.join(base_path, relfilename)
+dataPath = str(Path.home()) + "\Documents\GAPP"
+if not os.path.exists(dataPath):
+	os.makedirs(dataPath)
+
+filename = dataPath + "\data.dat"
+
 try:
 	file = open(filename, "x")
 	file.close()
 except:
 	pass
-file = open(filename, "r")
+
+try:
+	file = open(filename, "r")
+except:
+	pass
+
 try:
 	credentialCheck = int(float(file.readline()))
 except:
 	credentialCheck = 0
-username = file.readline()
-password = file.readline()
-file.close()
+
+try:
+	username = file.readline()
+	password = file.readline()
+	file.close()
+except:
+	pass
 
 '''
 Track Data
