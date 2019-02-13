@@ -723,14 +723,6 @@ def wearCalc(startWear, partLevel, driverFactor, trackName, clearTrackRisk, i):
 	levelFactors = [1.0193, 1.0100, 1.0073, 1.0053, 1.0043, 1.0037, 1.0043, 1.0097, 1.0052]
 	return (trackWearData[trackName][i] * (levelFactors[partLevel - 1] ** clearTrackRisk) * driverFactor)
 
-# Warning window
-def warning(*args):
-	frontWing.set("Login")
-	rearWing.set("incorrect")
-
-def exit():
-	warning.Toplevel.destroy()
-
 # Calculate the setup and others
 def calculate(*args):
 	if(inputRememberCredentials.get() == 1):
@@ -764,16 +756,16 @@ def calculate(*args):
 			setup = setupCalc(username, password, weather, session)		
 			if(setup[0] == 0):
 				warningLabel.set("Incorrect Login Details")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			elif(setup[0] == 1):
 				warningLabel.set("VIPER Family Team Only")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			else:
-				warningLabel.set("")
-				for label in labelsWarning:
-					label.configure(style = "Black.Label")
+				warningLabel.set("Updated")
+				foregroundColour("Status.Label", "#00FF00")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 				frontWing.set(str(setup[0]))
 				rearWing.set(str(setup[1]))
 				engine.set(str(setup[2]))
@@ -805,16 +797,16 @@ def calculate(*args):
 
 			if(strategy == 1):
 				warningLabel.set("Incorrect Login Details")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			elif(strategy == 2):
 				warningLabel.set("VIPER Family Team Only")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			else:
-				warningLabel.set("")
-				for label in labelsWarning:
-					label.configure(style = "Black.Label")
+				warningLabel.set("Updated")
+				foregroundColour("Status.Label", "#00FF00")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 		elif(tab == "Car Wear"):
 			# Get user and password
 			username = entryUsername.get()
@@ -833,13 +825,13 @@ def calculate(*args):
 			driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 			try:
 				driverURL = "https://gpro.net/gb/" + driverID[0]
-				warningLabel.set("")
-				for label in labelsWarning:
-					label.configure(style = "Black.Label")
+				warningLabel.set("Updated")
+				foregroundColour("Status.Label", "#00FF00")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			except:
 				warningLabel.set("Incorrect Login Details")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 				return
 
 			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
@@ -848,8 +840,8 @@ def calculate(*args):
 			teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 			if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
 				warningLabel.set("VIPER Family Team Only")
-				for label in labelsWarning:
-					label.configure(style = "Red.Label")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 
 			driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 			tree = html.fromstring(driverResult.content)
@@ -910,20 +902,20 @@ def fillWear():
 		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
 		try:
 			driverURL = "https://gpro.net/gb/" + driverID[0]
-			warningLabel.set("")
-			for label in labelsWarning:
-				label.configure(style = "Red.Label")
+			warningLabel.set("Updated")
+			foregroundColour("Status.Label", "#00FF00")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 		except:
 			warningLabel.set("Incorrect Login Details")
-			for label in labelsWarning:
-				label.configure(style = "Red.Label")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 
 		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
 		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
 			warningLabel.set("VIPER Family Team Only")
-			for label in labelsWarning:
-				label.configure(style = "Red.Label")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 
 		# URL for car
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
@@ -1024,6 +1016,9 @@ def validateInt(P):
 			return True
 		except:
 			return False
+
+def foregroundColour(styleName, colourName):
+	style.configure(styleName, foreground = colourName)
 
 # Create the root window
 root = Tk()
@@ -1287,13 +1282,13 @@ endWears = [endChassis, endEngine, endFWing, endRWing, endUnderbody, endSidepods
 
 # Creating Styles
 style = ttk.Style()
+style.configure("Status.Label", foreground = "black")
 style.configure("Red.Label", foreground = "red")
-style.configure("Black.Label", foreground = "black")
 style.configure("Orange.Label", foreground = "orange")
 style.configure("Green.Label", foreground = "green")
 
 # And a list of labels to apply the warnings
-labelsWarning = []
+labelsStatus = []
 
 # Build the pages
 # Setup page
@@ -1322,9 +1317,9 @@ ttk.Label(frameSetup, text = "Email: ").grid(column = 0, row = 0, sticky = (W, E
 ttk.Label(frameSetup, text = "Password: ").grid(column = 0, row = 1, sticky = (W, E))
 ttk.Label(frameSetup, text = "Session: ", padding = "40 0 0 0").grid(column = 2, row = 0, sticky = E)
 ttk.Label(frameSetup, text = "Weather: ").grid(column = 2, row = 4, sticky = E)
-labelSetupWarning = ttk.Label(frameSetup, textvariable = warningLabel)
-labelSetupWarning.grid(column = 1, row = 3)
-labelsWarning.append(labelSetupWarning)
+labelSetupStatus = ttk.Label(frameSetup, textvariable = warningLabel)
+labelSetupStatus.grid(column = 1, row = 3)
+labelsStatus.append(labelSetupStatus)
 
 ttk.Label(frameSetup, text = "Front Wing: ", padding = "40 0 0 0").grid(column = 5, row = 0, sticky = W+E)
 ttk.Label(frameSetup, text = "Rear Wing: ", padding = "40 0 0 0").grid(column = 5, row = 1, sticky = W+E)
@@ -1351,9 +1346,9 @@ ttk.Entry(frameStrategy, width = 10, textvariable = inputWear, validate = "key",
 ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 9, row = 4, sticky = W+E)
 
 # LABELS
-labelStrategyWarning = ttk.Label(frameStrategy, textvariable = warningLabel)
-labelStrategyWarning.grid(column = 9, row = 2, columnspan = 2)
-labelsWarning.append(labelStrategyWarning)
+labelStrategyStatus = ttk.Label(frameStrategy, textvariable = warningLabel)
+labelStrategyStatus.grid(column = 9, row = 2, columnspan = 2)
+labelsStatus.append(labelStrategyStatus)
 ttk.Label(frameStrategy, text = "Wear:", padding = "0 10 5 5").grid(column = 9, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Laps", padding = "0 0 10 0").grid(column = 9, row = 3, sticky = W+E)
 ttk.Label(frameStrategy, text = "Fuel", padding = "0 0 10 0").grid(column = 10, row = 3, sticky = W+E)
@@ -1430,9 +1425,9 @@ ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center", 
 ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 3, sticky = E)
 ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 3, sticky = E)
 # LABELS
-labelWearWarning = ttk.Label(frameWear, textvariable = warningLabel)
-labelWearWarning.grid(column = 4, row = 0, columnspan = 2)
-labelsWarning.append(labelWearWarning)
+labelWearStatus = ttk.Label(frameWear, textvariable = warningLabel)
+labelWearStatus.grid(column = 4, row = 0, columnspan = 2)
+labelsStatus.append(labelWearStatus)
 
 ttk.Label(frameWear, text = "Risk:", padding = "5 0").grid(column = 6, row = 0, sticky = W)
 
@@ -1490,6 +1485,8 @@ labelEndElectronics.grid(column = 11, row = 5, sticky = E)
 
 endLabels = [labelEndChassis, labelEndElectronics, labelEndFWing, labelEndRWing, labelEndUnderbody, labelEndSidepods, labelEndCooling, labelEndGearbox, labelEndBrakes, labelEndSuspension, labelEndElectronics]
 
+for label in labelsStatus:
+	label.configure(style = "Status.Label")
 
 # Automatically organize the window
 for child in frameSetup.winfo_children(): child.grid_configure(padx=5, pady=5)
