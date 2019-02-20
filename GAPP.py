@@ -174,6 +174,140 @@ trackWearData = {
 	"Zolder": [17.44, 19.86, 25.24, 22.78, 20.51, 22.81, 21.45, 40.97, 29.02, 31.95, 18.46]
 }
 
+chassisLevelData = [
+	[0, 0, 0],
+	[1, 2, 2],
+	[1, 1, 1],
+	[0, 2, 1],
+	[1, 1, 2],
+	[1, 2, 2],
+	[0, 1, 1],
+	[1, 2, 2],
+	[1, 1, 1],
+]
+
+engineLevelData = [
+	[0, 0, 0],
+	[6, 0, 2],
+	[6, 0, 2],
+	[6, 0, 2],
+	[6, 0, 2],
+	[6, 0, 3],
+	[6, 0, 2],
+	[6, 0, 2],
+	[6, 0, 2],
+]
+
+frontWingLevelData = [
+	[0, 0, 0],
+	[1, 3, 0],
+	[1, 4, 0],
+	[0, 3, 0],
+	[1, 3, 0],
+	[1, 3, 0],
+	[0, 3, 0],
+	[1, 3, 0],
+	[1, 3, 0],
+]
+
+rearWingLevelData = [
+	[0, 0, 0],
+	[0, 2, 3],
+	[0, 3, 2],
+	[0, 2, 3],
+	[0, 2, 2],
+	[0, 2, 3],
+	[0, 2, 2],
+	[0, 2, 3],
+	[0, 3, 2],
+]
+
+underbodyLevelData = [
+	[0, 0, 0],
+	[0, 1, 1],
+	[0, 1, 0],
+	[0, 1, 0],
+	[0, 0, 1],
+	[0, 1, 0],
+	[0, 1, 1],
+	[0, 1, 0],
+	[0, 0, 0],
+]
+
+sidepodsLevelData = [
+	[0, 0, 0],
+	[1, 1, 0],
+	[1, 1, 0],
+	[0, 1, 0],
+	[1, 0, 0],
+	[1, 1, 0],
+	[0, 1, 0],
+	[1, 1, 0],
+	[1, 0, 0],
+]
+
+coolingLevelData = [
+	[0, 0, 0],
+	[2, 0, 0],
+	[1, 0, 0],
+	[1, 0, 0],
+	[1, 0, 0],
+	[1, 0, 0],
+	[2, 0, 0],
+	[1, 0, 0],
+	[1, 0, 0],
+]
+
+gearboxLevelData = [
+	[0, 0, 0],
+	[3, 1, 5],
+	[4, 1, 4],
+	[3, 1, 4],
+	[3, 1, 4],
+	[3, 1, 5],
+	[3, 1, 4],
+	[3, 1, 4],
+	[3, 1, 5],
+]
+
+brakesLevelData = [
+	[0, 0, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+	[0, 2, 0],
+]
+
+suspensionLevelData = [
+	[0, 0, 0],
+	[0, 2, 2],
+	[0, 2, 1],
+	[0, 2, 1],
+	[0, 2, 2],
+	[0, 2, 1],
+	[0, 2, 1],
+	[0, 2, 2],
+	[0, 2, 1],
+]
+
+electronicsLevelData = [
+	[0, 0, 0],
+	[2, 0, 2],
+	[1, 0, 1],
+	[1, 0, 1],
+	[1, 0, 2],
+	[1, 0, 1],
+	[2, 0, 1],
+	[1, 0, 1],
+	[1, 0, 2],
+]
+
+partLevelData = [chassisLevelData, engineLevelData, frontWingLevelData, rearWingLevelData, underbodyLevelData, sidepodsLevelData, coolingLevelData, gearboxLevelData, brakesLevelData, suspensionLevelData, electronicsLevelData]
+
 # Data collection function
 def setupCalc(username, password, weather, sessionTemp):
 	# Create our logon payload. 'hiddenToken' may change at a later date.
@@ -723,6 +857,16 @@ def wearCalc(startWear, partLevel, driverFactor, trackName, clearTrackRisk, i):
 	levelFactors = [1.0193, 1.0100, 1.0073, 1.0053, 1.0043, 1.0037, 1.0043, 1.0097, 1.0052]
 	return (trackWearData[trackName][i] * (levelFactors[partLevel - 1] ** clearTrackRisk) * driverFactor)
 
+def profileCalc(partIndex, partLevel):
+	P = H = A = 0
+	profile = [P, H, A]
+
+	for i in range(3):
+		for j in range(partLevel):
+			profile[i] += partLevelData[partIndex][j][i]
+
+	return profile
+
 # Calculate the setup and others
 def calculate(*args):
 	if(inputRememberCredentials.get() == 1):
@@ -863,9 +1007,9 @@ def calculate(*args):
 					startWears[i].set(0)
 
 				try:
-					int(levels[i].get())
+					int(wearlevels[i].get())
 				except:
-					levels[i].set(1)
+					wearlevels[i].set(1)
 
 			try:
 				int(wearClearTrackRisk.get())
@@ -873,7 +1017,7 @@ def calculate(*args):
 				wearClearTrackRisk.set(0)
 
 			for i in range(len(startWears)):
-				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(levels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
+				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(wearlevels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
 				if(endWears[i].get() >= 90):
 					endLabels[i].configure(style = "Red.Label")
@@ -881,6 +1025,8 @@ def calculate(*args):
 					endLabels[i].configure(style = "Orange.Label")
 				else:
 					endLabels[i].configure(style = "Black.Label")
+		elif(tab == "PHA"):
+			print("PHA")
 	except ValueError:
 		pass
 
@@ -924,17 +1070,17 @@ def fillWear():
 		carResult = session.get(carURL, headers=dict(referer=carURL))
 		tree = html.fromstring(carResult.content)
 
-		levelChassis.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())")))
-		levelEngine.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())")))
-		levelFWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[2]/text())")))
-		levelRWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())")))
-		levelUnderbody.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[2]/text())")))
-		levelSidepods.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[2]/text())")))
-		levelCooling.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[2]/text())")))
-		levelGearbox.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[2]/text())")))
-		levelBrakes.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[2]/text())")))
-		levelSuspension.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())")))
-		levelElectronics.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())")))
+		wearlevelChassis.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())")))
+		wearlevelEngine.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())")))
+		wearlevelFWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[2]/text())")))
+		wearlevelRWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())")))
+		wearlevelUnderbody.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[2]/text())")))
+		wearlevelSidepods.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[2]/text())")))
+		wearlevelCooling.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[2]/text())")))
+		wearlevelGearbox.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[2]/text())")))
+		wearlevelBrakes.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[2]/text())")))
+		wearlevelSuspension.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())")))
+		wearlevelElectronics.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())")))
 
 		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/text())"))
 		if(carWearChassis == ""):
@@ -993,6 +1139,67 @@ def fillWear():
 	except ValueError:
 		pass
 
+def fillProfile():
+	try:
+		username = entryUsername.get()
+		password = entryPassword.get()
+		# Create our logon payload. 'hiddenToken' may change at a later date.
+		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+		
+		# Logon to GPRO using the logon information provided and store that under our session
+		session = requests.session()
+		loginURL = "https://gpro.net/gb/Login.asp"
+		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+
+		# Gather the home page information and collect driver ID, track ID, team name, and manager ID
+		tree = html.fromstring(logonResult.content)
+
+		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
+		try:
+			driverURL = "https://gpro.net/gb/" + driverID[0]
+			warningLabel.set("Updated")
+			foregroundColour("Status.Label", "#00FF00")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+		except:
+			warningLabel.set("Incorrect Login Details")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+
+		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
+		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
+			warningLabel.set("VIPER Family Team Only")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+
+		# URL for car
+		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
+
+		# Request the car information page and scrape the car character and part level and wear data
+		carResult = session.get(carURL, headers=dict(referer=carURL))
+		tree = html.fromstring(carResult.content)
+
+		profilelevelChassis.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[2]/text())")))
+		profilelevelEngine.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[2]/text())")))
+		profilelevelFWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[2]/text())")))
+		profilelevelRWing.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[2]/text())")))
+		profilelevelUnderbody.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[2]/text())")))
+		profilelevelSidepods.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[2]/text())")))
+		profilelevelCooling.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[2]/text())")))
+		profilelevelGearbox.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[2]/text())")))
+		profilelevelBrakes.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[2]/text())")))
+		profilelevelSuspension.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())")))
+		profilelevelElectronics.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())")))
+
+		profilePartLevels = [profilelevelChassis, profilelevelEngine, profilelevelFWing, profilelevelRWing, profilelevelUnderbody, profilelevelSidepods, profilelevelCooling, profilelevelGearbox, profilelevelBrakes, profilelevelSuspension, profilelevelElectronics]
+
+		for i in range(len(PHA)):
+			for j in range(len(PHA[i])):
+				PHA[i][j].set(profileCalc(i, profilePartLevels[i].get())[j])
+	except:
+		pass
+
+
 def validateFloat(P):
 	if(P == ""):
 		return True
@@ -1035,11 +1242,13 @@ notebook = ttk.Notebook(root)
 frameSetup = ttk.Frame(notebook)
 frameStrategy = ttk.Frame(notebook)
 frameWear = ttk.Frame(notebook)
+frameProfile = ttk.Frame(notebook)
 
 # Add the pages to notebook
 notebook.add(frameSetup, text = "Setup")
 notebook.add(frameStrategy, text = "Strategy")
 notebook.add(frameWear, text = "Car Wear")
+notebook.add(frameProfile, text = "PHA")
 
 # Configure root layout
 root.columnconfigure(0, weight = 1)
@@ -1201,29 +1410,29 @@ wearBrakes.set(0)
 wearSuspension.set(0)
 wearElectronics.set(0)
 
-levelChassis = IntVar()
-levelEngine = IntVar()
-levelFWing = IntVar()
-levelRWing = IntVar()
-levelUnderbody = IntVar()
-levelSidepods = IntVar()
-levelCooling = IntVar()
-levelGearbox = IntVar()
-levelBrakes = IntVar()
-levelSuspension = IntVar()
-levelElectronics = IntVar()
+wearlevelChassis = IntVar()
+wearlevelEngine = IntVar()
+wearlevelFWing = IntVar()
+wearlevelRWing = IntVar()
+wearlevelUnderbody = IntVar()
+wearlevelSidepods = IntVar()
+wearlevelCooling = IntVar()
+wearlevelGearbox = IntVar()
+wearlevelBrakes = IntVar()
+wearlevelSuspension = IntVar()
+wearlevelElectronics = IntVar()
 
-levelChassis.set(0)
-levelEngine.set(0)
-levelFWing.set(0)
-levelRWing.set(0)
-levelUnderbody.set(0)
-levelSidepods.set(0)
-levelCooling.set(0)
-levelGearbox.set(0)
-levelBrakes.set(0)
-levelSuspension.set(0)
-levelElectronics.set(0)
+wearlevelChassis.set(0)
+wearlevelEngine.set(0)
+wearlevelFWing.set(0)
+wearlevelRWing.set(0)
+wearlevelUnderbody.set(0)
+wearlevelSidepods.set(0)
+wearlevelCooling.set(0)
+wearlevelGearbox.set(0)
+wearlevelBrakes.set(0)
+wearlevelSuspension.set(0)
+wearlevelElectronics.set(0)
 
 # Output
 raceChassis = DoubleVar()
@@ -1276,9 +1485,114 @@ endElectronics.set(0)
 
 # Group the wear values for easy getting/setting
 startWears = [wearChassis, wearEngine, wearFWing, wearRWing, wearUnderbody, wearSidepods, wearCooling, wearGearbox, wearBrakes, wearSuspension, wearElectronics]
-levels = [levelChassis, levelEngine, levelFWing, levelRWing, levelUnderbody, levelSidepods, levelCooling, levelGearbox, levelBrakes, levelSuspension, levelElectronics]
+wearlevels = [wearlevelChassis, wearlevelEngine, wearlevelFWing, wearlevelRWing, wearlevelUnderbody, wearlevelSidepods, wearlevelCooling, wearlevelGearbox, wearlevelBrakes, wearlevelSuspension, wearlevelElectronics]
 raceWears = [raceChassis, raceEngine, raceFWing, raceRWing, raceUnderbody, raceSidepods, raceCooling, raceGearbox, raceBrakes, raceSuspension, raceElectronics]
 endWears = [endChassis, endEngine, endFWing, endRWing, endUnderbody, endSidepods, endCooling, endGearbox, endBrakes, endSuspension, endElectronics]
+
+# Profile variables
+profilelevelChassis = IntVar()
+profilelevelEngine = IntVar()
+profilelevelFWing = IntVar()
+profilelevelRWing = IntVar()
+profilelevelUnderbody = IntVar()
+profilelevelSidepods = IntVar()
+profilelevelCooling = IntVar()
+profilelevelGearbox = IntVar()
+profilelevelBrakes = IntVar()
+profilelevelSuspension = IntVar()
+profilelevelElectronics = IntVar()
+
+profilelevelChassis.set(0)
+profilelevelEngine.set(0)
+profilelevelFWing.set(0)
+profilelevelRWing.set(0)
+profilelevelUnderbody.set(0)
+profilelevelSidepods.set(0)
+profilelevelCooling.set(0)
+profilelevelGearbox.set(0)
+profilelevelBrakes.set(0)
+profilelevelSuspension.set(0)
+profilelevelElectronics.set(0)
+
+PChassis = IntVar()
+HChassis = IntVar()
+AChassis = IntVar()
+PHAChassis = [PChassis, HChassis, AChassis]
+
+PEngine = IntVar()
+HEngine = IntVar()
+AEngine = IntVar()
+PHAEngine = [PEngine, HEngine, AEngine]
+
+PFrontWing = IntVar()
+HFrontWing = IntVar()
+AFrontWing = IntVar()
+PHAFrontWing = [PFrontWing, HFrontWing, AFrontWing]
+
+PRearWing = IntVar()
+HRearWing = IntVar()
+ARearWing = IntVar()
+PHARearWing = [PRearWing, HRearWing, ARearWing]
+
+PUnderbody = IntVar()
+HUnderbody = IntVar()
+AUnderbody = IntVar()
+PHAUnderbody = [PUnderbody, HUnderbody, AUnderbody]
+
+PSidepods = IntVar()
+HSidepods = IntVar()
+ASidepods = IntVar()
+PHASidepods = [PSidepods, HSidepods, ASidepods]
+
+PCooling = IntVar()
+HCooling = IntVar()
+ACooling = IntVar()
+PHACooling = [PCooling, HCooling, ACooling]
+
+PGearbox = IntVar()
+HGearbox = IntVar()
+AGearbox = IntVar()
+PHAGearbox = [PGearbox, HGearbox, AGearbox]
+
+PBrakes = IntVar()
+HBrakes = IntVar()
+ABrakes = IntVar()
+PHABrakes = [PBrakes, HBrakes, ABrakes]
+
+PSuspension = IntVar()
+HSuspension = IntVar()
+ASuspension = IntVar()
+PHASuspension = [PSuspension, HSuspension, ASuspension]
+
+PElectronics = IntVar()
+HElectronics = IntVar()
+AElectronics = IntVar()
+PHAElectronics = [PElectronics, HElectronics, AElectronics]
+
+PParts = IntVar()
+HParts = IntVar()
+AParts = IntVar()
+PHAParts = [PParts, HParts, AParts]
+
+PHA = [PHAChassis, PHAEngine, PHAFrontWing, PHARearWing, PHAUnderbody, PHASidepods, PHACooling, PHAGearbox, PHABrakes, PHASuspension, PHAElectronics, PHAParts]
+
+for part in PHA:
+	for point in part:
+		point.set(0)
+
+profileTestingPower = IntVar()
+profileTestingHandling = IntVar()
+profileTestingAcceleration = IntVar()
+profileTestingPower.set(0)
+profileTestingHandling.set(0)
+profileTestingAcceleration.set(0)
+
+profilePowerTotal = IntVar()
+profileHandlingTotal = IntVar()
+profileAccelerationTotal = IntVar()
+profilePowerTotal.set(0)
+profileHandlingTotal.set(0)
+profileAccelerationTotal.set(0)
 
 # Creating Styles
 style = ttk.Style()
@@ -1413,17 +1727,17 @@ ttk.Entry(frameWear, width = 5, textvariable = wearBrakes, justify = "center", v
 ttk.Entry(frameWear, width = 5, textvariable = wearSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 2)
 ttk.Entry(frameWear, width = 5, textvariable = wearElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 2)
 
-ttk.Entry(frameWear, width = 5, textvariable = levelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelEngine, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 2, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelFWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 3, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelRWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 4, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelUnderbody, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 5, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelSidepods, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 6, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelCooling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 7, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelGearbox, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 8, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelBrakes, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 9, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 3)
-ttk.Entry(frameWear, width = 5, textvariable = levelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelEngine, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 2, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelFWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 3, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelRWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 4, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelUnderbody, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 5, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelSidepods, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 6, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelCooling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 7, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelGearbox, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 8, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelBrakes, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 9, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 3)
+ttk.Entry(frameWear, width = 5, textvariable = wearlevelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 3)
 # LABELS
 labelWearStatus = ttk.Label(frameWear, textvariable = warningLabel)
 labelWearStatus.grid(column = 4, row = 0, columnspan = 2)
@@ -1485,6 +1799,67 @@ labelEndElectronics.grid(column = 11, row = 5)
 
 endLabels = [labelEndChassis, labelEndElectronics, labelEndFWing, labelEndRWing, labelEndUnderbody, labelEndSidepods, labelEndCooling, labelEndGearbox, labelEndBrakes, labelEndSuspension, labelEndElectronics]
 
+# Profile Page
+# BUTTONS
+ttk.Button(frameProfile, text = "Fill", command = fillProfile).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameProfile, text = "Calculate", command = calculate).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+
+# ENTRY
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelEngine, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 2, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelFWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 3, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelRWing, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 4, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelUnderbody, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 5, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelSidepods, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 6, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelCooling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 7, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelGearbox, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 8, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelBrakes, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 9, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelSuspension, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 2)
+ttk.Entry(frameProfile, width = 5, textvariable = profilelevelElectronics, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 11, row = 2)
+
+ttk.Entry(frameProfile, width = 5, textvariable = profileTestingPower, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 13, row = 3)
+ttk.Entry(frameProfile, width = 5, textvariable = profileTestingHandling, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 13, row = 4)
+ttk.Entry(frameProfile, width = 5, textvariable = profileTestingAcceleration, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 13, row = 5)
+
+# LABELS
+labelProfileStatus = ttk.Label(frameProfile, textvariable = warningLabel)
+labelProfileStatus.grid(column = 4, row = 0, columnspan = 2)
+labelsStatus.append(labelProfileStatus)
+
+ttk.Label(frameProfile, text = "Part").grid(column = 0, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Level").grid(column = 0, row = 2, sticky = W)
+ttk.Label(frameProfile, text = "Power").grid(column = 0, row = 3, sticky = W)
+ttk.Label(frameProfile, text = "Handling").grid(column = 0, row = 4, sticky = W)
+ttk.Label(frameProfile, text = "Acceleration").grid(column = 0, row = 5, sticky = W)
+
+ttk.Label(frameProfile, text = "Chassis").grid(column = 1, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Engine").grid(column = 2, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Front Wing").grid(column = 3, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Rear Wing").grid(column = 4, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Underbody").grid(column = 5, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Sidepods").grid(column = 6, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Cooling").grid(column = 7, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Gearbox").grid(column = 8, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Brakes").grid(column = 9, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Suspension").grid(column = 10, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Electronics").grid(column = 11, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Part Total").grid(column = 12, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Testing").grid(column = 13, row = 1, sticky = W)
+ttk.Label(frameProfile, text = "Total").grid(column = 14, row = 1, sticky = W)
+
+ttk.Label(frameProfile, textvariable = profilePowerTotal).grid(column = 14, row = 3)
+ttk.Label(frameProfile, textvariable = profileHandlingTotal).grid(column = 14, row = 4)
+ttk.Label(frameProfile, textvariable = profileAccelerationTotal).grid(column = 14, row = 5)
+
+x = 1
+for part in PHA:
+	y = 3
+	for point in part:
+		ttk.Label(frameProfile, textvariable = point, justify = "center").grid(column = x, row = y)
+		y += 1
+	x += 1
+
+# Set the style for the status labels
 for label in labelsStatus:
 	label.configure(style = "Status.Label")
 
@@ -1492,6 +1867,7 @@ for label in labelsStatus:
 for child in frameSetup.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameStrategy.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameWear.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in frameProfile.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
