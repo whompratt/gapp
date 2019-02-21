@@ -1193,9 +1193,30 @@ def fillProfile():
 
 		profilePartLevels = [profilelevelChassis, profilelevelEngine, profilelevelFWing, profilelevelRWing, profilelevelUnderbody, profilelevelSidepods, profilelevelCooling, profilelevelGearbox, profilelevelBrakes, profilelevelSuspension, profilelevelElectronics]
 
-		for i in range(len(PHA)):
+		profilePowerTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[1]/text())")))
+		profileHandlingTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[2]/text())")))
+		profileAccelerationTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[3]/text())")))
+
+		for i in range(len(PHA) - 1):
 			for j in range(len(PHA[i])):
 				PHA[i][j].set(profileCalc(i, profilePartLevels[i].get())[j])
+
+		PTotal = 13
+		HTotal = 13
+		ATotal = 13
+
+		for i in range(len(PHA) - 1):
+			PTotal += PHA[i][0].get()
+			HTotal += PHA[i][1].get()
+			ATotal += PHA[i][2].get()
+
+		PParts.set(PTotal)
+		HParts.set(HTotal)
+		AParts.set(ATotal)
+
+		profileTestingPower.set(int(profilePowerTotal.get()) - int(PParts.get()))
+		profileTestingHandling.set(int(profileHandlingTotal.get()) - int(HParts.get()))
+		profileTestingAcceleration.set(int(profileAccelerationTotal.get()) - int(AParts.get()))
 	except:
 		pass
 
