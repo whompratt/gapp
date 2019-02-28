@@ -1140,6 +1140,7 @@ root.resizable(False, False)
 
 # Pack the notebook after doing everything else to set the window size and organize everything
 notebook.pack(expand = True, fill = BOTH)
+notebook.enable_traversal()
 
 # Open the window
 root.mainloop()
