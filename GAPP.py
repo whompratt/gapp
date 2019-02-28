@@ -174,139 +174,19 @@ trackWearData = {
 	"Zolder": [17.44, 19.86, 25.24, 22.78, 20.51, 22.81, 21.45, 40.97, 29.02, 31.95, 18.46]
 }
 
-chassisLevelData = [
-	[0, 0, 0],
-	[1, 2, 2],
-	[1, 1, 1],
-	[0, 2, 1],
-	[1, 1, 2],
-	[1, 2, 2],
-	[0, 1, 1],
-	[1, 2, 2],
-	[1, 1, 1],
-]
-
-engineLevelData = [
-	[0, 0, 0],
-	[6, 0, 2],
-	[6, 0, 2],
-	[6, 0, 2],
-	[6, 0, 2],
-	[6, 0, 3],
-	[6, 0, 2],
-	[6, 0, 2],
-	[6, 0, 2],
-]
-
-frontWingLevelData = [
-	[0, 0, 0],
-	[1, 3, 0],
-	[1, 4, 0],
-	[0, 3, 0],
-	[1, 3, 0],
-	[1, 3, 0],
-	[0, 3, 0],
-	[1, 3, 0],
-	[1, 3, 0],
-]
-
-rearWingLevelData = [
-	[0, 0, 0],
-	[0, 2, 3],
-	[0, 3, 2],
-	[0, 2, 3],
-	[0, 2, 2],
-	[0, 2, 3],
-	[0, 2, 2],
-	[0, 2, 3],
-	[0, 3, 2],
-]
-
-underbodyLevelData = [
-	[0, 0, 0],
-	[0, 1, 1],
-	[0, 1, 0],
-	[0, 1, 0],
-	[0, 0, 1],
-	[0, 1, 0],
-	[0, 1, 1],
-	[0, 1, 0],
-	[0, 0, 0],
-]
-
-sidepodsLevelData = [
-	[0, 0, 0],
-	[1, 1, 0],
-	[1, 1, 0],
-	[0, 1, 0],
-	[1, 0, 0],
-	[1, 1, 0],
-	[0, 1, 0],
-	[1, 1, 0],
-	[1, 0, 0],
-]
-
-coolingLevelData = [
-	[0, 0, 0],
-	[2, 0, 0],
-	[1, 0, 0],
-	[1, 0, 0],
-	[1, 0, 0],
-	[1, 0, 0],
-	[2, 0, 0],
-	[1, 0, 0],
-	[1, 0, 0],
-]
-
-gearboxLevelData = [
-	[0, 0, 0],
-	[3, 1, 5],
-	[4, 1, 4],
-	[3, 1, 4],
-	[3, 1, 4],
-	[3, 1, 5],
-	[3, 1, 4],
-	[3, 1, 4],
-	[3, 1, 5],
-]
-
-brakesLevelData = [
-	[0, 0, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-	[0, 2, 0],
-]
-
-suspensionLevelData = [
-	[0, 0, 0],
-	[0, 2, 2],
-	[0, 2, 1],
-	[0, 2, 1],
-	[0, 2, 2],
-	[0, 2, 1],
-	[0, 2, 1],
-	[0, 2, 2],
-	[0, 2, 1],
-]
-
-electronicsLevelData = [
-	[0, 0, 0],
-	[2, 0, 2],
-	[1, 0, 1],
-	[1, 0, 1],
-	[1, 0, 2],
-	[1, 0, 1],
-	[2, 0, 1],
-	[1, 0, 1],
-	[1, 0, 2],
-]
-
-partLevelData = [chassisLevelData, engineLevelData, frontWingLevelData, rearWingLevelData, underbodyLevelData, sidepodsLevelData, coolingLevelData, gearboxLevelData, brakesLevelData, suspensionLevelData, electronicsLevelData]
+profileFactors = {
+	"Chassis": [0.8, 1.8, 1.4],
+	"Engine": [5.8, 0.6, 2.1],
+	"Front Wing": [0.25, 2.45, 1.2],
+	"Rear Wing": [0.25, 2.45, 1.2],
+	"Underbody": [0.2, 1.2, 0.5],
+	"Sidepods": [0.3, 0.7, 0],
+	"Cooling": [1.2, 0, 0.2],
+	"Gearbox": [3.2, 0.7, 4.1],
+	"Brakes": [0, 2, 0],
+	"Suspension": [0, 1.6, 1.2],
+	"Electronics": [1.4, 0, 1.4],
+}
 
 # Data collection function
 def setupCalc(username, password, weather, sessionTemp):
@@ -857,13 +737,12 @@ def wearCalc(startWear, partLevel, driverFactor, trackName, clearTrackRisk, i):
 	levelFactors = [1.0193, 1.0100, 1.0073, 1.0053, 1.0043, 1.0037, 1.0043, 1.0097, 1.0052]
 	return (trackWearData[trackName][i] * (levelFactors[partLevel - 1] ** clearTrackRisk) * driverFactor)
 
-def profileCalc(partIndex, partLevel):
+def profileCalc(partName, partLevel):
 	P = H = A = 0
 	profile = [P, H, A]
 
 	for i in range(3):
-		for j in range(partLevel):
-			profile[i] += partLevelData[partIndex][j][i]
+		profile[i] = int(round(partLevel * profileFactors[partName][i], 0))
 
 	return profile
 
@@ -1026,7 +905,34 @@ def calculate(*args):
 				else:
 					endLabels[i].configure(style = "Black.Label")
 		elif(tab == "PHA"):
-			print("PHA")
+			partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
+
+			for i in range(len(PHA) - 1):
+				profile = profileCalc(partNames[i], profilePartLevels[i].get())
+				for j in range(len(PHA[i])):
+					PHA[i][j].set(profile[j])
+	
+			PTotal = HTotal = ATotal = 0
+	
+			for i in range(len(PHA) - 1):
+				PTotal += PHA[i][0].get()
+				HTotal += PHA[i][1].get()
+				ATotal += PHA[i][2].get()
+	
+			PParts.set(PTotal)
+			HParts.set(HTotal)
+			AParts.set(ATotal)
+
+			for i in range(3):
+				subTotal = 0
+				subTotal += PHAParts[i].get()
+				subTotal += profileTesting[i].get()
+				profileTotals[i].set(subTotal)
+
+			warningLabel.set("Updated")
+			foregroundColour("Status.Label", "#00FF00")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			
 	except ValueError:
 		pass
 
@@ -1191,19 +1097,18 @@ def fillProfile():
 		profilelevelSuspension.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[2]/text())")))
 		profilelevelElectronics.set(int(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[2]/text())")))
 
-		profilePartLevels = [profilelevelChassis, profilelevelEngine, profilelevelFWing, profilelevelRWing, profilelevelUnderbody, profilelevelSidepods, profilelevelCooling, profilelevelGearbox, profilelevelBrakes, profilelevelSuspension, profilelevelElectronics]
-
 		profilePowerTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[1]/text())")))
 		profileHandlingTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[2]/text())")))
 		profileAccelerationTotal.set(int(tree.xpath("normalize-space(//td[contains(text(), 'Power')]/../../tr[3]/td[3]/text())")))
 
-		for i in range(len(PHA) - 1):
-			for j in range(len(PHA[i])):
-				PHA[i][j].set(profileCalc(i, profilePartLevels[i].get())[j])
+		partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
 
-		PTotal = 13
-		HTotal = 13
-		ATotal = 13
+		for i in range(len(PHA) - 1):
+			profile = profileCalc(partNames[i], profilePartLevels[i].get())
+			for j in range(len(PHA[i])):
+				PHA[i][j].set(profile[j])
+
+		PTotal = HTotal = ATotal = 0
 
 		for i in range(len(PHA) - 1):
 			PTotal += PHA[i][0].get()
@@ -1535,6 +1440,8 @@ profilelevelBrakes.set(0)
 profilelevelSuspension.set(0)
 profilelevelElectronics.set(0)
 
+profilePartLevels = [profilelevelChassis, profilelevelEngine, profilelevelFWing, profilelevelRWing, profilelevelUnderbody, profilelevelSidepods, profilelevelCooling, profilelevelGearbox, profilelevelBrakes, profilelevelSuspension, profilelevelElectronics]
+
 PChassis = IntVar()
 HChassis = IntVar()
 AChassis = IntVar()
@@ -1608,12 +1515,16 @@ profileTestingPower.set(0)
 profileTestingHandling.set(0)
 profileTestingAcceleration.set(0)
 
+profileTesting = [profileTestingPower, profileTestingHandling, profileTestingAcceleration]
+
 profilePowerTotal = IntVar()
 profileHandlingTotal = IntVar()
 profileAccelerationTotal = IntVar()
 profilePowerTotal.set(0)
 profileHandlingTotal.set(0)
 profileAccelerationTotal.set(0)
+
+profileTotals = [profilePowerTotal, profileHandlingTotal, profileAccelerationTotal]
 
 # Creating Styles
 style = ttk.Style()
