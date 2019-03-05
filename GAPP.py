@@ -218,10 +218,13 @@ def calculate(*args):
 				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(wearlevels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
 				if(endWears[i].get() >= 90):
+					print("red")
 					endLabels[i].configure(style = "Red.Label")
 				elif(endWears[i].get() >= 80):
+					print("orange")
 					endLabels[i].configure(style = "Orange.Label")
 				else:
+					print("black")
 					endLabels[i].configure(style = "Black.Label")
 		elif(tab == "PHA"):
 			partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
@@ -1048,7 +1051,7 @@ labelEndSuspension.grid(column = 10, row = 5)
 labelEndElectronics = ttk.Label(frameWear, textvariable = endElectronics, padding = "5 0")
 labelEndElectronics.grid(column = 11, row = 5)
 
-endLabels = [labelEndChassis, labelEndElectronics, labelEndFWing, labelEndRWing, labelEndUnderbody, labelEndSidepods, labelEndCooling, labelEndGearbox, labelEndBrakes, labelEndSuspension, labelEndElectronics]
+endLabels = [labelEndChassis, labelEndEngine, labelEndFWing, labelEndRWing, labelEndUnderbody, labelEndSidepods, labelEndCooling, labelEndGearbox, labelEndBrakes, labelEndSuspension, labelEndElectronics]
 
 # Profile Page
 # BUTTONS
