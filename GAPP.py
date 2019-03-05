@@ -48,19 +48,6 @@ try:
 except:
 	pass
 
-def wearCalc(startWear, partLevel, driverFactor, trackName, clearTrackRisk, i):
-	levelFactors = [1.0193, 1.0100, 1.0073, 1.0053, 1.0043, 1.0037, 1.0043, 1.0097, 1.0052]
-	return (wearData[trackName][i] * (levelFactors[partLevel - 1] ** clearTrackRisk) * driverFactor)
-
-def profileCalc(partName, partLevel):
-	P = H = A = 0
-	profile = [P, H, A]
-
-	for i in range(3):
-		profile[i] = int(round(partLevel * profileFactors[partName][i], 0))
-
-	return profile
-
 # Calculate the setup and others
 def calculate(*args):
 	if(inputRememberCredentials.get() == 1):
