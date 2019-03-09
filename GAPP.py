@@ -218,13 +218,10 @@ def calculate(*args):
 				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(wearlevels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
 				if(endWears[i].get() >= 90):
-					print("red")
 					endLabels[i].configure(style = "Red.Label")
 				elif(endWears[i].get() >= 80):
-					print("orange")
 					endLabels[i].configure(style = "Orange.Label")
 				else:
-					print("black")
 					endLabels[i].configure(style = "Black.Label")
 		elif(tab == "PHA"):
 			partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
@@ -629,6 +626,16 @@ for total in totals:
 extraTCD.set("-")
 rainTCD.set("-")
 
+nextTrackName = StringVar()
+nextTrackLaps = IntVar()
+nextTrackLapDistance = StringVar()
+nextTrackDistance = StringVar()
+
+nextTrackName.set("TRACK NAME")
+nextTrackLaps.set("LAPS")
+nextTrackLapDistance.set("LAP DISTANCE")
+nextTrackDistance.set("DISTANCE")
+
 # Wear variables
 # Input
 wearClearTrackRisk = IntVar()
@@ -922,7 +929,7 @@ ttk.Label(frameStrategy, text = "Laps", padding = "0 0 10 0").grid(column = 9, r
 ttk.Label(frameStrategy, text = "Fuel", padding = "0 0 10 0").grid(column = 10, row = 3, sticky = W+E)
 
 ttk.Label(frameStrategy, text = "Tyre", padding = "0 10").grid(column = 0, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 1, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 1, row = 0, sticky = (E))
 ttk.Label(frameStrategy, text = "Stint Laps", padding = "0 10").grid(column = 2, row = 0, sticky = W)
 ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 0, sticky = (W))
@@ -940,6 +947,17 @@ ttk.Label(frameStrategy, text = "Rain", padding = "0 0 10 0").grid(column = 0, r
 ttk.Label(frameStrategy, textvariable = lapsUpper, justify = "center").grid(column = 9, row = 5)
 ttk.Label(frameStrategy, textvariable = lapsFuelLoadLower, justify = "center").grid(column = 10, row = 4)
 ttk.Label(frameStrategy, textvariable = lapsFuelLoadUpper, justify = "center").grid(column = 10, row = 5)
+
+ttk.Label(frameStrategy, text = "Track Information", padding = "0 10 10 0").grid(column = 0, row = 6, columnspan = 2, sticky = W+E)
+ttk.Label(frameStrategy, text = "Track Name:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 7, sticky = W)
+ttk.Label(frameStrategy, text = "Laps:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 8, sticky = W)
+ttk.Label(frameStrategy, text = "Lap Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 9, sticky = W)
+ttk.Label(frameStrategy, text = "Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 10, sticky = W)
+
+ttk.Label(frameStrategy, textvariable = nextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
+ttk.Label(frameStrategy, textvariable = nextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
+ttk.Label(frameStrategy, textvariable = nextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
+ttk.Label(frameStrategy, textvariable = nextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
 
 x = 1
 for values in grid:
