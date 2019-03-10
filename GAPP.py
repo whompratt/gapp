@@ -149,6 +149,8 @@ def calculate(*args):
 				for i in range(len(labelsTotal)):
 					labelsTotal[i].configure(style = "Black.Label")
 				labelsTotal[strategy[9]].configure(style = "Green.Label")
+
+			GAPPnextTrackName.set(trackName)
 		elif(tab == "Car Wear"):
 			# Get user and password
 			username = entryUsername.get()
@@ -626,15 +628,25 @@ for total in totals:
 extraTCD.set("-")
 rainTCD.set("-")
 
-nextTrackName = StringVar()
-nextTrackLaps = IntVar()
-nextTrackLapDistance = StringVar()
-nextTrackDistance = StringVar()
+GAPPnextTrackName = StringVar()
+GAPPnextTrackLaps = IntVar()
+GAPPnextTrackLapDistance = StringVar()
+GAPPnextTrackDistance = StringVar()
 
-nextTrackName.set("TRACK NAME")
-nextTrackLaps.set("LAPS")
-nextTrackLapDistance.set("LAP DISTANCE")
-nextTrackDistance.set("DISTANCE")
+GPROnextTrackName = StringVar()
+GPROnextTrackLaps = IntVar()
+GPROnextTrackLapDistance = StringVar()
+GPROnextTrackDistance = StringVar()
+
+GAPPnextTrackName.set("-")
+GAPPnextTrackLaps.set("-")
+GAPPnextTrackLapDistance.set("-")
+GAPPnextTrackDistance.set("-")
+
+GPROnextTrackName.set("-")
+GPROnextTrackLaps.set("-")
+GPROnextTrackLapDistance.set("-")
+GPROnextTrackDistance.set("-")
 
 # Wear variables
 # Input
@@ -954,10 +966,17 @@ ttk.Label(frameStrategy, text = "Laps:", padding = "0 0 10 0").grid(column = 0, 
 ttk.Label(frameStrategy, text = "Lap Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 9, sticky = W)
 ttk.Label(frameStrategy, text = "Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 10, sticky = W)
 
-ttk.Label(frameStrategy, textvariable = nextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
-ttk.Label(frameStrategy, textvariable = nextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
-ttk.Label(frameStrategy, textvariable = nextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
-ttk.Label(frameStrategy, textvariable = nextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
+ttk.Label(frameStrategy, text = "GAPP Data", padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 6, sticky = W+S)
+ttk.Label(frameStrategy, textvariable = GAPPnextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
+ttk.Label(frameStrategy, textvariable = GAPPnextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
+ttk.Label(frameStrategy, textvariable = GAPPnextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
+ttk.Label(frameStrategy, textvariable = GAPPnextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
+
+ttk.Label(frameStrategy, text = "GPRO Data", padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 6, sticky = W+S)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackName, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 7, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackLaps, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 8, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackLapDistance, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 9, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackDistance, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 10, sticky = W)
 
 x = 1
 for values in grid:
