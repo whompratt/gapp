@@ -351,6 +351,10 @@ def strategyCalc(username, password, minimumWear, laps):
 	trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
 	trackName = trackName.strip()
 	trackTyreWearRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
+	trackLaps = str(tree.xpath("normalize-space(//td[contains(text(), 'Laps:')]/../td[2]/text())"))
+	trackLapDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance:')]/../td[2]/text())"))
+	trackLapDistance = trackLapDistance.replace(" ", "")
+	trackDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance:')]/../td[2]/text())"))
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
 		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
@@ -491,7 +495,7 @@ def strategyCalc(username, password, minimumWear, laps):
 			fastestStrategy = i
 
 
-	strategy = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals, fuelLoads, fastestStrategy]
+	strategy = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals, fuelLoads, fastestStrategy, trackName, trackLaps, trackLapDistance, trackDistance]
 
 	return strategy
 

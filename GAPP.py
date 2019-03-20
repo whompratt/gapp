@@ -150,7 +150,15 @@ def calculate(*args):
 					labelsTotal[i].configure(style = "Black.Label")
 				labelsTotal[strategy[9]].configure(style = "Green.Label")
 
-			GAPPnextTrackName.set(trackName)
+			GAPPnextTrackName.set(strategy[10])
+			GAPPnextTrackLaps.set(trackData[strategy[10]][12])
+			GAPPnextTrackLapDistance.set(str(trackData[strategy[10]][13]) + "km")
+			GAPPnextTrackDistance.set(str(trackData[strategy[10]][8]) + "km")
+
+			GPROnextTrackName.set(strategy[10])
+			GPROnextTrackLaps.set(strategy[11])
+			GPROnextTrackLapDistance.set(strategy[12])
+			GPROnextTrackDistance.set(strategy[13])
 		elif(tab == "Car Wear"):
 			# Get user and password
 			username = entryUsername.get()
