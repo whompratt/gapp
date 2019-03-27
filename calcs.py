@@ -579,7 +579,7 @@ def profileCalc(partName, partLevel):
 	profile = [P, H, A]
 
 	for i in range(3):
-		profile[i] = int(round(partLevel * profileFactors[partName][i], 0))
+		profile[i] = (partLevel * profileFactors[partName][i])
 
 	return profile
 

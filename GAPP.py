@@ -239,7 +239,7 @@ def calculate(*args):
 			for i in range(len(PHA) - 1):
 				profile = profileCalc(partNames[i], profilePartLevels[i].get())
 				for j in range(len(PHA[i])):
-					PHA[i][j].set(profile[j])
+					PHA[i][j].set(round(profile[j], 2))
 	
 			PTotal = HTotal = ATotal = 0
 	
@@ -248,15 +248,15 @@ def calculate(*args):
 				HTotal += PHA[i][1].get()
 				ATotal += PHA[i][2].get()
 	
-			PParts.set(PTotal)
-			HParts.set(HTotal)
-			AParts.set(ATotal)
+			PParts.set(int(round(PTotal, 0)))
+			HParts.set(int(round(HTotal, 0)))
+			AParts.set(int(round(ATotal, 0)))
 
 			for i in range(3):
 				subTotal = 0
 				subTotal += PHAParts[i].get()
 				subTotal += profileTesting[i].get()
-				profileTotals[i].set(subTotal)
+				profileTotals[i].set(int(round(subTotal, 0)))
 
 			warningLabel.set("Updated")
 			foregroundColour("Status.Label", "#00FF00")
@@ -435,18 +435,20 @@ def fillProfile():
 		for i in range(len(PHA) - 1):
 			profile = profileCalc(partNames[i], profilePartLevels[i].get())
 			for j in range(len(PHA[i])):
-				PHA[i][j].set(profile[j])
+				PHA[i][j].set(round(profile[j], 2))
 
-		PTotal = HTotal = ATotal = 0
+		PTotal = 0
+		HTotal = 0
+		ATotal = 0
 
 		for i in range(len(PHA) - 1):
 			PTotal += PHA[i][0].get()
 			HTotal += PHA[i][1].get()
 			ATotal += PHA[i][2].get()
 
-		PParts.set(PTotal)
-		HParts.set(HTotal)
-		AParts.set(ATotal)
+		PParts.set(int(round(PTotal, 0)))
+		HParts.set(int(round(HTotal, 0)))
+		AParts.set(int(round(ATotal, 0)))
 
 		profileTestingPower.set(int(profilePowerTotal.get()) - int(PParts.get()))
 		profileTestingHandling.set(int(profileHandlingTotal.get()) - int(HParts.get()))
@@ -791,64 +793,64 @@ profilelevelElectronics.set(0)
 
 profilePartLevels = [profilelevelChassis, profilelevelEngine, profilelevelFWing, profilelevelRWing, profilelevelUnderbody, profilelevelSidepods, profilelevelCooling, profilelevelGearbox, profilelevelBrakes, profilelevelSuspension, profilelevelElectronics]
 
-PChassis = IntVar()
-HChassis = IntVar()
-AChassis = IntVar()
+PChassis = DoubleVar()
+HChassis = DoubleVar()
+AChassis = DoubleVar()
 PHAChassis = [PChassis, HChassis, AChassis]
 
-PEngine = IntVar()
-HEngine = IntVar()
-AEngine = IntVar()
+PEngine = DoubleVar()
+HEngine = DoubleVar()
+AEngine = DoubleVar()
 PHAEngine = [PEngine, HEngine, AEngine]
 
-PFrontWing = IntVar()
-HFrontWing = IntVar()
-AFrontWing = IntVar()
+PFrontWing = DoubleVar()
+HFrontWing = DoubleVar()
+AFrontWing = DoubleVar()
 PHAFrontWing = [PFrontWing, HFrontWing, AFrontWing]
 
-PRearWing = IntVar()
-HRearWing = IntVar()
-ARearWing = IntVar()
+PRearWing = DoubleVar()
+HRearWing = DoubleVar()
+ARearWing = DoubleVar()
 PHARearWing = [PRearWing, HRearWing, ARearWing]
 
-PUnderbody = IntVar()
-HUnderbody = IntVar()
-AUnderbody = IntVar()
+PUnderbody = DoubleVar()
+HUnderbody = DoubleVar()
+AUnderbody = DoubleVar()
 PHAUnderbody = [PUnderbody, HUnderbody, AUnderbody]
 
-PSidepods = IntVar()
-HSidepods = IntVar()
-ASidepods = IntVar()
+PSidepods = DoubleVar()
+HSidepods = DoubleVar()
+ASidepods = DoubleVar()
 PHASidepods = [PSidepods, HSidepods, ASidepods]
 
-PCooling = IntVar()
-HCooling = IntVar()
-ACooling = IntVar()
+PCooling = DoubleVar()
+HCooling = DoubleVar()
+ACooling = DoubleVar()
 PHACooling = [PCooling, HCooling, ACooling]
 
-PGearbox = IntVar()
-HGearbox = IntVar()
-AGearbox = IntVar()
+PGearbox = DoubleVar()
+HGearbox = DoubleVar()
+AGearbox = DoubleVar()
 PHAGearbox = [PGearbox, HGearbox, AGearbox]
 
-PBrakes = IntVar()
-HBrakes = IntVar()
-ABrakes = IntVar()
+PBrakes = DoubleVar()
+HBrakes = DoubleVar()
+ABrakes = DoubleVar()
 PHABrakes = [PBrakes, HBrakes, ABrakes]
 
-PSuspension = IntVar()
-HSuspension = IntVar()
-ASuspension = IntVar()
+PSuspension = DoubleVar()
+HSuspension = DoubleVar()
+ASuspension = DoubleVar()
 PHASuspension = [PSuspension, HSuspension, ASuspension]
 
-PElectronics = IntVar()
-HElectronics = IntVar()
-AElectronics = IntVar()
+PElectronics = DoubleVar()
+HElectronics = DoubleVar()
+AElectronics = DoubleVar()
 PHAElectronics = [PElectronics, HElectronics, AElectronics]
 
-PParts = IntVar()
-HParts = IntVar()
-AParts = IntVar()
+PParts = DoubleVar()
+HParts = DoubleVar()
+AParts = DoubleVar()
 PHAParts = [PParts, HParts, AParts]
 
 PHA = [PHAChassis, PHAEngine, PHAFrontWing, PHARearWing, PHAUnderbody, PHASidepods, PHACooling, PHAGearbox, PHABrakes, PHASuspension, PHAElectronics, PHAParts]
@@ -857,9 +859,9 @@ for part in PHA:
 	for point in part:
 		point.set(0)
 
-profileTestingPower = IntVar()
-profileTestingHandling = IntVar()
-profileTestingAcceleration = IntVar()
+profileTestingPower = DoubleVar()
+profileTestingHandling = DoubleVar()
+profileTestingAcceleration = DoubleVar()
 profileTestingPower.set(0)
 profileTestingHandling.set(0)
 profileTestingAcceleration.set(0)
