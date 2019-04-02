@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter.ttk import Notebook
 import requests
 import re
 import csv
@@ -15,6 +16,16 @@ from lxml import etree
 #from data import *
 from calcs import *
 
+
+class Autoresized_Notebook(Notebook):
+	def __init__(self, master = None, **kw):
+		Notebook.__init__(self, master, **kw)
+		self.bind("<<NotebookTabChanged>>", self._on_tab_changed)
+
+	def _on_tab_changed(self, event):
+		event.widget.update_idletasks()
+		tab = event.widget.nametowidget(event.widget.select())
+		event.widget.configure(height = tab.winfo_reqheight(), width = tab.winfo_reqwidth())
 
 '''
 Data Storage Setup
@@ -488,13 +499,13 @@ vcmdFloat = root.register(validateFloat)
 
 
 # Create the tab controller
-notebook = ttk.Notebook(root)
+notebook = Autoresized_Notebook(root)
 
 # Create the pages
-frameSetup = ttk.Frame(notebook)
-frameStrategy = ttk.Frame(notebook)
-frameWear = ttk.Frame(notebook)
-frameProfile = ttk.Frame(notebook)
+frameSetup = ttk.Frame(notebook, name = "setup")
+frameStrategy = ttk.Frame(notebook, name = "strategy")
+frameWear = ttk.Frame(notebook, name = "wear")
+frameProfile = ttk.Frame(notebook, name = "profile")
 
 # Add the pages to notebook
 notebook.add(frameSetup, text = "Setup")
