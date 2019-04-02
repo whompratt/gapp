@@ -352,9 +352,13 @@ def strategyCalc(username, password, minimumWear, laps):
 	trackName = trackName.strip()
 	trackTyreWearRating = str(tree.xpath("normalize-space(//td[contains(text(), 'Tyre wear')]/following-sibling::td/text())"))
 	trackLaps = str(tree.xpath("normalize-space(//td[contains(text(), 'Laps:')]/../td[2]/text())"))
+	trackLapsInt = float(re.search("\d+", trackLaps).group())
 	trackLapDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Lap distance:')]/../td[2]/text())"))
 	trackLapDistance = trackLapDistance.replace(" ", "")
+	trackLapDistanceFloat = float(re.search("\d+\.\d+", trackLapDistance).group())
 	trackDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance:')]/../td[2]/text())"))
+	trackDistanceFloat = float(re.search("\d+\.\d+", trackDistance).group())
+
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
 		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
@@ -432,23 +436,23 @@ def strategyCalc(username, password, minimumWear, laps):
 	# Calcualte the number of stops for each tyre choice
 	stops = []
 	for i in range(4):
-		stops.append(int(stopCalc(trackData[trackName][8], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i], 1)))
-	stops.append(int(stopCalc(trackData[trackName][8], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4], 0.73)))
+		stops.append(int(stopCalc(trackDistanceFloat, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i], 1)))
+	stops.append(int(stopCalc(trackDistanceFloat, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], 5, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[4], 0.73)))
 
 	stintlaps = []
 	for i in range(5):
-		stintlaps.append(int(math.ceil(trackData[trackName][12] / (int(stops[i]) + 1))))
+		stintlaps.append(int(math.ceil(trackLapsInt / (int(stops[i]) + 1))))
 
 	# Calculate the fuel load for each stint given the above number of stops
 	fuelFactor = (-0.000101165467155397 * driverConcentration) + (0.0000706080613787091 * driverAggressiveness) + (-0.0000866455021527332 * driverExperience) + (-0.000163915452803369 * driverTechnicalInsight) + (-0.0126912680856842 * carLevelEngine) + (-0.0083557977071091 * carLevelElectronics)
 	fuels = []
 	for i in range(4):
-		fuels.append(int(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, int(stops[i]) + 1)))
-	fuels.append(int(fuelLoadCalc(trackData[trackName][8], float(trackData[trackName][7]), fuelFactor, int(stops[4]) + 1)))
+		fuels.append(int(fuelLoadCalc(trackDistanceFloat, float(trackData[trackName][6]), fuelFactor, int(stops[i]) + 1)))
+	fuels.append(int(fuelLoadCalc(trackDistanceFloat, float(trackData[trackName][7]), fuelFactor, int(stops[4]) + 1)))
 
 	fuelLoads = []
-	fuelLoads.append(str(math.ceil(customLapFuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, trackData[trackName][12], laps))) + " L")
-	fuelLoads.append(str(math.floor(customLapFuelLoadCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, trackData[trackName][12], laps + 1))) + " L")
+	fuelLoads.append(str(math.ceil(customLapFuelLoadCalc(trackDistanceFloat, float(trackData[trackName][6]), fuelFactor, trackLapsInt, laps))) + " L")
+	fuelLoads.append(str(math.floor(customLapFuelLoadCalc(trackDistanceFloat, float(trackData[trackName][6]), fuelFactor, trackLapsInt, laps + 1))) + " L")
 
 	# Calculate the pit time for each tyre choice, given the fuel load
 	pitTimes = []
@@ -461,12 +465,12 @@ def strategyCalc(username, password, minimumWear, laps):
 
 	FLDs = []
 	for i in range(4):
-		FLDs.append(round(fuelTimeCalc(trackData[trackName][8], float(trackData[trackName][6]), fuelFactor, stops[i] + 1), 2))
-	FLDs.append(round(fuelTimeCalc(trackData[trackName][8], trackData[trackName][7], fuelFactor, stops[4] + 1), 2))
+		FLDs.append(round(fuelTimeCalc(trackDistanceFloat, float(trackData[trackName][6]), fuelFactor, stops[i] + 1), 2))
+	FLDs.append(round(fuelTimeCalc(trackDistanceFloat, trackData[trackName][7], fuelFactor, stops[4] + 1), 2))
 
 	TCDs = [0, 0, 0, 0, 0]
 	TCDs[0] = ("-")
-	TCDs[1] = (round(compoundCalc(trackData[trackName][12], float(trackData[trackName][11]), trackData[trackName][13], rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
+	TCDs[1] = (round(compoundCalc(trackLapsInt, float(trackData[trackName][11]), trackLapDistanceFloat, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
 	TCDs[2] = (int(round(2 * float(TCDs[1]), 2)))
 	TCDs[3] = (int(round(3 * float(TCDs[1]), 2)))
 	TCDs[4] = ("-")
@@ -501,7 +505,7 @@ def strategyCalc(username, password, minimumWear, laps):
 
 '''
 Pit Stop Calc
-trackData[trackName][12] = Track Distance
+trackLapsInt = Track Distance
 tracWearLevel = Very Low, Low, Medium, High, Very High, and it's relating factor, 0, 1, 2, 3, 4 respectively
 rTemp = Race Temperature
 tyreSupplierFactor = Tyre Brand Factor, 1 for Pipirello, 8 for Avonn, etc.
@@ -514,7 +518,7 @@ clearTrackRisk = Clear Track Risk used, as a percentage
 trackBaseWear = Track Base Wear from trackData.csv
 wearLimit = The manager chosen limit for tyre wear before pitting, so at 10%, we assume the stint will end when the tyres hit 10% wear
 '''
-#trackData[trackName][12], trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i]
+#trackLapsInt, trackWearLevel[trackTyreWearRating], rTemp, tyreSupplierFactor[tyreSupplierName], i, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, float(trackData[trackName][9]), minimumWear, wearFactors[i]
 def stopCalc(trackDistanceTotal, trackWearLevel, rTemp, tyreSupplierFactor, tyreType, carLevelSuspension, driverAggressiveness, driverExperience, driverWeight, trackBaseWear, wearLimit, tyreWearFactor, wetFactor):
 	baseWear = 129.776458172062
 	productFactors = (0.896416176238624 ** trackWearLevel) * (0.988463622 ** rTemp) * (1.048876356 ** tyreSupplierFactor) * (1.355293715 ** tyreType) * (1.009339294 ** carLevelSuspension) * (0.999670155 ** driverAggressiveness) * (1.00022936 ** driverExperience) * (0.999858329 ** driverWeight)

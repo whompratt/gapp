@@ -150,11 +150,6 @@ def calculate(*args):
 					labelsTotal[i].configure(style = "Black.Label")
 				labelsTotal[strategy[9]].configure(style = "Green.Label")
 
-			GAPPnextTrackName.set(strategy[10])
-			GAPPnextTrackLaps.set(trackData[strategy[10]][12])
-			GAPPnextTrackLapDistance.set(str(trackData[strategy[10]][13]) + "km")
-			GAPPnextTrackDistance.set(str(trackData[strategy[10]][8]) + "km")
-
 			GPROnextTrackName.set(strategy[10])
 			GPROnextTrackLaps.set(strategy[11])
 			GPROnextTrackLapDistance.set(strategy[12])
@@ -976,17 +971,11 @@ ttk.Label(frameStrategy, text = "Laps:", padding = "0 0 10 0").grid(column = 0, 
 ttk.Label(frameStrategy, text = "Lap Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 9, sticky = W)
 ttk.Label(frameStrategy, text = "Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 10, sticky = W)
 
-ttk.Label(frameStrategy, text = "GAPP Data", padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 6, sticky = W+S)
-ttk.Label(frameStrategy, textvariable = GAPPnextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
-ttk.Label(frameStrategy, textvariable = GAPPnextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
-ttk.Label(frameStrategy, textvariable = GAPPnextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
-ttk.Label(frameStrategy, textvariable = GAPPnextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
-
-ttk.Label(frameStrategy, text = "GPRO Data", padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 6, sticky = W+S)
-ttk.Label(frameStrategy, textvariable = GPROnextTrackName, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 7, sticky = W)
-ttk.Label(frameStrategy, textvariable = GPROnextTrackLaps, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 8, sticky = W)
-ttk.Label(frameStrategy, textvariable = GPROnextTrackLapDistance, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 9, sticky = W)
-ttk.Label(frameStrategy, textvariable = GPROnextTrackDistance, padding = "0 0 10 0").grid(column = 4, columnspan = 2, row = 10, sticky = W)
+ttk.Label(frameStrategy, text = "GPRO Data", padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 6, sticky = W+S)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
 
 x = 1
 for values in grid:
