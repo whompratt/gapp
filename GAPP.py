@@ -950,14 +950,14 @@ ttk.Label(frameStrategy, text = "Laps", padding = "0 0 10 0").grid(column = 9, r
 ttk.Label(frameStrategy, text = "Fuel", padding = "0 0 10 0").grid(column = 10, row = 3, sticky = W+E)
 
 ttk.Label(frameStrategy, text = "Tyre", padding = "0 10").grid(column = 0, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 1, row = 0, sticky = (E))
-ttk.Label(frameStrategy, text = "Stint Laps", padding = "0 10").grid(column = 2, row = 0, sticky = W)
-ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "TC Loss (s)", padding = "0 10").grid(column = 5, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10").grid(column = 6, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10").grid(column = 7, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10").grid(column = 8, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Stops", padding = "0 10", justify = "center").grid(column = 1, row = 0, sticky = (E))
+ttk.Label(frameStrategy, text = "Stint Laps", padding = "0 10", justify = "center").grid(column = 2, row = 0, sticky = W)
+ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10", justify = "center").grid(column = 3, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10", justify = "center").grid(column = 4, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "TC Loss (s)", padding = "0 10", justify = "center").grid(column = 5, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10", justify = "center").grid(column = 6, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10", justify = "center").grid(column = 7, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10", justify = "center").grid(column = 8, row = 0, sticky = (W))
 
 ttk.Label(frameStrategy, text = "Extra Soft", padding = "0 0 10 0").grid(column = 0, row = 1, sticky = (W, E))
 ttk.Label(frameStrategy, text = "Soft", padding = "0 0 10 0").grid(column = 0, row = 2, sticky = (W, E))
@@ -987,20 +987,20 @@ x = 1
 for values in grid:
 	y = 1
 	for value in values:
-		ttk.Label(frameStrategy, textvariable = value).grid(column = x, row = y, sticky = (E))
+		ttk.Label(frameStrategy, textvariable = value, justify = "center").grid(column = x, row = y)
 		y = y + 1
 	x = x + 1
 
-labelExtraTotal = ttk.Label(frameStrategy, textvariable = totals[0])
-labelExtraTotal.grid(column = 8, row = 1, sticky = E)
-labelSoftTotal = ttk.Label(frameStrategy, textvariable = totals[1])
-labelSoftTotal.grid(column = 8, row = 2, sticky = E)
-labelMediumTotal = ttk.Label(frameStrategy, textvariable = totals[2])
-labelMediumTotal.grid(column = 8, row = 3, sticky = E)
-labelHardTotal = ttk.Label(frameStrategy, textvariable = totals[3])
-labelHardTotal.grid(column = 8, row = 4, sticky = E)
-labelRainTotal = ttk.Label(frameStrategy, textvariable = totals[4])
-labelRainTotal.grid(column = 8, row = 5, sticky = E)
+labelExtraTotal = ttk.Label(frameStrategy, textvariable = totals[0], justify = "center")
+labelExtraTotal.grid(column = 8, row = 1)
+labelSoftTotal = ttk.Label(frameStrategy, textvariable = totals[1], justify = "center")
+labelSoftTotal.grid(column = 8, row = 2)
+labelMediumTotal = ttk.Label(frameStrategy, textvariable = totals[2], justify = "center")
+labelMediumTotal.grid(column = 8, row = 3)
+labelHardTotal = ttk.Label(frameStrategy, textvariable = totals[3], justify = "center")
+labelHardTotal.grid(column = 8, row = 4)
+labelRainTotal = ttk.Label(frameStrategy, textvariable = totals[4], justify = "center")
+labelRainTotal.grid(column = 8, row = 5)
 labelsTotal = [labelExtraTotal, labelSoftTotal, labelMediumTotal, labelHardTotal, labelRainTotal]
 
 # Wear page
