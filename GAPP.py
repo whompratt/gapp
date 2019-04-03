@@ -165,6 +165,7 @@ def calculate(*args):
 			GPROnextTrackLaps.set(strategy[11])
 			GPROnextTrackLapDistance.set(strategy[12])
 			GPROnextTrackDistance.set(strategy[13])
+			GPROnextTrackPitInOut.set(strategy[14])
 		elif(tab == "Car Wear"):
 			# Get user and password
 			username = entryUsername.get()
@@ -641,28 +642,20 @@ for pitTotal in pitTotals:
 for total in totals:
 	total.set("0")
 
-extraTCD.set("-")
-rainTCD.set("-")
-
-GAPPnextTrackName = StringVar()
-GAPPnextTrackLaps = IntVar()
-GAPPnextTrackLapDistance = StringVar()
-GAPPnextTrackDistance = StringVar()
+extraTCD.set("0")
+rainTCD.set("0")
 
 GPROnextTrackName = StringVar()
 GPROnextTrackLaps = IntVar()
 GPROnextTrackLapDistance = StringVar()
 GPROnextTrackDistance = StringVar()
-
-GAPPnextTrackName.set("-")
-GAPPnextTrackLaps.set("-")
-GAPPnextTrackLapDistance.set("-")
-GAPPnextTrackDistance.set("-")
+GPROnextTrackPitInOut = DoubleVar()
 
 GPROnextTrackName.set("-")
 GPROnextTrackLaps.set("-")
 GPROnextTrackLapDistance.set("-")
 GPROnextTrackDistance.set("-")
+GPROnextTrackPitInOut.set("-")
 
 # Wear variables
 # Input
@@ -945,7 +938,7 @@ ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column =
 # RADIO
 
 # ENTRY
-ttk.Entry(frameStrategy, width = 10, textvariable = inputWear, validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 10, row = 0, sticky = (W, E))
+ttk.Entry(frameStrategy, width = 10, textvariable = inputWear, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 10, row = 0, sticky = (W, E))
 ttk.Entry(frameStrategy, width = 10, textvariable = inputLaps, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 9, row = 4, sticky = W+E)
 
 # LABELS
@@ -961,7 +954,7 @@ ttk.Label(frameStrategy, text = "Stops", padding = "0 10").grid(column = 1, row 
 ttk.Label(frameStrategy, text = "Stint Laps", padding = "0 10").grid(column = 2, row = 0, sticky = W)
 ttk.Label(frameStrategy, text = "Fuel Load (L)", padding = "0 10").grid(column = 3, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Pit Time (s)", padding = "0 10").grid(column = 4, row = 0, sticky = (W))
-ttk.Label(frameStrategy, text = "Compound Loss (s)", padding = "0 10").grid(column = 5, row = 0, sticky = (W))
+ttk.Label(frameStrategy, text = "TC Loss (s)", padding = "0 10").grid(column = 5, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Fuel Loss (s)", padding = "0 10").grid(column = 6, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Pit Total (s)", padding = "0 10").grid(column = 7, row = 0, sticky = (W))
 ttk.Label(frameStrategy, text = "Total (s)", padding = "0 10").grid(column = 8, row = 0, sticky = (W))
@@ -981,12 +974,14 @@ ttk.Label(frameStrategy, text = "Track Name:", padding = "0 0 10 0").grid(column
 ttk.Label(frameStrategy, text = "Laps:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 8, sticky = W)
 ttk.Label(frameStrategy, text = "Lap Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 9, sticky = W)
 ttk.Label(frameStrategy, text = "Distance:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 10, sticky = W)
+ttk.Label(frameStrategy, text = "Pit In/Out:", padding = "0 0 10 0").grid(column = 0, columnspan = 2, row = 11, sticky = W)
 
 ttk.Label(frameStrategy, text = "GPRO Data", padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 6, sticky = W+S)
 ttk.Label(frameStrategy, textvariable = GPROnextTrackName, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 7, sticky = W)
 ttk.Label(frameStrategy, textvariable = GPROnextTrackLaps, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 8, sticky = W)
 ttk.Label(frameStrategy, textvariable = GPROnextTrackLapDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 9, sticky = W)
 ttk.Label(frameStrategy, textvariable = GPROnextTrackDistance, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 10, sticky = W)
+ttk.Label(frameStrategy, textvariable = GPROnextTrackPitInOut, padding = "0 0 10 0").grid(column = 2, columnspan = 2, row = 11, sticky = W)
 
 x = 1
 for values in grid:

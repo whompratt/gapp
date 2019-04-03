@@ -358,6 +358,8 @@ def strategyCalc(username, password, minimumWear, laps):
 	trackLapDistanceFloat = float(re.search("\d+\.\d+", trackLapDistance).group())
 	trackDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance:')]/../td[2]/text())"))
 	trackDistanceFloat = float(re.search("\d+\.\d+", trackDistance).group())
+	trackPitInOut = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in/out of pits:')]/../td[2]/text())"))
+	trackPitInOutFloat = float(re.search("\d+\.\d+", trackPitInOut).group())
 
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
@@ -457,11 +459,11 @@ def strategyCalc(username, password, minimumWear, laps):
 	# Calculate the pit time for each tyre choice, given the fuel load
 	pitTimes = []
 	for i in range(5):
-		pitTimes.append(int(pitTimeCalc(int(fuels[i]), technicalDirectorValues[0], technicalDirectorValues[1], staffConcentration, technicalDirectorValues[2], staffStress, technicalDirectorValues[3], tdExperience, technicalDirectorValues[4], tdPitCoordination, trackData[trackName][10])))
+		pitTimes.append(round(float(pitTimeCalc(int(fuels[i]), technicalDirectorValues[0], technicalDirectorValues[1], staffConcentration, technicalDirectorValues[2], staffStress, technicalDirectorValues[3], tdExperience, technicalDirectorValues[4], tdPitCoordination, 0)), 2))
 
 	pitTotals = []
 	for i in range(4):
-		pitTotals.append(round((float(stops[i]) * (float(pitTimes[i]))), 2))
+		pitTotals.append(round((float(stops[i]) * (float(pitTimes[i]) + float(trackPitInOutFloat))), 2))
 
 	FLDs = []
 	for i in range(4):
@@ -469,14 +471,14 @@ def strategyCalc(username, password, minimumWear, laps):
 	FLDs.append(round(fuelTimeCalc(trackDistanceFloat, trackData[trackName][7], fuelFactor, stops[4] + 1), 2))
 
 	TCDs = [0, 0, 0, 0, 0]
-	TCDs[0] = ("-")
+	TCDs[0] = ("0.00")
 	TCDs[1] = (round(compoundCalc(trackLapsInt, float(trackData[trackName][11]), trackLapDistanceFloat, rTemp, tyreCompoundSupplierFactor[tyreSupplierName]), 2))
-	TCDs[2] = (int(round(2 * float(TCDs[1]), 2)))
-	TCDs[3] = (int(round(3 * float(TCDs[1]), 2)))
-	TCDs[4] = ("-")
+	TCDs[2] = (float(round(2 * float(TCDs[1]), 2)))
+	TCDs[3] = (float(round(3 * float(TCDs[1]), 2)))
+	TCDs[4] = ("0.00")
 
 	totals = []
-	totals.append(int(round(float(pitTotals[0]) + float(FLDs[0]), 2)))
+	totals.append(float(round(float(pitTotals[0]) + float(FLDs[0]), 2)))
 
 	if(fuels[4] <= 0):
 		fuels[4] = ("No Data!")
@@ -499,7 +501,7 @@ def strategyCalc(username, password, minimumWear, laps):
 			fastestStrategy = i
 
 
-	strategy = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals, fuelLoads, fastestStrategy, trackName, trackLaps, trackLapDistance, trackDistance]
+	strategy = [stops, stintlaps, fuels, pitTimes, TCDs, FLDs, pitTotals, totals, fuelLoads, fastestStrategy, trackName, trackLaps, trackLapDistance, trackDistance, trackPitInOutFloat]
 
 	return strategy
 
