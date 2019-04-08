@@ -359,7 +359,10 @@ def strategyCalc(username, password, minimumWear, laps):
 	trackDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance:')]/../td[2]/text())"))
 	trackDistanceFloat = float(re.search("\d+\.\d+", trackDistance).group())
 	trackPitInOut = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in/out of pits:')]/../td[2]/text())"))
-	trackPitInOutFloat = float(re.search("\d+\.\d+", trackPitInOut).group())
+	try:
+		trackPitInOutFloat = float(re.search("\d+\.\d+", trackPitInOut).group())
+	except:
+		trackPitInOutFloat = float(re.search("\d+", trackPitInOut).group())
 
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
