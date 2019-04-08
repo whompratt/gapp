@@ -1168,7 +1168,7 @@ for child in frameProfile.winfo_children(): child.grid_configure(padx=5, pady=5)
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
 root.bind('<Return>', calculate)
-root.resizable(False, False)
+#root.resizable(False, False)
 
 # Pack the notebook after doing everything else to set the window size and organize everything
 notebook.pack(expand = True, fill = BOTH)
