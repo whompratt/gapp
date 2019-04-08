@@ -131,8 +131,6 @@ def calculate(*args):
 
 			strategy = strategyCalc(username, password, wear, laps)
 
-			print(strategy)
-
 			if(strategy == 1):
 				warningLabel.set("Incorrect Login Details")
 				foregroundColour("Status.Label", "Red")
