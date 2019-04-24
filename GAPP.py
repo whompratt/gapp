@@ -271,6 +271,60 @@ def calculate(*args):
 	except ValueError:
 		pass
 
+def analyze():
+	try:
+		# Create the logon payload
+		username = entryUsername.get()
+		password = entryPassword.get()
+		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+
+		# Initiate the GPRO session and collect the response data
+		session = requests.session()
+		loginURL = "https://gpro.net/gb/Login.asp"
+		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+
+		# Turn the returned string data into a HTML tree
+		tree = html.fromstring(logonResult.content)
+
+		# Collect the Driver ID - this will return empty if the logon failed
+		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
+		try:
+			# This will cause an exception with the wrong logon data
+			driverID[0]
+			# But if it works, let the user know via the status label
+			warningLabel.set("Updated")
+			foregroundColour("Status.Label", "#00FF00")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+		except:
+			# If it fails, let the user know via the status label
+			warningLabel.set("Incorrect Login Details")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			# Then exit out of the function
+			return
+
+		# Collect the user's team name
+		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
+		# Check the make sure the user is in the VIPER team. If you wish to use this code yourself, edit out these secions
+		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
+			warningLabel.set("VIPER Family Team Only")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+
+		raceState = inputAnalysis.get()
+
+		if(raceState == "Pre-Race"):
+			print("Pre")
+		elif(raceState == "Post-Race"):
+			print("Post")
+		else:
+			warningLabel.set("Error")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+	except:
+		pass
+
 def fillWear():
 	try:
 		username = entryUsername.get()
@@ -506,12 +560,14 @@ frameSetup = ttk.Frame(notebook, name = "setup")
 frameStrategy = ttk.Frame(notebook, name = "strategy")
 frameWear = ttk.Frame(notebook, name = "wear")
 frameProfile = ttk.Frame(notebook, name = "profile")
+frameAnalysis = ttk.Frame(notebook, name = "analysis")
 
 # Add the pages to notebook
 notebook.add(frameSetup, text = "Setup")
 notebook.add(frameStrategy, text = "Strategy")
 notebook.add(frameWear, text = "Car Wear")
 notebook.add(frameProfile, text = "PHA")
+notebook.add(frameAnalysis, text = "Analysis")
 
 # Configure root layout
 root.columnconfigure(0, weight = 1)
@@ -875,6 +931,11 @@ profileAccelerationTotal.set(0)
 
 profileTotals = [profilePowerTotal, profileHandlingTotal, profileAccelerationTotal]
 
+# Analysis variables
+# INPUT
+inputAnalysis = StringVar()
+inputAnalysis.set("Pre-Race")
+
 # Creating Styles
 style = ttk.Style()
 style.configure("Status.Label", foreground = "black")
@@ -1153,6 +1214,15 @@ for part in PHA:
 		ttk.Label(frameProfile, textvariable = point, justify = "center").grid(column = x, row = y)
 		y += 1
 	x += 1
+
+# Analysis Page
+# BUTTONS
+ttk.Button(frameAnalysis, text = "Calculate", command = analyze).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+
+# RADIOS
+radioQ1 = ttk.Radiobutton(frameAnalysis, text = "Pre-Race", variable = inputAnalysis, value = "Pre-Race").grid(column = 3, row = 0, sticky = (W, E))
+radioQ2 = ttk.Radiobutton(frameAnalysis, text = "Post-Race", variable = inputAnalysis, value = "Post-Race").grid(column = 3, row = 1, sticky = (W, E))
+
 
 # Set the style for the status labels
 for label in labelsStatus:
