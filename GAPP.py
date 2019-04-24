@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import Notebook
+from pathlib import Path
+from lxml import html
+from lxml import etree
+
 import requests
 import re
 import csv
@@ -8,9 +12,8 @@ import collections
 import math
 import os
 import sys
-from pathlib import Path
-from lxml import html
-from lxml import etree
+import time
+import threading
 
 # Import external data
 from calcs import *
@@ -57,6 +60,16 @@ try:
 	file.close()
 except:
 	pass
+
+# Thread Controller - starts and manages threads as required
+def threadController(threadName):
+	threads = threading.enumerate()
+
+	for thread in threads:
+		if(threadName == thread.name):
+			break
+		
+	threading.Thread(name = threadName, target = threadName)
 
 # Calculate the setup and others
 def calculate(*args):
