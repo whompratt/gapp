@@ -68,13 +68,12 @@ def threadController():
 
 	for thread in threads:
 		if(threadName == thread.name):
-			break
+			return
 		
 	threading.Thread(name = threadName, target = calculate, args = (threadName,)).start()
 
 # Calculate the setup and others
 def calculate(tab):
-	print("new thread started succesfully")
 	if(inputRememberCredentials.get() == 1):
 		try:
 			file = open(filename, "w")
