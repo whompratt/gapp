@@ -62,7 +62,7 @@ except:
 	pass
 
 # Thread Controller - starts and manages threads as required
-def threadController():
+def threadController(*args):
 	threadName = notebook.tab(notebook.select(), "text")
 	threads = threading.enumerate()
 
