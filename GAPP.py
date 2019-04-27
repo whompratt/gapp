@@ -261,6 +261,18 @@ def calculate(tab):
 				Q1LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
 				Q1LapData.remove(Q1LapData[0])
 				Q1LapData.remove(Q1LapData[1])
+				Q1LapDict = {
+					"LapTime": Q1LapData[0],
+					"FWing": Q1LapData[1],
+					"RWing": Q1LapData[2],
+					"Engine": Q1LapData[3],
+					"Brakes": Q1LapData[4],
+					"Gear": Q1LapData[5],
+					"Suspension": Q1LapData[6],
+					"Compound": Q1LapData[7],
+					"Risk": Q1LapData[8],
+					"Supplier": Q1LapData[9]
+				}
 
 				# Q2
 				tree = html.fromstring(Q2Result.content)
@@ -268,30 +280,81 @@ def calculate(tab):
 				Q2LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
 				Q2LapData.remove(Q2LapData[0])
 				Q2LapData.remove(Q2LapData[1])
+				Q2LapDict = {
+					"LapTime": Q2LapData[0],
+					"FWing": Q2LapData[1],
+					"RWing": Q2LapData[2],
+					"Engine": Q2LapData[3],
+					"Brakes": Q2LapData[4],
+					"Gear": Q2LapData[5],
+					"Suspension": Q2LapData[6],
+					"Compound": Q2LapData[7],
+					"Risk": Q2LapData[8],
+					"Supplier": Q2LapData[9]
+				}
 
 				# Setup
 				tree = html.fromstring(SetupResult.content)
-				SetupData = []
+				SetupDict = {}
 				# Car Setup
-				SetupData += tree.xpath("//input[contains(@id, 'FWing')]/@value")
-				SetupData += tree.xpath("//input[contains(@id, 'RWing')]/@value")
-				SetupData += tree.xpath("//input[contains(@id, 'Engine')]/@value")
-				SetupData += tree.xpath("//input[contains(@id, 'Brakes')]/@value")
-				SetupData += tree.xpath("//input[contains(@id, 'Gear')]/@value")
-				SetupData += tree.xpath("//input[contains(@id, 'Suspension')]/@value")
+				SetupDict["FWing"] = str(tree.xpath("//input[contains(@id, 'FWing')]/@value")[0])
+				SetupDict["RWing"] = str(tree.xpath("//input[contains(@id, 'RWing')]/@value")[0])
+				SetupDict["Engine"] = str(tree.xpath("//input[contains(@id, 'Engine')]/@value")[0])
+				SetupDict["Brakes"] = str(tree.xpath("//input[contains(@id, 'Brakes')]/@value")[0])
+				SetupDict["Gear"] = str(tree.xpath("//input[contains(@id, 'Gear')]/@value")[0])
+				SetupDict["Suspension"] = str(tree.xpath("//input[contains(@id, 'Suspension')]/@value")[0])
 				# Fuel
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStart')]/@value")
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")
-				SetupData += tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")
-				# Tyres
-				SetupData += tree.xpath("//select[contains(@id, 'StartTyres')]/option[contains(@selected, '')]/text()")
-				SetupData += tree.xpath("//select[contains(@id, 'RainTyres')]/option[contains(@selected, '')]/text()")
-				SetupData += tree.xpath("//select[contains(@id, 'DryTyres')]/option[contains(@selected, '')]/text()")
+				SetupDict["FuelStart"] = str(tree.xpath("//input[contains(@name, 'FuelStart')]/@value")[0])
+				SetupDict["FuelStop1"] = str(tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")[0])
+				SetupDict["FuelStop2"] = str(tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")[0])
+				SetupDict["FuelStop3"] = str(tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")[0])
+				SetupDict["FuelStop4"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
+				SetupDict["FuelStop5"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
+				# Risks
+				SetupDict["RiskOver"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0])
+				SetupDict["RiskDefend"] = str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
+				SetupDict["DriverRisk"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0])
+				SetupDict["RiskWet"] = str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
+				SetupDict["DriverRiskProb"] = str(tree.xpath("//input[contains(@name, 'DriverRiskProb')]/@value")[0])
+				# Boosts
+				SetupDict["BoostLap1"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0])
+				SetupDict["BoostLap2"] = str(tree.xpath("//input[contains(@name, 'BoostLap2')]/@value")[0])
+				SetupDict["BoostLap3"] = str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
 
-				print(SetupData)
+				# Write the data to file
+				with open("PreRace.csv", "w", newline = "") as csvFile:
+					fieldnames = [
+						"LapTime",
+						"FWing",
+						"RWing",
+						"Engine",
+						"Brakes",
+						"Gear",
+						"Suspension",
+						"Compound",
+						"Risk",
+						"Supplier",
+						"FuelStart",
+						"FuelStop1",
+						"FuelStop2",
+						"FuelStop3",
+						"FuelStop4",
+						"FuelStop5",
+						"RiskOver",
+						"RiskDefend",
+						"DriverRisk",
+						"RiskWet",
+						"DriverRiskProb",
+						"BoostLap1",
+						"BoostLap2",
+						"BoostLap3"
+					]
+					writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
+					writer.writeheader()
+
+					writer.writerow(Q1LapDict)
+					writer.writerow(Q2LapDict)
+					writer.writerow(SetupDict)
 
 			elif(raceState == "Post-Race"):
 				pass
