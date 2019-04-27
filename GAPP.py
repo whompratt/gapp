@@ -17,6 +17,7 @@ import threading
 
 # Import external data
 from calcs import *
+from funcs import *
 
 
 class Autoresized_Notebook(Notebook):
@@ -32,11 +33,11 @@ class Autoresized_Notebook(Notebook):
 '''
 Data Storage Setup
 '''
-dataPath = str(Path.home()) + "\Documents\GAPP"
+dataPath = str(Path.home()) + "\\Documents\\GAPP"
 if not os.path.exists(dataPath):
 	os.makedirs(dataPath)
 
-filename = dataPath + "\data.dat"
+filename = dataPath + "\\data.dat"
 
 try:
 	file = open(filename, "x")
@@ -63,6 +64,8 @@ except:
 
 # Thread Controller - starts and manages threads as required
 def threadController(*args):
+	checkData(filename, inputRememberCredentials.get(), inputUsername.get(), inputPassword.get())
+
 	threadName = notebook.tab(notebook.select(), "text")
 	threads = threading.enumerate()
 
@@ -74,58 +77,38 @@ def threadController(*args):
 
 # Calculate the setup and others
 def calculate(tab):
-	if(inputRememberCredentials.get() == 1):
-		try:
-			file = open(filename, "w")
-			file.close()
-		except:
-			pass
-		try:
-			file = open(filename, "a")
-			file.write("1\n")
-			file.write(inputUsername.get() + "\n")
-			file.write(inputPassword.get() + "\n")
-			file.close()
-		except:
-			pass
-	else:
-		try:
-			file.open(filename, "w")
-			file.close()
-		except:
-			pass
-
 	try:
 		username = str(inputUsername.get())
 		password = str(inputPassword.get())
+
+		if(not checkLogin(username, password)):
+			warningLabel.set("Incorrect Login Details")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+		elif(not checkTeam(username, password)):
+			warningLabel.set("VIPER Family Team Only")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+
 		if(tab == "Setup"):
 			weather = str(inputWeather.get())
 			session = str(inputSession.get())
-			setup = setupCalc(username, password, weather, session)		
-			if(setup[0] == 0):
-				warningLabel.set("Incorrect Login Details")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			elif(setup[0] == 1):
-				warningLabel.set("VIPER Family Team Only")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			else:
-				warningLabel.set("Updated")
-				foregroundColour("Status.Label", "#00FF00")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-				frontWing.set(str(setup[0]))
-				rearWing.set(str(setup[1]))
-				engine.set(str(setup[2]))
-				brakes.set(str(setup[3]))
-				gear.set(str(setup[4]))
-				suspension.set(str(setup[5]))
+			setup = setupCalc(username, password, weather, session)
+
+			frontWing.set(str(setup[0]))
+			rearWing.set(str(setup[1]))
+			engine.set(str(setup[2]))
+			brakes.set(str(setup[3]))
+			gear.set(str(setup[4]))
+			suspension.set(str(setup[5]))
 		elif(tab == "Strategy"):
 			try:
-				wear = float(re.findall('\d+.\d+', inputWear.get())[0])
+				wear = float(re.findall('\d+', inputWear.get())[0])
 			except:
 				try:
-					wear = float(re.findall('\d+', inputWear.get())[0])
+					wear = float(re.findall('\d+.\d+', inputWear.get())[0])
 				except:
 					wear = 0.0
 					inputWear.set(0)
@@ -143,35 +126,20 @@ def calculate(tab):
 
 			strategy = strategyCalc(username, password, wear, laps)
 
-			if(strategy == 1):
-				warningLabel.set("Incorrect Login Details")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			elif(strategy == 2):
-				warningLabel.set("VIPER Family Team Only")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			else:
-				warningLabel.set("Updated")
-				foregroundColour("Status.Label", "#00FF00")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-
-				for i in range(5):
-					stops[i].set(strategy[0][i])
-					stintlaps[i].set(strategy[1][i])
-					fuels[i].set(strategy[2][i])
-					pitTimes[i].set(strategy[3][i])
-					TCDs[i].set(strategy[4][i])
-					FLDs[i].set(strategy[5][i])
-					pitTotals[i].set(strategy[6][i])
-					totals[i].set(strategy[7][i])
-
-				lapsFuelLoadLower.set(strategy[8][0])
-				lapsFuelLoadUpper.set(strategy[8][1])
-
-				for i in range(len(labelsTotal)):
-					labelsTotal[i].configure(style = "Black.Label")
-				labelsTotal[strategy[9]].configure(style = "Green.Label")
+			for i in range(5):
+				stops[i].set(strategy[0][i])
+				stintlaps[i].set(strategy[1][i])
+				fuels[i].set(strategy[2][i])
+				pitTimes[i].set(strategy[3][i])
+				TCDs[i].set(strategy[4][i])
+				FLDs[i].set(strategy[5][i])
+				pitTotals[i].set(strategy[6][i])
+				totals[i].set(strategy[7][i])
+			lapsFuelLoadLower.set(strategy[8][0])
+			lapsFuelLoadUpper.set(strategy[8][1])
+			for i in range(len(labelsTotal)):
+				labelsTotal[i].configure(style = "Black.Label")
+			labelsTotal[strategy[9]].configure(style = "Green.Label")
 
 			GPROnextTrackName.set(strategy[10])
 			GPROnextTrackLaps.set(strategy[11])
@@ -193,27 +161,11 @@ def calculate(tab):
 			# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 			tree = html.fromstring(logonResult.content)
 
-			driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-			try:
-				driverURL = "https://gpro.net/gb/" + driverID[0]
-				warningLabel.set("Updated")
-				foregroundColour("Status.Label", "#00FF00")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			except:
-				warningLabel.set("Incorrect Login Details")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-				return
+			# Find userful URLs
+			driverURL = "https://gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")[0]
+			trackURL = "https://gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")[0]
 
-			trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
-			trackURL = "https://gpro.net/gb/" + trackID[0]
-
-			teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-			if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-				warningLabel.set("VIPER Family Team Only")
-				foregroundColour("Status.Label", "Red")
-				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-
+			# Get the driver details
 			driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 			tree = html.fromstring(driverResult.content)
 			driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
@@ -221,7 +173,7 @@ def calculate(tab):
 			driverExperience = int(tree.xpath("normalize-space(//td[contains(@id, 'Experience')]/text())"))
 			driverFactor = (0.998789138 ** driverConcentration) * (0.998751839 ** driverTalent) * (0.998707677 ** driverExperience)
 
-			# Track ID of next race
+			# Get the track details
 			trackResult = session.get(trackURL, headers=dict(referer=trackURL))
 			tree = html.fromstring(trackResult.content)
 			trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
@@ -251,7 +203,7 @@ def calculate(tab):
 				elif(endWears[i].get() >= 80):
 					endLabels[i].configure(style = "Orange.Label")
 				else:
-					endLabels[i].configure(style = "Black.Label")
+					endLabels[i].configure(style = "Black.Label")		
 		elif(tab == "PHA"):
 			partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
 
@@ -280,62 +232,79 @@ def calculate(tab):
 			warningLabel.set("Updated")
 			foregroundColour("Status.Label", "#00FF00")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			
+		elif(tab == "Analysis"):
+			# Create the logon payload and create the session
+			username = entryUsername.get()
+			password = entryPassword.get()
+			logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
+			session = requests.session()
+			loginURL = "https://gpro.net/gb/Login.asp"
+			logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+		
+			raceState = inputAnalysis.get()
+
+			if(raceState == "Pre-Race"):
+				# Define required URLs
+				Q1URL = "https://www.gpro.net/gb/Qualify.asp"
+				Q2URL = "https://www.gpro.net/gb/Qualify2.asp"
+				SetupURL = "https://www.gpro.net/gb/RaceSetup.asp"
+
+				# Get session data
+				Q1Result = session.get(Q1URL, headers=dict(referer=Q1URL))
+				Q2Result = session.get(Q2URL, headers=dict(referer=Q2URL))
+				SetupResult = session.get(SetupURL, headers=dict(referer=SetupURL))
+
+				# Process data
+				# Q1
+				tree = html.fromstring(Q1Result.content)
+				Q1LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
+				Q1LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
+				Q1LapData.remove(Q1LapData[0])
+				Q1LapData.remove(Q1LapData[1])
+
+				# Q2
+				tree = html.fromstring(Q2Result.content)
+				Q2LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
+				Q2LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
+				Q2LapData.remove(Q2LapData[0])
+				Q2LapData.remove(Q2LapData[1])
+
+				# Setup
+				tree = html.fromstring(SetupResult.content)
+				SetupData = []
+				# Car Setup
+				SetupData += tree.xpath("//input[contains(@id, 'FWing')]/@value")
+				SetupData += tree.xpath("//input[contains(@id, 'RWing')]/@value")
+				SetupData += tree.xpath("//input[contains(@id, 'Engine')]/@value")
+				SetupData += tree.xpath("//input[contains(@id, 'Brakes')]/@value")
+				SetupData += tree.xpath("//input[contains(@id, 'Gear')]/@value")
+				SetupData += tree.xpath("//input[contains(@id, 'Suspension')]/@value")
+				# Fuel
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStart')]/@value")
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")
+				SetupData += tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")
+				# Tyres
+				SetupData += tree.xpath("//select[contains(@id, 'StartTyres')]/option[contains(@selected, '')]/text()")
+				SetupData += tree.xpath("//select[contains(@id, 'RainTyres')]/option[contains(@selected, '')]/text()")
+				SetupData += tree.xpath("//select[contains(@id, 'DryTyres')]/option[contains(@selected, '')]/text()")
+
+				print(SetupData)
+
+			elif(raceState == "Post-Race"):
+				pass
+			else:
+				warningLabel.set("Error")
+				foregroundColour("Status.Label", "Red")
+				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+				return
+
+		warningLabel.set("Updated")
+		foregroundColour("Status.Label", "#00FF00")
+		root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 	except ValueError:
-		pass
-
-def analyze():
-	try:
-		# Create the logon payload
-		username = entryUsername.get()
-		password = entryPassword.get()
-		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
-
-		# Initiate the GPRO session and collect the response data
-		session = requests.session()
-		loginURL = "https://gpro.net/gb/Login.asp"
-		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
-
-		# Turn the returned string data into a HTML tree
-		tree = html.fromstring(logonResult.content)
-
-		# Collect the Driver ID - this will return empty if the logon failed
-		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-		try:
-			# This will cause an exception with the wrong logon data
-			driverID[0]
-			# But if it works, let the user know via the status label
-			warningLabel.set("Updated")
-			foregroundColour("Status.Label", "#00FF00")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-		except:
-			# If it fails, let the user know via the status label
-			warningLabel.set("Incorrect Login Details")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			# Then exit out of the function
-			return
-
-		# Collect the user's team name
-		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-		# Check the make sure the user is in the VIPER team. If you wish to use this code yourself, edit out these secions
-		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-			warningLabel.set("VIPER Family Team Only")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-
-		raceState = inputAnalysis.get()
-
-		if(raceState == "Pre-Race"):
-			print("Pre")
-		elif(raceState == "Post-Race"):
-			print("Post")
-		else:
-			warningLabel.set("Error")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			return
-	except:
 		pass
 
 def fillWear():
@@ -1230,12 +1199,16 @@ for part in PHA:
 
 # Analysis Page
 # BUTTONS
-ttk.Button(frameAnalysis, text = "Calculate", command = analyze).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameAnalysis, text = "Calculate", command = threadController).grid(column = 0, columnspan = 2, row = 0, sticky = E+W, padx = 5, pady = 5)
 
 # RADIOS
-radioQ1 = ttk.Radiobutton(frameAnalysis, text = "Pre-Race", variable = inputAnalysis, value = "Pre-Race").grid(column = 3, row = 0, sticky = (W, E))
-radioQ2 = ttk.Radiobutton(frameAnalysis, text = "Post-Race", variable = inputAnalysis, value = "Post-Race").grid(column = 3, row = 1, sticky = (W, E))
+radioQ1 = ttk.Radiobutton(frameAnalysis, text = "Pre-Race", variable = inputAnalysis, value = "Pre-Race").grid(column = 3, row = 0, sticky = (W, E), padx = 5, pady = 5)
+radioQ2 = ttk.Radiobutton(frameAnalysis, text = "Post-Race", variable = inputAnalysis, value = "Post-Race").grid(column = 3, row = 1, sticky = (W, E), padx = 5, pady = 5)
 
+# LABELS
+labelAnalysisStatus = ttk.Label(frameAnalysis, textvariable = warningLabel)
+labelAnalysisStatus.grid(column = 0, row = 1, columnspan = 1)
+labelsStatus.append(labelAnalysisStatus)
 
 # Set the style for the status labels
 for label in labelsStatus:
@@ -1246,6 +1219,7 @@ for child in frameSetup.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameStrategy.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameWear.winfo_children(): child.grid_configure(padx=5, pady=5)
 for child in frameProfile.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in frameAnalysis.winfo_children(): child.grid_configure(padx = 5, pady = 5)
 
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()

@@ -22,23 +22,9 @@ def setupCalc(username, password, weather, sessionTemp):
 	# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 	tree = html.fromstring(logonResult.content)
 
-	# Driver ID and check for correct login details. If login failed, then driver ID will return nothing and driverID[0] will error
-	driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-	try:
-		driverURL = "https://gpro.net/gb/" + driverID[0]
-	except:
-		return [0, 0, 0, 0, 0, 0]
-
-	# Team name check for verification
-	teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-	if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-		return [1, 0, 0, 0, 0, 0]
-
-	# Track ID of next race
-	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
-	trackURL = "https://gpro.net/gb/" + trackID[0]
-
-	# URLs for car and race details, for later use
+	# Find/define useful URLs
+	driverURL = "https://www.gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")[0]
+	trackURL = "https://www.gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")[0]
 	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
 	
@@ -322,23 +308,9 @@ def strategyCalc(username, password, minimumWear, laps):
 	# Gather the home page information and collect driver ID, track ID, team name, and manager ID
 	tree = html.fromstring(logonResult.content)
 
-	# Driver ID and check for correct login details. If login failed, then driver ID will return nothing and driverID[0] will error
-	driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-	try:
-		driverURL = "https://gpro.net/gb/" + driverID[0]
-	except:
-		return 1
-
-	# Team name check for verification
-	teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-	if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-		return 2
-
-	# Track ID of next race
-	trackID = tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")
-	trackURL = "https://gpro.net/gb/" + trackID[0]
-
-	# URLs for car and race details, for later use
+	# Find/define useful URLs
+	driverURL = "https://www.gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")[0]
+	trackURL = "https://www.gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")[0]
 	carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 	raceURL = "https://www.gpro.net/gb/RaceSetup.asp"
 	staffURL = "https://www.gpro.net/gb/StaffAndFacilities.asp"
@@ -366,13 +338,12 @@ def strategyCalc(username, password, minimumWear, laps):
 
 	# Check, while we're here, if the manager has a Technical Director and if they do, gather the TD stats
 	try:
-		technicalDirectorID = str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
-		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
+		technicalDirectorURL = "https://gpro.net/gb/" + str(tree.xpath("//a[starts-with(@href, 'TechDProfile.asp')]/@href")[0])
 		technicalDirectorResult = session.get(technicalDirectorURL, headers = dict(referer = technicalDirectorURL))
-		technicalDirectorURL = "https://gpro.net/gb/" + technicalDirectorID
 		tree = html.fromstring(technicalDirectorResult.content)
 		tdExperience = int(tree.xpath("//th[contains(text(), 'Experience:')]/../td[0]/text()")[0])
 		tdPitCoordination = int(tree.xpath("//th[contains(text(), 'Pit coordination:')]/../td[0]/text()")[0])
+		technicalDirectorValues = [0.0314707991001518, -0.0945456184596369, -0.0355383420267692, -0.00944695128810026, -0.0112688398024834]
 	except:
 		technicalDirectorValues = [0.0355393906609645, -0.0797977676868435, 0, 0, 0]
 		tdExperience = 0
