@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import Notebook
+from pathlib import Path
+from lxml import html
+from lxml import etree
+
 import requests
 import re
 import csv
@@ -8,9 +12,8 @@ import collections
 import math
 import os
 import sys
-from pathlib import Path
-from lxml import html
-from lxml import etree
+import time
+import threading
 
 # Import external data
 from calcs import *
@@ -58,8 +61,19 @@ try:
 except:
 	pass
 
+# Thread Controller - starts and manages threads as required
+def threadController(*args):
+	threadName = notebook.tab(notebook.select(), "text")
+	threads = threading.enumerate()
+
+	for thread in threads:
+		if(threadName == thread.name):
+			return
+		
+	threading.Thread(name = threadName, target = calculate, args = (threadName,)).start()
+
 # Calculate the setup and others
-def calculate(*args):
+def calculate(tab):
 	if(inputRememberCredentials.get() == 1):
 		try:
 			file = open(filename, "w")
@@ -81,7 +95,6 @@ def calculate(*args):
 		except:
 			pass
 
-	tab = notebook.tab(notebook.select(), "text")
 	try:
 		username = str(inputUsername.get())
 		password = str(inputPassword.get())
@@ -949,7 +962,7 @@ labelsStatus = []
 # Build the pages
 # Setup page
 # BUTTONS
-ttk.Button(frameSetup, text = "Calculate", command = calculate).grid(column = 1, row = 4, sticky = E+W)
+ttk.Button(frameSetup, text = "Calculate", command = threadController).grid(column = 1, row = 4, sticky = E+W)
 rememberCredentials = ttk.Checkbutton(frameSetup, text = "Remember Credentials", onvalue = 1, offvalue = 0, variable = inputRememberCredentials)
 rememberCredentials.grid(column = 1, row = 2, sticky = E+W)
 
@@ -993,7 +1006,7 @@ ttk.Label(frameSetup, textvariable = suspension).grid(column = 6, row = 5)
 
 # Strategy page
 # BUTTONS
-ttk.Button(frameStrategy, text = "Calculate", command = calculate).grid(column = 9, columnspan = 2, row = 1, sticky = E+W)
+ttk.Button(frameStrategy, text = "Calculate", command = threadController).grid(column = 9, columnspan = 2, row = 1, sticky = E+W)
 
 # RADIO
 
@@ -1065,7 +1078,7 @@ labelsTotal = [labelExtraTotal, labelSoftTotal, labelMediumTotal, labelHardTotal
 
 # Wear page
 # BUTTONS
-ttk.Button(frameWear, text = "Calculate", command = calculate).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Calculate", command = threadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
 ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
 # RADIO
 # ENTRY
@@ -1158,7 +1171,7 @@ endLabels = [labelEndChassis, labelEndEngine, labelEndFWing, labelEndRWing, labe
 # Profile Page
 # BUTTONS
 ttk.Button(frameProfile, text = "Fill", command = fillProfile).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
-ttk.Button(frameProfile, text = "Calculate", command = calculate).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameProfile, text = "Calculate", command = threadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
 
 # ENTRY
 ttk.Entry(frameProfile, width = 5, textvariable = profilelevelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 2)
@@ -1236,7 +1249,7 @@ for child in frameProfile.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
-root.bind('<Return>', calculate)
+root.bind('<Return>', threadController)
 root.resizable(False, False)
 
 # Pack the notebook after doing everything else to set the window size and organize everything
