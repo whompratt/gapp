@@ -16,7 +16,7 @@ Current features:
 Planned changes:
 * Integrate clear track risk into strategy calculator
 * Account for tyre "wobble" and wear in the strategy calculator
-* Better UI control (Ctrl-Tab!)
+* Automate data collection for long term analysis
 
 If you have any suggestions or features you'd like to see in GAPP, please don't hesitate to contact me at:
 
