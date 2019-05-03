@@ -15,12 +15,17 @@ from calcs import setupCalc, strategyCalc, wearCalc, profileCalc
 from funcs import *
 
 # Logging setup
-logging.basicConfig(level = logging.INFO, filename = 'logging.dat', format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt = '%y-%m-%d %H:%M')
+logging.basicConfig(level = logging.INFO, format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt = '%y-%m-%d %H:%M')
 logger = logging.getLogger(__name__)
 # Handlers
+dataPath = str(Path.home()) + "\\Documents\\GAPP"
+if not os.path.exists(dataPath):
+	os.makedirs(dataPath)
+fLogFileName = str(Path.home()) + r"\Documents\GAPP\error.log"
+gLogFileName = str(Path.home()) + r"\Documents\GAPP\logging.log"
 c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler('error.log')
-g_handler = logging.FileHandler('logging.log')
+f_handler = logging.FileHandler(fLogFileName)
+g_handler = logging.FileHandler(gLogFileName)
 c_handler.setLevel(logging.WARNING)
 f_handler.setLevel(logging.ERROR)
 g_handler.setLevel(logging.INFO)
@@ -32,10 +37,6 @@ g_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s
 logger.addHandler(c_handler)
 logger.addHandler(f_handler)
 logger.addHandler(g_handler)
-
-logger.info("INFO")
-logger.warning("WARNING")
-logger.error("ERROR")
 
 class Autoresized_Notebook(Notebook):
 	def __init__(self, master = None, **kw):
@@ -50,70 +51,83 @@ class Autoresized_Notebook(Notebook):
 '''
 Data Storage Setup
 '''
+logger.info("Getting reference to GAPP folder in Documents for storage")
 dataPath = str(Path.home()) + "\\Documents\\GAPP"
 if not os.path.exists(dataPath):
-	os.makedirs(dataPath)
+	try:
+		logger.info("No GAPP folder found in documents, creating it")
+		os.makedirs(dataPath)
+	except Exception:
+		logger.exception("Unable to create GAPP folder in documents, GAPP may not have permissions to do so")
 
 filename = dataPath + "\\data.dat"
 
 try:
-	file = open(filename, "x")
-	file.close()
+	logger.info("Creating login data file")
+	open(filename, "x").close()	
 except:
+	logger.info("Login data file already exists, skipping")
 	pass
 
 try:
+	logger.info("Opening login data file for reading")
 	file = open(filename, "r")
-except:
-	pass
-
-try:
 	credentialCheck = int(float(file.readline()))
-except:
-	credentialCheck = 0
-
-try:
 	username = file.readline()
 	password = file.readline()
-	file.close()
 except:
-	pass
+	logger.info("Unable to open or read login data file, setting credential check to 0")
+	credentialCheck = 0
+finally:
+	logger.info("Closing login data file")
+	file.close()
 
 # Thread Controller - starts and manages threads as required
 def threadController(*args):
+	logger.info("Writing user data to login data file")
 	checkData(filename, inputRememberCredentials.get(), inputUsername.get(), inputPassword.get())
 
+	logger.info("Getting tab information to create thread name")
 	threadName = notebook.tab(notebook.select(), "text")
 	threads = threading.enumerate()
 
 	for thread in threads:
 		if(threadName == thread.name):
+			logger.info("Thread of same name already exists - cancelling")
 			return
 		
-	threading.Thread(name = threadName, target = calculate, args = (threadName,)).start()
+	logger.info("Starting new thread: %s", threadName)
+	threading.Thread(daemon = True, name = threadName, target = calculate, args = (threadName,)).start()
 
 # Calculate the setup and others
 def calculate(tab):
+	logger.info("Starting calculation process")
 	try:
+		logger.info("Getting user login details")
 		username = str(inputUsername.get())
 		password = str(inputPassword.get())
 
+		logger.info("Checking user login details are correct and user is in Viper team")
 		if(not checkLogin(username, password)):
+			logger.warning("Login details are incorrect")
 			warningLabel.set("Incorrect Login Details")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 		elif(not checkTeam(username, password)):
+			logger.warning("User not in VIPER team")
 			warningLabel.set("VIPER Family Team Only")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 
 		if(tab == "Setup"):
+			logger.info("Starting Setup calcuation")
 			weather = str(inputWeather.get())
 			session = str(inputSession.get())
 			setup = setupCalc(username, password, weather, session)
 
+			logger.info("Applying calculated setup")
 			frontWing.set(str(setup[0]))
 			rearWing.set(str(setup[1]))
 			engine.set(str(setup[2]))
@@ -121,12 +135,14 @@ def calculate(tab):
 			gear.set(str(setup[4]))
 			suspension.set(str(setup[5]))
 		elif(tab == "Strategy"):
+			logger.info("Getting strategy input")
 			try:
 				wear = float(re.findall(r'\d+', inputWear.get())[0])
 			except:
 				try:
 					wear = float(re.findall(r'\d+.\d+', inputWear.get())[0])
 				except:
+					logger.warning("Wear input incorrect format, despite input control")
 					wear = 0.0
 					inputWear.set(0)
 
@@ -136,13 +152,15 @@ def calculate(tab):
 				try:
 					laps = inputLaps.get()
 				except:
+					logger.warning("Laps input incorrect format, despite input control")
 					laps = 0
 					inputLaps.set(0)
 
 			lapsUpper.set(laps + 1)
-
+			logger.info("Starting Strategy calculation")
 			strategy = strategyCalc(username, password, wear, laps)
 
+			logger.info("Applying calculated strategy")
 			for i in range(5):
 				stops[i].set(strategy[0][i])
 				stintlaps[i].set(strategy[1][i])
@@ -158,12 +176,14 @@ def calculate(tab):
 				labelsTotal[i].configure(style = "Black.Label")
 			labelsTotal[strategy[9]].configure(style = "Green.Label")
 
+			logger.info("Getting track information for stragey tab")
 			GPROnextTrackName.set(strategy[10])
 			GPROnextTrackLaps.set(strategy[11])
 			GPROnextTrackLapDistance.set(strategy[12])
 			GPROnextTrackDistance.set(strategy[13])
 			GPROnextTrackPitInOut.set(strategy[14])
 		elif(tab == "Car Wear"):
+			logger.info("Creating GPRO session for web scraping")
 			# Get user and password
 			username = entryUsername.get()
 			password = entryPassword.get()
@@ -179,10 +199,12 @@ def calculate(tab):
 			tree = html.fromstring(logonResult.content)
 
 			# Find userful URLs
+			logger.info("Getting GPRO URLs needed for wear calculation")
 			driverURL = "https://gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")[0]
 			trackURL = "https://gpro.net/gb/" + tree.xpath("//a[starts-with(@href, 'TrackDetails.asp')]/@href")[0]
 
 			# Get the driver details
+			logger.info("Getting Driver information")
 			driverResult = session.get(driverURL, headers=dict(referer=driverURL))
 			tree = html.fromstring(driverResult.content)
 			driverConcentration = int(tree.xpath("normalize-space(//td[contains(@id, 'Conc')]/text())"))
@@ -191,11 +213,13 @@ def calculate(tab):
 			driverFactor = (0.998789138 ** driverConcentration) * (0.998751839 ** driverTalent) * (0.998707677 ** driverExperience)
 
 			# Get the track details
+			logger.info("Getting track information")
 			trackResult = session.get(trackURL, headers=dict(referer=trackURL))
 			tree = html.fromstring(trackResult.content)
 			trackName = str(tree.xpath("normalize-space(//h1[contains(@class, 'block')]/text())"))
 			trackName = trackName.strip()
 
+			logger.info("Checking user input is in corret format")
 			for i in range(len(startWears)):
 				try:
 					int(startWears[i].get())
@@ -206,12 +230,13 @@ def calculate(tab):
 					int(wearlevels[i].get())
 				except:
 					wearlevels[i].set(1)
-
+			
 			try:
 				int(wearClearTrackRisk.get())
 			except:
 				wearClearTrackRisk.set(0)
 
+			logger.info("Calculating and applying car wear")
 			for i in range(len(startWears)):
 				raceWears[i].set(round(float(wearCalc(startWears[i].get(), int(wearlevels[i].get()), driverFactor, trackName, wearClearTrackRisk.get(), i)), 2))
 				endWears[i].set(int(round(raceWears[i].get() + round(startWears[i].get(), 0), 0)))
@@ -222,6 +247,7 @@ def calculate(tab):
 				else:
 					endLabels[i].configure(style = "Black.Label")		
 		elif(tab == "PHA"):
+			logger.info("Starting PHA calculation")
 			partNames = ["Chassis", "Engine", "Front Wing", "Rear Wing", "Underbody", "Sidepods", "Cooling", "Gearbox", "Brakes", "Suspension", "Electronics"]
 
 			for i in range(len(PHA) - 1):
@@ -236,6 +262,7 @@ def calculate(tab):
 				HTotal += PHA[i][1].get()
 				ATotal += PHA[i][2].get()
 	
+			logger.info("Applying calculated PHA")
 			PParts.set(int(round(PTotal, 0)))
 			HParts.set(int(round(HTotal, 0)))
 			AParts.set(int(round(ATotal, 0)))
@@ -245,11 +272,8 @@ def calculate(tab):
 				subTotal += PHAParts[i].get()
 				subTotal += profileTesting[i].get()
 				profileTotals[i].set(int(round(subTotal, 0)))
-
-			warningLabel.set("Updated")
-			foregroundColour("Status.Label", "#00FF00")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 		elif(tab == "Analysis"):
+			logger.info("Starting pre- and post-race analysis")
 			# Create the logon payload and create the session
 			username = entryUsername.get()
 			password = entryPassword.get()
@@ -261,6 +285,7 @@ def calculate(tab):
 			raceState = inputAnalysis.get()
 
 			if(raceState == "Pre-Race"):
+				logger.info("Calculating for Pre-Race")
 				# Define required URLs
 				Q1URL = "https://www.gpro.net/gb/Qualify.asp"
 				Q2URL = "https://www.gpro.net/gb/Qualify2.asp"
@@ -292,23 +317,27 @@ def calculate(tab):
 				}
 
 				# Q2
-				tree = html.fromstring(Q2Result.content)
-				Q2LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
-				Q2LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
-				Q2LapData.remove(Q2LapData[0])
-				Q2LapData.remove(Q2LapData[1])
-				Q2LapDict = {
-					"LapTime": Q2LapData[0],
-					"FWing": Q2LapData[1],
-					"RWing": Q2LapData[2],
-					"Engine": Q2LapData[3],
-					"Brakes": Q2LapData[4],
-					"Gear": Q2LapData[5],
-					"Suspension": Q2LapData[6],
-					"Compound": Q2LapData[7],
-					"Risk": Q2LapData[8],
-					"Supplier": Q2LapData[9]
-				}
+				try:
+					tree = html.fromstring(Q2Result.content)
+					Q2LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
+					Q2LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
+					Q2LapData.remove(Q2LapData[0])
+					Q2LapData.remove(Q2LapData[1])
+					Q2LapDict = {
+						"LapTime": Q2LapData[0],
+						"FWing": Q2LapData[1],
+						"RWing": Q2LapData[2],
+						"Engine": Q2LapData[3],
+						"Brakes": Q2LapData[4],
+						"Gear": Q2LapData[5],
+						"Suspension": Q2LapData[6],
+						"Compound": Q2LapData[7],
+						"Risk": Q2LapData[8],
+						"Supplier": Q2LapData[9]
+					}
+				except Exception:
+					logger.exception("Pre-Race analysis failed - user probably hasn't done qualifying yet")
+					return
 
 				# Setup
 				tree = html.fromstring(SetupResult.content)
@@ -339,6 +368,7 @@ def calculate(tab):
 				SetupDict["BoostLap3"] = str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
 
 				# Write the data to file
+				logger.info("Writing pre-race analysis to CSV")
 				with open("PreRace.csv", "w", newline = "") as csvFile:
 					fieldnames = [
 						"LapTime",
@@ -366,26 +396,33 @@ def calculate(tab):
 						"BoostLap2",
 						"BoostLap3"
 					]
-					writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
-					writer.writeheader()
 
-					writer.writerow(Q1LapDict)
-					writer.writerow(Q2LapDict)
-					writer.writerow(SetupDict)
+					try:
+						writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
+						writer.writeheader()
+
+						writer.writerow(Q1LapDict)
+						writer.writerow(Q2LapDict)
+						writer.writerow(SetupDict)
+					except Exception:
+						logger.exception("Unable to write Pre-Race analysis to CSV file")
 
 			elif(raceState == "Post-Race"):
+				logger.info("Calculating for Post-Race")
 				pass
 			else:
+				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
 				warningLabel.set("Error")
 				foregroundColour("Status.Label", "Red")
 				root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 				return
 
+		logger.info("Updating status label to notify user of completed calculations")
 		warningLabel.set("Updated")
 		foregroundColour("Status.Label", "#00FF00")
 		root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-	except ValueError:
-		pass
+	except Exception:
+		logger.exception("Something went wrong with calculations, see exception")
 
 def fillWear():
 	try:
@@ -484,8 +521,8 @@ def fillWear():
 		if(carWearElectronics == ""):
 			carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"))
 		wearElectronics.set(int((re.findall(r"\d+", carWearElectronics))[0]))
-	except ValueError:
-		pass
+	except Exception:
+		logger.exception("Unable to fill wear, see exception for details")
 
 def fillProfile():
 	try:
@@ -557,8 +594,8 @@ def fillProfile():
 		profileTestingPower.set(int(profilePowerTotal.get()) - int(PParts.get()))
 		profileTestingHandling.set(int(profileHandlingTotal.get()) - int(HParts.get()))
 		profileTestingAcceleration.set(int(profileAccelerationTotal.get()) - int(AParts.get()))
-	except:
-		pass
+	except Exception:
+		logger.exception("Unable to fill car character profile information - see exception for details")
 
 
 def validateFloat(P):

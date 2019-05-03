@@ -9,17 +9,12 @@ import requests
 def checkData(filename, rememberCredentials, username, password):
 	if(rememberCredentials == 1):
 		try:
-			open(filename, "w").close()
-		except:
-			pass
-		try:
-			file = open(filename, "a")
+			file = open(filename, "w")
 			file.write("1\n")
 			file.write(username + "\n")
 			file.write(password + "\n")
 			file.close()
-		except:
-			print("failed")
+		except Exception:
 			pass
 	else:
 		try:
