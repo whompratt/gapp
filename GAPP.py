@@ -1,9 +1,7 @@
-from tkinter import *
-from tkinter import ttk
+from tkinter import Tk, ttk, StringVar, IntVar, DoubleVar, E, W, S, BOTH
 from tkinter.ttk import Notebook
 from pathlib import Path
-from lxml import html
-from lxml import etree
+from lxml import html, etree
 
 import requests
 import re
@@ -16,7 +14,7 @@ import time
 import threading
 
 # Import external data
-from calcs import *
+from calcs import setupCalc, strategyCalc, wearCalc, profileCalc
 from funcs import *
 
 
@@ -105,16 +103,16 @@ def calculate(tab):
 			suspension.set(str(setup[5]))
 		elif(tab == "Strategy"):
 			try:
-				wear = float(re.findall('\d+', inputWear.get())[0])
+				wear = float(re.findall(r'\d+', inputWear.get())[0])
 			except:
 				try:
-					wear = float(re.findall('\d+.\d+', inputWear.get())[0])
+					wear = float(re.findall(r'\d+.\d+', inputWear.get())[0])
 				except:
 					wear = 0.0
 					inputWear.set(0)
 
 			try:
-				laps = int(re.findall('\d+', inputLaps.get())[0])
+				laps = int(re.findall(r'\d+', inputLaps.get())[0])
 			except:
 				try:
 					laps = inputLaps.get()
@@ -374,34 +372,25 @@ def fillWear():
 	try:
 		username = entryUsername.get()
 		password = entryPassword.get()
+
+		if(not checkLogin(username, password)):
+			warningLabel.set("Incorrect Login Details")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+		elif(not checkTeam(username, password)):
+			warningLabel.set("VIPER Family Team Only")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+
 		# Create our logon payload. 'hiddenToken' may change at a later date.
 		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 		
 		# Logon to GPRO using the logon information provided and store that under our session
 		session = requests.session()
 		loginURL = "https://gpro.net/gb/Login.asp"
-		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
-
-		# Gather the home page information and collect driver ID, track ID, team name, and manager ID
-		tree = html.fromstring(logonResult.content)
-
-		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-		try:
-			driverURL = "https://gpro.net/gb/" + driverID[0]
-			warningLabel.set("Updated")
-			foregroundColour("Status.Label", "#00FF00")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-		except:
-			warningLabel.set("Incorrect Login Details")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			return
-
-		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-			warningLabel.set("VIPER Family Team Only")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+		session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
 
 		# URL for car
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
@@ -424,58 +413,58 @@ def fillWear():
 
 		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/text())"))
 		if(carWearChassis == ""):
-			carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"));
-		wearChassis.set(int((re.findall("\d+", carWearChassis))[0]))
+			carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"))
+		wearChassis.set(int((re.findall(r"\d+", carWearChassis))[0]))
 
 		carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/text())"))
 		if(carWearEngine == ""):
-			carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/font/text())"));
-		wearEngine.set(int((re.findall("\d+", carWearEngine))[0]))
+			carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/font/text())"))
+		wearEngine.set(int((re.findall(r"\d+", carWearEngine))[0]))
 
 		carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/text())"))
 		if(carWearFrontWing == ""):
-			carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/font/text())"));
-		wearFWing.set(int((re.findall("\d+", carWearFrontWing))[0]))
+			carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/font/text())"))
+		wearFWing.set(int((re.findall(r"\d+", carWearFrontWing))[0]))
 
 		carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/text())"))
 		if(carWearRearWing == ""):
-			carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/font/text())"));
-		wearRWing.set(int((re.findall("\d+", carWearRearWing))[0]))
+			carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/font/text())"))
+		wearRWing.set(int((re.findall(r"\d+", carWearRearWing))[0]))
 
 		carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/text())"))
 		if(carWearUnderbody == ""):
-			carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/font/text())"));
-		wearUnderbody.set(int((re.findall("\d+", carWearUnderbody))[0]))
+			carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/font/text())"))
+		wearUnderbody.set(int((re.findall(r"\d+", carWearUnderbody))[0]))
 
 		carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/text())"))
 		if(carWearSidepod == ""):
-			carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/font/text())"));
-		wearSidepods.set(int((re.findall("\d+", carWearSidepod))[0]))
+			carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/font/text())"))
+		wearSidepods.set(int((re.findall(r"\d+", carWearSidepod))[0]))
 
 		carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/text())"))
 		if(carWearCooling == ""):
-			carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/font/text())"));
-		wearCooling.set(int((re.findall("\d+", carWearCooling))[0]))
+			carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/font/text())"))
+		wearCooling.set(int((re.findall(r"\d+", carWearCooling))[0]))
 
 		carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/text())"))
 		if(carWearGears == ""):
-			carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/font/text())"));
-		wearGearbox.set(int((re.findall("\d+", carWearGears))[0]))
+			carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/font/text())"))
+		wearGearbox.set(int((re.findall(r"\d+", carWearGears))[0]))
 
-		carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/text())"))
+		carWearBrakes = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/text())"))
 		if(carWearBrakes == ""):
-			carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/font/text())"));
-		wearBrakes.set(int((re.findall("\d+", carWearBrakes))[0]))
+			carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/font/text())"))
+		wearBrakes.set(int((re.findall(r"\d+", carWearBrakes))[0]))
 
 		carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/text())"))
 		if(carWearSuspension == ""):
-			carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/font/text())"));
-		wearSuspension.set(int((re.findall("\d+", carWearSuspension))[0]))
+			carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/font/text())"))
+		wearSuspension.set(int((re.findall(r"\d+", carWearSuspension))[0]))
 
 		carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/text())"))
 		if(carWearElectronics == ""):
-			carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"));
-		wearElectronics.set(int((re.findall("\d+", carWearElectronics))[0]))
+			carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"))
+		wearElectronics.set(int((re.findall(r"\d+", carWearElectronics))[0]))
 	except ValueError:
 		pass
 
@@ -483,34 +472,25 @@ def fillProfile():
 	try:
 		username = entryUsername.get()
 		password = entryPassword.get()
+
+		if(not checkLogin(username, password)):
+			warningLabel.set("Incorrect Login Details")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+		elif(not checkTeam(username, password)):
+			warningLabel.set("VIPER Family Team Only")
+			foregroundColour("Status.Label", "Red")
+			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+			return
+
 		# Create our logon payload. 'hiddenToken' may change at a later date.
 		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 		
 		# Logon to GPRO using the logon information provided and store that under our session
 		session = requests.session()
 		loginURL = "https://gpro.net/gb/Login.asp"
-		logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
-
-		# Gather the home page information and collect driver ID, track ID, team name, and manager ID
-		tree = html.fromstring(logonResult.content)
-
-		driverID = tree.xpath("//a[starts-with(@href, 'DriverProfile.asp')]/@href")
-		try:
-			driverURL = "https://gpro.net/gb/" + driverID[0]
-			warningLabel.set("Updated")
-			foregroundColour("Status.Label", "#00FF00")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-		except:
-			warningLabel.set("Incorrect Login Details")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			return
-
-		teamName = tree.xpath("//a[starts-with(@href, 'TeamProfile.asp')]/text()")
-		if(teamName[0] != "VIPER AUTOSPORT") and (teamName[0] != "TEAM VIPER") and (teamName[0] != "VIPER RACING"):
-			warningLabel.set("VIPER Family Team Only")
-			foregroundColour("Status.Label", "Red")
-			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+		session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
 
 		# URL for car
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
