@@ -1,22 +1,41 @@
-from tkinter import Tk, ttk, StringVar, IntVar, DoubleVar, E, W, S, BOTH
-from tkinter.ttk import Notebook
-from pathlib import Path
-from lxml import html, etree
+from tkinter import Tk, ttk, StringVar, IntVar, DoubleVar, E, W, S, BOTH	# To create the GUI
+from tkinter.ttk import Notebook	# For tabs in the GUI
+from pathlib import Path		# For data paths
+from lxml import html, etree	# For xpath trees
 
-import requests
-import re
-import csv
-import collections
-import math
-import os
-import sys
-import time
-import threading
+import requests			# For html sessions
+import re				# For regular expressions
+import csv				# For writing data to CSV files
+import os				# For getting directory paths
+import threading		# For multi threading
+import logging			# For error handling and debugging
 
 # Import external data
 from calcs import setupCalc, strategyCalc, wearCalc, profileCalc
 from funcs import *
 
+# Logging setup
+logging.basicConfig(level = logging.INFO, filename = 'logging.dat', format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt = '%y-%m-%d %H:%M')
+logger = logging.getLogger(__name__)
+# Handlers
+c_handler = logging.StreamHandler()
+f_handler = logging.FileHandler('error.log')
+g_handler = logging.FileHandler('logging.log')
+c_handler.setLevel(logging.WARNING)
+f_handler.setLevel(logging.ERROR)
+g_handler.setLevel(logging.INFO)
+# Handler Format
+c_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+f_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+g_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+# Add Handlers
+logger.addHandler(c_handler)
+logger.addHandler(f_handler)
+logger.addHandler(g_handler)
+
+logger.info("INFO")
+logger.warning("WARNING")
+logger.error("ERROR")
 
 class Autoresized_Notebook(Notebook):
 	def __init__(self, master = None, **kw):
