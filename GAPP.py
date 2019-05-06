@@ -485,7 +485,56 @@ def calculate(tab):
 						
 			elif(raceState == "Post-Race"):
 				logger.info("Calculating for Post-Race")
-				pass
+				# Creating raceID
+				if(not raceNumber == "1"):
+					raceNumber = str(int(raceNumber) - 1)
+					if(len(raceNumber) == 1):
+						raceNumber = "0" + raceNumber
+				else:
+					seasonNumber = str(int(seasonNumber) - 1)
+					raceNumber == "17"
+				raceID = "S" + seasonNumber + "R" + raceNumber
+
+				# Define the race URL and get page data
+				raceURL = "https://www.gpro.net/gb/RaceAnalysis.asp"
+				raceResult = session.get(raceURL, headers=dict(referer=raceURL))
+				tree = html.fromstring(raceResult.content)
+
+				# Find setup informaiton
+				raceSetupSearch = tree.xpath("//td[contains(text(), 'Race')]/../td/text()")
+				raceSetupSearch.remove("Race")
+				
+				# Find race risks
+				raceRiskSearch = tree.xpath("//th[contains(text(), 'Overtake')]/../../tr[7]/td/text()")
+
+				# Find driver stats and changes
+				raceDriverStatSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../td/text()")
+				raceDriverStatSearch.remove(raceDriverStatSearch[0])
+				raceDriverStatSearch.remove(raceDriverStatSearch[0])
+				raceDriverChangeSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../../tr[4]/td/text()")
+
+				# Find driver energy
+				raceEnergyStartSearch = tree.xpath("//td[contains(@title, 'Before the race')]/div[contains(@class, 'barLabel')]/text()")
+				raceEnergyEndSearch = tree.xpath("//td[contains(@title, 'After the race')]/div[contains(@class, 'barLabel')]/text()")
+
+				# Start and Finish positions
+				racePositionSearch = tree.xpath("//th[contains(text(), 'Positions')]/../../tr[3]/td/text()")
+				
+				# Car character
+				raceCharacterSearch = tree.xpath("//th[contains(text(), 'Overall car character')]/../../tr[3]/td/text()")
+
+				# Start fuel
+				raceFuelStartSearch = tree.xpath("normalize-space(//div[contains(text(), 'Start fuel:')]/b/text())")
+				raceFuelStart = re.findall("\d+", raceFuelStartSearch)[0]
+
+				# Stops
+				raceStopsSearch = tree.xpath("//td[starts-with(text(), 'Stop')]/..//text()")
+				for element in raceStopsSearch:
+					try:
+						print(re.findall("[a-zA-Z0-9\. \u00a0]+", str(element))[0])
+					except:
+						pass
+
 			else:
 				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
 				warningLabel.set("Error")
