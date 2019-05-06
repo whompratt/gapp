@@ -495,6 +495,9 @@ def calculate(tab):
 					raceNumber == "17"
 				raceID = "S" + seasonNumber + "R" + raceNumber
 
+				# Storage Variable (for ease)
+				postRaceData = []
+
 				# Define the race URL and get page data
 				raceURL = "https://www.gpro.net/gb/RaceAnalysis.asp"
 				raceResult = session.get(raceURL, headers=dict(referer=raceURL))
@@ -502,10 +505,13 @@ def calculate(tab):
 
 				# Find setup informaiton
 				raceSetupSearch = tree.xpath("//td[contains(text(), 'Race')]/../td/text()")
-				raceSetupSearch.remove("Race")
+				raceSetup = [str(element) for element in raceSetupSearch]
+				raceSetup.remove("Race")
+				postRaceData.append(raceSetup)
 				
 				# Find race risks
 				raceRiskSearch = tree.xpath("//th[contains(text(), 'Overtake')]/../../tr[7]/td/text()")
+				print(raceRiskSearch)
 
 				# Find driver stats and changes
 				raceDriverStatSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../td/text()")
@@ -531,9 +537,22 @@ def calculate(tab):
 				raceStopsSearch = tree.xpath("//td[starts-with(text(), 'Stop')]/..//text()")
 				for element in raceStopsSearch:
 					try:
-						print(re.findall("[a-zA-Z0-9\. \u00a0]+", str(element))[0])
+						raceStopsSearch[element] = (re.findall("[a-zA-Z0-9\. \u00a0]+", str(element))[0])
 					except:
 						pass
+
+				# End condition
+				raceTyreEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Tyres condition after finish:')]/b//text())")
+
+				# End fuel
+				raceFuelEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Fuel left in the car after finish:')]/b/text())")
+
+				# Finances
+				raceFinancesTotalSearch = tree.xpath("normalize-space(//td[contains(text(), 'Total:')]/../td[2]/text())")
+				raceFinancesBalanceSearch = tree.xpath("normalize-space(//td[contains(text(), 'Current balance')]/../td[2]//text())")
+
+				# Car parts
+				raceCarSearch = tree.xpath("//b[contains(text(), 'Cha')]/../../../tr/td/text()")
 
 			else:
 				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
