@@ -360,12 +360,17 @@ def calculate(tab):
 						"Gear": Q1LapData[5],
 						"Suspension": Q1LapData[6],
 						"Compound": Q1LapData[7],
-						"Risk": Q1LapData[8],
+						"Risk O/D": Q1LapData[8],
 						"Supplier": Q1LapData[9]
 					}
 					sessionDicts.append(Q1LapDict)
 				except Exception:
 					logger.exception("Pre-Race analysis failed in Q1 - user probably hasn't done Q1 yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Q1 Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 
 				# Q2
 				try:
@@ -386,12 +391,16 @@ def calculate(tab):
 						"Gear": Q2LapData[5],
 						"Suspension": Q2LapData[6],
 						"Compound": Q2LapData[7],
-						"Risk": Q2LapData[8],
+						"Risk O/D": Q2LapData[8],
 						"Supplier": Q2LapData[9]
 					}
 					sessionDicts.append(Q2LapDict)
 				except Exception:
 					logger.exception("Pre-Race analysis failed in Q2 - user probably hasn't done Q2 yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Q2 Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 					return
 
 				# Setup
@@ -417,10 +426,8 @@ def calculate(tab):
 					SetupDict["FuelStop4"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
 					SetupDict["FuelStop5"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
 					# Risks
-					SetupDict["RiskOver"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0])
-					SetupDict["RiskDefend"] = str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
-					SetupDict["DriverRisk"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0])
-					SetupDict["RiskWet"] = str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
+					SetupDict["Risk O/D"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
+					SetupDict["Risk CT"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
 					SetupDict["DriverRiskProb"] = str(tree.xpath("//input[contains(@name, 'DriverRiskProb')]/@value")[0])
 					# Boosts
 					SetupDict["BoostLap1"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0])
@@ -429,6 +436,11 @@ def calculate(tab):
 					sessionDicts.append(SetupDict)
 				except Exception:
 					logger.exception("Pre-Race analysis failed in race setup - user probably hasn't done race setup yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Setup Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 
 				# Write the data to file
 				try:
@@ -445,7 +457,9 @@ def calculate(tab):
 							"Gear",
 							"Suspension",
 							"Compound",
-							"Risk",
+							"Risk O/D",
+							"Risk CT",
+							"RiskCT",
 							"Supplier",
 							"FuelStart",
 							"FuelStop1",
@@ -453,10 +467,6 @@ def calculate(tab):
 							"FuelStop3",
 							"FuelStop4",
 							"FuelStop5",
-							"RiskOver",
-							"RiskDefend",
-							"DriverRisk",
-							"RiskWet",
 							"DriverRiskProb",
 							"BoostLap1",
 							"BoostLap2",
@@ -495,6 +505,13 @@ def calculate(tab):
 					raceNumber == "17"
 				raceID = "S" + seasonNumber + "R" + raceNumber
 
+				# Empty dictionary for the race information
+				raceDict = {}
+
+				# Assign values to the race dictionary - make sure not to bloat the CSV file!
+				raceDict["RaceID"] = raceID
+				raceDict["Session"] = "Race"
+
 				# Storage Variable (for ease)
 				postRaceData = []
 
@@ -507,55 +524,91 @@ def calculate(tab):
 				raceSetupSearch = tree.xpath("//td[contains(text(), 'Race')]/../td/text()")
 				raceSetup = [str(element) for element in raceSetupSearch]
 				raceSetup.remove("Race")
-				postRaceData.append(raceSetup)
+				raceDict["FWing"] = raceSetup[0]
+				raceDict["RWing"] = raceSetup[1]
+				raceDict["Engine"] = raceSetup[2]
+				raceDict["Brakes"] = raceSetup[3]
+				raceDict["Gear"] = raceSetup[4]
+				raceDict["Suspension"] = raceSetup[5]
+				raceDict["Compound"] = raceSetup[6]
 				
 				# Find race risks
 				raceRiskSearch = tree.xpath("//th[contains(text(), 'Overtake')]/../../tr[7]/td/text()")
 				raceRisk = [str(element) for element in raceRiskSearch]
+				raceDict["Risk O/D"] = str(raceRisk[0]) + "/" + str(raceRisk[1])
+				raceDict["Risk CT"] = str(raceRisk[2] + "/" + str(raceRisk[3]))
+
+				# Tyre supplier
+				raceDict["Supplier"] = tree.xpath("normalize-space(//img[contains(@src, 'suppliers')]/@title)")
 
 				# Find driver stats and changes
 				raceDriverStatSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../td/text()")
-				raceDriverStats = [re.findall("\d+", str(element))[0] for element in raceDriverStatSearch]
-				print(raceDriverStats)
-				raceDriverStatSearch.remove(raceDriverStatSearch[0])
-				raceDriverStatSearch.remove(raceDriverStatSearch[0])
 				raceDriverChangeSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../../tr[4]/td/text()")
+				raceDriverStats = []
+				raceDriverChange = []
+				for element in raceDriverStatSearch:
+					try:
+						raceDriverStats.append(re.findall(r"\d+", str(element))[0])
+					except:
+						pass
+				for element in raceDriverChangeSearch:
+					try:
+						raceDriverChange.append(re.findall(r"\d+", str(element))[0])
+					except:
+						pass
+				raceDict["Driver Stats Start"] = raceDriverStats
+				raceDict["Driver Stats Change"] = raceDriverChange
 
 				# Find driver energy
-				raceEnergyStartSearch = tree.xpath("//td[contains(@title, 'Before the race')]/div[contains(@class, 'barLabel')]/text()")
-				raceEnergyEndSearch = tree.xpath("//td[contains(@title, 'After the race')]/div[contains(@class, 'barLabel')]/text()")
+				raceEnergyStartSearch = tree.xpath("normalize-space(//td[contains(@title, 'Before the race')]/div[contains(@class, 'barLabel')]/text())")
+				raceEnergyEndSearch = tree.xpath("normalize-space(//td[contains(@title, 'After the race')]/div[contains(@class, 'barLabel')]/text())")
+				raceDict["Energy Start"] = raceEnergyStartSearch
+				raceDict["Energy End"] = raceEnergyEndSearch
 
 				# Start and Finish positions
 				racePositionSearch = tree.xpath("//th[contains(text(), 'Positions')]/../../tr[3]/td/text()")
-				
-				# Car character
-				raceCharacterSearch = tree.xpath("//th[contains(text(), 'Overall car character')]/../../tr[3]/td/text()")
+				racePosition = [str(element) for element in racePositionSearch]
+				raceDict["Start Position"] = racePosition[0]
+				raceDict["End Position"] = racePosition[1]
+
+				# Fastest lap time
+				raceDict["Fastest Lap Time"] = tree.xpath("normalize-space(//font[contains(@color, 'lime') and contains(text(), ':')]/text())")
 
 				# Start fuel
 				raceFuelStartSearch = tree.xpath("normalize-space(//div[contains(text(), 'Start fuel:')]/b/text())")
-				raceFuelStart = re.findall("\d+", raceFuelStartSearch)[0]
+				raceDict["FuelStart"] = re.findall(r"\d+", raceFuelStartSearch)[0]
 
 				# Stops
 				raceStopsSearch = tree.xpath("//td[starts-with(text(), 'Stop')]/..//text()")
+				raceStops = []
 				for element in raceStopsSearch:
 					try:
-						raceStopsSearch[element] = (re.findall("[a-zA-Z0-9\. \u00a0]+", str(element))[0])
+						raceStops.append(re.findall(r"[a-zA-Z0-9\. \u00a0]+", str(element))[0])
 					except:
 						pass
+				for i in range(len(raceStops) // 7):
+					raceDict["Lap Stop " + str(i)] = raceStops[]
 
 				# End condition
 				raceTyreEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Tyres condition after finish:')]/b//text())")
+				postRaceData.append(raceTyreEndSearch)
 
 				# End fuel
 				raceFuelEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Fuel left in the car after finish:')]/b/text())")
+				postRaceData.append(raceFuelEndSearch)
 
 				# Finances
 				raceFinancesTotalSearch = tree.xpath("normalize-space(//td[contains(text(), 'Total:')]/../td[2]/text())")
 				raceFinancesBalanceSearch = tree.xpath("normalize-space(//td[contains(text(), 'Current balance')]/../td[2]//text())")
+				postRaceData.append(raceFinancesTotalSearch)
+				postRaceData.append(raceFinancesBalanceSearch)
 
 				# Car parts
 				raceCarSearch = tree.xpath("//b[contains(text(), 'Cha')]/../../../tr/td/text()")
+				raceCar = [str(element) for element in raceCarSearch]
+				postRaceData.append(raceCar)
 
+				print(raceDict)
 			else:
 				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
 				warningLabel.set("Error")
