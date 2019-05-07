@@ -511,10 +511,12 @@ def calculate(tab):
 				
 				# Find race risks
 				raceRiskSearch = tree.xpath("//th[contains(text(), 'Overtake')]/../../tr[7]/td/text()")
-				print(raceRiskSearch)
+				raceRisk = [str(element) for element in raceRiskSearch]
 
 				# Find driver stats and changes
 				raceDriverStatSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../td/text()")
+				raceDriverStats = [re.findall("\d+", str(element))[0] for element in raceDriverStatSearch]
+				print(raceDriverStats)
 				raceDriverStatSearch.remove(raceDriverStatSearch[0])
 				raceDriverStatSearch.remove(raceDriverStatSearch[0])
 				raceDriverChangeSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../../tr[4]/td/text()")
