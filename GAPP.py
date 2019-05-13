@@ -352,7 +352,7 @@ def calculate(tab):
 					Q1LapDict = {
 						"RaceID": raceID,
 						"Session": "Q1",
-						"LapTime": Q1LapData[0],
+						"Fastest Lap": Q1LapData[0],
 						"FWing": Q1LapData[1],
 						"RWing": Q1LapData[2],
 						"Engine": Q1LapData[3],
@@ -383,7 +383,7 @@ def calculate(tab):
 					Q2LapDict = {
 						"RaceID": raceID,
 						"Session": "Q2",
-						"LapTime": Q2LapData[0],
+						"Fastest Lap": Q2LapData[0],
 						"FWing": Q2LapData[1],
 						"RWing": Q2LapData[2],
 						"Engine": Q2LapData[3],
@@ -419,20 +419,17 @@ def calculate(tab):
 					SetupDict["Gear"] = str(tree.xpath("//input[contains(@id, 'Gear')]/@value")[0])
 					SetupDict["Suspension"] = str(tree.xpath("//input[contains(@id, 'Suspension')]/@value")[0])
 					# Fuel
-					SetupDict["FuelStart"] = str(tree.xpath("//input[contains(@name, 'FuelStart')]/@value")[0])
-					SetupDict["FuelStop1"] = str(tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")[0])
-					SetupDict["FuelStop2"] = str(tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")[0])
-					SetupDict["FuelStop3"] = str(tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")[0])
-					SetupDict["FuelStop4"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
-					SetupDict["FuelStop5"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
+					SetupDict["Fuel Start"] = str(tree.xpath("//input[contains(@name, 'FuelStart')]/@value")[0])
+					SetupDict["Stop 1 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")[0])
+					SetupDict["Stop 2 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")[0])
+					SetupDict["Stop 3 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")[0])
+					SetupDict["Stop 4 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
+					SetupDict["Stop 5 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
 					# Risks
 					SetupDict["Risk O/D"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
 					SetupDict["Risk CT"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
-					SetupDict["DriverRiskProb"] = str(tree.xpath("//input[contains(@name, 'DriverRiskProb')]/@value")[0])
 					# Boosts
-					SetupDict["BoostLap1"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0])
-					SetupDict["BoostLap2"] = str(tree.xpath("//input[contains(@name, 'BoostLap2')]/@value")[0])
-					SetupDict["BoostLap3"] = str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
+					SetupDict["Boosts"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'BoostLap2')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
 					sessionDicts.append(SetupDict)
 				except Exception:
 					logger.exception("Pre-Race analysis failed in race setup - user probably hasn't done race setup yet")
@@ -449,7 +446,7 @@ def calculate(tab):
 						fieldnames = [
 							"RaceID",
 							"Session",
-							"LapTime",
+							"Fastest Lap",
 							"FWing",
 							"RWing",
 							"Engine",
@@ -457,20 +454,49 @@ def calculate(tab):
 							"Gear",
 							"Suspension",
 							"Compound",
+							"Supplier",
 							"Risk O/D",
 							"Risk CT",
-							"RiskCT",
-							"Supplier",
-							"FuelStart",
-							"FuelStop1",
-							"FuelStop2",
-							"FuelStop3",
-							"FuelStop4",
-							"FuelStop5",
-							"DriverRiskProb",
-							"BoostLap1",
-							"BoostLap2",
-							"BoostLap3"
+							"Boosts",
+							"Fuel Start",
+							"Stop 1 Lap",
+							"Stop 1 Tyres/Fuel",
+							"Stop 1 Refuel",
+							"Stop 1 Time",
+							"Stop 2 Lap",
+							"Stop 2 Tyres/Fuel",
+							"Stop 2 Refuel",
+							"Stop 2 Time",
+							"Stop 3 Lap",
+							"Stop 3 Tyres/Fuel",
+							"Stop 3 Refuel",
+							"Stop 3 Time",
+							"Stop 4 Lap",
+							"Stop 4 Tyres/Fuel",
+							"Stop 4 Refuel",
+							"Stop 4 Time",
+							"Stop 5 Lap",
+							"Stop 5 Tyres/Fuel",
+							"Stop 5 Refuel",
+							"Stop 5 Time",
+							"Fuel End",
+							"Tyres End",
+							"Finances",
+							"CHA Level/Start/End",
+							"ENG Level/Start/End",
+							"FWI Level/Start/End",
+							"RWI Level/Start/End",
+							"UND Level/Start/End",
+							"SID Level/Start/End",
+							"COL Level/Start/End",
+							"GEA Level/Start/End",
+							"BRA Level/Start/End",
+							"SUS Level/Start/End",
+							"ELE Level/Start/End",
+							"Energy Start",
+							"Energy End",
+							"Driver Stats Start",
+							"Driver Stats Change"
 						]
 
 						logger.info("Writing pre-race data to CSV file")
@@ -511,9 +537,6 @@ def calculate(tab):
 				# Assign values to the race dictionary - make sure not to bloat the CSV file!
 				raceDict["RaceID"] = raceID
 				raceDict["Session"] = "Race"
-
-				# Storage Variable (for ease)
-				postRaceData = []
 
 				# Define the race URL and get page data
 				raceURL = "https://www.gpro.net/gb/RaceAnalysis.asp"
@@ -572,11 +595,11 @@ def calculate(tab):
 				raceDict["End Position"] = racePosition[1]
 
 				# Fastest lap time
-				raceDict["Fastest Lap Time"] = tree.xpath("normalize-space(//font[contains(@color, 'lime') and contains(text(), ':')]/text())")
+				raceDict["Fastest Lap"] = tree.xpath("normalize-space(//font[contains(@color, 'lime') and contains(text(), ':')]/text())")
 
 				# Start fuel
 				raceFuelStartSearch = tree.xpath("normalize-space(//div[contains(text(), 'Start fuel:')]/b/text())")
-				raceDict["FuelStart"] = re.findall(r"\d+", raceFuelStartSearch)[0]
+				raceDict["Fuel Start"] = re.findall(r"\d+", raceFuelStartSearch)[0]
 
 				# Stops
 				raceStopsSearch = tree.xpath("//td[starts-with(text(), 'Stop')]/..//text()")
@@ -587,28 +610,120 @@ def calculate(tab):
 					except:
 						pass
 				for i in range(len(raceStops) // 7):
-					raceDict["Lap Stop " + str(i)] = raceStops[]
+					raceDict["Stop " + str(i + 1) + " Lap"] = raceStops[(i * 7) + 1]
+					raceDict["Stop " + str(i + 1) + " Tyres/Fuel"] = str(raceStops[(i * 7) + 3]) + "/" + str(raceStops[(i * 7) + 4])
+					raceDict["Stop " + str(i + 1) + " Refuel"] = raceStops[(i * 7) + 5]
+					raceDict["Stop " + str(i + 1) + " Time"] = raceStops[(i * 7) + 6]
 
 				# End condition
 				raceTyreEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Tyres condition after finish:')]/b//text())")
-				postRaceData.append(raceTyreEndSearch)
+				raceDict["Tyres End"] = raceTyreEndSearch
 
 				# End fuel
 				raceFuelEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Fuel left in the car after finish:')]/b/text())")
-				postRaceData.append(raceFuelEndSearch)
+				raceDict["Fuel End"] = raceFuelEndSearch
 
 				# Finances
 				raceFinancesTotalSearch = tree.xpath("normalize-space(//td[contains(text(), 'Total:')]/../td[2]/text())")
 				raceFinancesBalanceSearch = tree.xpath("normalize-space(//td[contains(text(), 'Current balance')]/../td[2]//text())")
-				postRaceData.append(raceFinancesTotalSearch)
-				postRaceData.append(raceFinancesBalanceSearch)
+				raceDict["Finances"] = raceFinancesTotalSearch + " / " + raceFinancesBalanceSearch
 
 				# Car parts
 				raceCarSearch = tree.xpath("//b[contains(text(), 'Cha')]/../../../tr/td/text()")
 				raceCar = [str(element) for element in raceCarSearch]
-				postRaceData.append(raceCar)
+				
+				raceDict["CHA Level/Start/End"] = str(raceCar[0]) + "/" + str(raceCar[11]) + "/" + str(raceCar[22])
+				raceDict["ENG Level/Start/End"] = str(raceCar[1]) + "/" + str(raceCar[12]) + "/" + str(raceCar[23])
+				raceDict["FWI Level/Start/End"] = str(raceCar[2]) + "/" + str(raceCar[13]) + "/" + str(raceCar[24])
+				raceDict["RWI Level/Start/End"] = str(raceCar[3]) + "/" + str(raceCar[14]) + "/" + str(raceCar[25])
+				raceDict["UND Level/Start/End"] = str(raceCar[4]) + "/" + str(raceCar[15]) + "/" + str(raceCar[26])
+				raceDict["SID Level/Start/End"] = str(raceCar[5]) + "/" + str(raceCar[16]) + "/" + str(raceCar[27])
+				raceDict["COL Level/Start/End"] = str(raceCar[6]) + "/" + str(raceCar[17]) + "/" + str(raceCar[28])
+				raceDict["GEA Level/Start/End"] = str(raceCar[7]) + "/" + str(raceCar[18]) + "/" + str(raceCar[29])
+				raceDict["BRA Level/Start/End"] = str(raceCar[8]) + "/" + str(raceCar[19]) + "/" + str(raceCar[30])
+				raceDict["SUS Level/Start/End"] = str(raceCar[9]) + "/" + str(raceCar[20]) + "/" + str(raceCar[31])
+				raceDict["ELE Level/Start/End"] = str(raceCar[10]) + "/" + str(raceCar[21]) + "/" + str(raceCar[32])
 
-				print(raceDict)
+				# Write the data to file
+				try:
+					logger.info("Writing pre-race analysis to CSV")
+					with open("RaceData.csv", "a", newline = "") as csvFile:
+						fieldnames = [
+							"RaceID",
+							"Session",
+							"Fastest Lap",
+							"FWing",
+							"RWing",
+							"Engine",
+							"Brakes",
+							"Gear",
+							"Suspension",
+							"Compound",
+							"Supplier",
+							"Risk O/D",
+							"Risk CT",
+							"Boosts",
+							"Start Position",
+							"End Position",
+							"Fuel Start",
+							"Stop 1 Lap",
+							"Stop 1 Tyres/Fuel",
+							"Stop 1 Refuel",
+							"Stop 1 Time",
+							"Stop 2 Lap",
+							"Stop 2 Tyres/Fuel",
+							"Stop 2 Refuel",
+							"Stop 2 Time",
+							"Stop 3 Lap",
+							"Stop 3 Tyres/Fuel",
+							"Stop 3 Refuel",
+							"Stop 3 Time",
+							"Stop 4 Lap",
+							"Stop 4 Tyres/Fuel",
+							"Stop 4 Refuel",
+							"Stop 4 Time",
+							"Stop 5 Lap",
+							"Stop 5 Tyres/Fuel",
+							"Stop 5 Refuel",
+							"Stop 5 Time",
+							"Fuel End",
+							"Tyres End",
+							"Finances",
+							"CHA Level/Start/End",
+							"ENG Level/Start/End",
+							"FWI Level/Start/End",
+							"RWI Level/Start/End",
+							"UND Level/Start/End",
+							"SID Level/Start/End",
+							"COL Level/Start/End",
+							"GEA Level/Start/End",
+							"BRA Level/Start/End",
+							"SUS Level/Start/End",
+							"ELE Level/Start/End",
+							"Energy Start",
+							"Energy End",
+							"Driver Stats Start",
+							"Driver Stats Change"
+						]
+
+						logger.info("Writing pre-race data to CSV file")
+						writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
+						if len(pastSessionData) == 0:
+							writer.writeheader()
+						if not any(session["RaceID"] == raceID and session["Session"] == "Race" for session in pastSessionData):
+							try:
+								logger.info("Writing session to data file")
+								writer.writerow(raceDict)
+							except Exception:
+								logger.exception("Unable to write session to data file")
+						else:
+							logger.warning("Session already exists in RaceData.csv")
+				except Exception:
+					logger.exception("Unable to open data file for analysis - file might be open in another application")
+					warningLabel.set("File error: permission denied")
+					foregroundColour("Status.Label", "Red")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 			else:
 				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
 				warningLabel.set("Error")
