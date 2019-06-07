@@ -23,18 +23,14 @@ if not os.path.exists(dataPath):
 	os.makedirs(dataPath)
 fLogFileName = str(Path.home()) + r"\Documents\GAPP\error.log"
 gLogFileName = str(Path.home()) + r"\Documents\GAPP\logging.log"
-c_handler = logging.StreamHandler()
 f_handler = logging.FileHandler(fLogFileName)
 g_handler = logging.FileHandler(gLogFileName)
-c_handler.setLevel(logging.WARNING)
 f_handler.setLevel(logging.ERROR)
-g_handler.setLevel(logging.INFO)
+g_handler.setLevel(logging.DEBUG)
 # Handler Format
-c_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 f_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 g_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 # Add Handlers
-logger.addHandler(c_handler)
 logger.addHandler(f_handler)
 logger.addHandler(g_handler)
 
@@ -75,6 +71,7 @@ try:
 	credentialCheck = int(float(file.readline()))
 	username = file.readline()
 	password = file.readline()
+	logger.info("Login data file read successfully")
 except:
 	logger.info("Unable to open or read login data file, setting credential check to 0")
 	credentialCheck = 0
@@ -83,7 +80,7 @@ finally:
 	file.close()
 
 # Thread Controller - starts and manages threads as required
-def threadController(*args):
+def calculateThreadController(*args):
 	logger.info("Writing user data to login data file")
 	checkData(filename, inputRememberCredentials.get(), inputUsername.get(), inputPassword.get())
 
@@ -92,12 +89,30 @@ def threadController(*args):
 	threads = threading.enumerate()
 
 	for thread in threads:
-		if(threadName == thread.name):
-			logger.info("Thread of same name already exists - cancelling")
-			return
+		if not threadName == thread.name:
+			logger.info("Starting new thread: %s", threadName)
+			threading.Thread(daemon = True, name = threadName, target = calculate, args = (threadName,)).start()
+		else:
+			logger.warning("Thread of same name already exists: %s", threadName)
 		
-	logger.info("Starting new thread: %s", threadName)
-	threading.Thread(daemon = True, name = threadName, target = calculate, args = (threadName,)).start()
+
+def fillThreadController(*args):
+	logger.info("Writing user data to login data file")
+	checkData(filename, inputRememberCredentials.get(), inputUsername.get(), inputPassword.get())
+
+	logger.info("Getting tab information to create thread name")
+	threadName = notebook.tab(notebook.select(), "text")
+	threads = threading.enumerate()
+
+	for thread in threads:
+		if not threadName == thread.name:
+			logger.info("Starting new thread: %s", threadName)
+			if threadName == "Car Wear":
+				threading.Thread(daemon = True, name = threadName, target = fillWear).start()
+			elif threadName == "PHA":
+				threading.Thread(daemon = True, name = threadName, target = fillProfile).start()
+		else:
+			logger.warning("Thread of same name already exists: %s", threadName)
 
 # Calculate the setup and others
 def calculate(tab):
@@ -273,6 +288,19 @@ def calculate(tab):
 				subTotal += profileTesting[i].get()
 				profileTotals[i].set(int(round(subTotal, 0)))
 		elif(tab == "Analysis"):
+			# First step is to import current data, which will allow a long running data file for the user
+			pastSessionData = []
+			try:
+				with open("RaceData.csv", mode="r") as csvFile:
+					csvReader = csv.DictReader(csvFile)
+					for row in csvReader:
+						rowData = {}
+						for key in row:
+							rowData[key] = row[key]
+						pastSessionData.append(rowData)
+			except:
+				logger.warning("Unable to open RaceData.csv data file - might not exist or permission is denied")
+
 			logger.info("Starting pre- and post-race analysis")
 			# Create the logon payload and create the session
 			username = entryUsername.get()
@@ -281,11 +309,24 @@ def calculate(tab):
 			session = requests.session()
 			loginURL = "https://gpro.net/gb/Login.asp"
 			logonResult = session.post(loginURL, data=logonData, headers=dict(referer=loginURL))
+			
+			# Gather the session information for the upcoming or past race, based on input choice
+			logger.info("Getting ID data for season and race")
+			tree = html.fromstring(logonResult.content)
+			rawData = tree.xpath("normalize-space(//strong[contains(text(), 'Next race:')]/../text())")
+			reSearch = re.findall(r"(\d{2}),\s\w+\s(\d+)", rawData)[0]
+			seasonNumber = reSearch[0]
+			raceNumber = reSearch[1]
 		
 			raceState = inputAnalysis.get()
 
 			if(raceState == "Pre-Race"):
 				logger.info("Calculating for Pre-Race")
+				# Creating raceID
+				if(len(raceNumber) == 1):
+					raceNumber = "0" + raceNumber
+				raceID = "S" + seasonNumber + "R" + raceNumber
+
 				# Define required URLs
 				Q1URL = "https://www.gpro.net/gb/Qualify.asp"
 				Q2URL = "https://www.gpro.net/gb/Qualify2.asp"
@@ -296,35 +337,53 @@ def calculate(tab):
 				Q2Result = session.get(Q2URL, headers=dict(referer=Q2URL))
 				SetupResult = session.get(SetupURL, headers=dict(referer=SetupURL))
 
+				# List to store the created dictionaries, for easier looped writing
+				sessionDicts = []
+
 				# Process data
 				# Q1
-				tree = html.fromstring(Q1Result.content)
-				Q1LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
-				Q1LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
-				Q1LapData.remove(Q1LapData[0])
-				Q1LapData.remove(Q1LapData[1])
-				Q1LapDict = {
-					"LapTime": Q1LapData[0],
-					"FWing": Q1LapData[1],
-					"RWing": Q1LapData[2],
-					"Engine": Q1LapData[3],
-					"Brakes": Q1LapData[4],
-					"Gear": Q1LapData[5],
-					"Suspension": Q1LapData[6],
-					"Compound": Q1LapData[7],
-					"Risk": Q1LapData[8],
-					"Supplier": Q1LapData[9]
-				}
+				try:
+					logger.info("Analysing for Q1")
+					tree = html.fromstring(Q1Result.content)
+					Q1LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
+					Q1LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
+					Q1LapData.remove(Q1LapData[0])
+					Q1LapData.remove(Q1LapData[1])
+					Q1LapDict = {
+						"RaceID": raceID,
+						"Session": "Q1",
+						"Fastest Lap": Q1LapData[0],
+						"FWing": Q1LapData[1],
+						"RWing": Q1LapData[2],
+						"Engine": Q1LapData[3],
+						"Brakes": Q1LapData[4],
+						"Gear": Q1LapData[5],
+						"Suspension": Q1LapData[6],
+						"Compound": Q1LapData[7],
+						"Risk O/D": Q1LapData[8],
+						"Supplier": Q1LapData[9]
+					}
+					sessionDicts.append(Q1LapDict)
+				except Exception:
+					logger.exception("Pre-Race analysis failed in Q1 - user probably hasn't done Q1 yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Q1 Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 
 				# Q2
 				try:
+					logger.info("Analysing for Q2")
 					tree = html.fromstring(Q2Result.content)
 					Q2LapData = tree.xpath("//img[contains(@src, 'suppliers')]/../..//*[string-length(text()) > 2]/text()")
 					Q2LapData += tree.xpath("//img[contains(@src, 'suppliers')]/@alt")
 					Q2LapData.remove(Q2LapData[0])
 					Q2LapData.remove(Q2LapData[1])
 					Q2LapDict = {
-						"LapTime": Q2LapData[0],
+						"RaceID": raceID,
+						"Session": "Q2",
+						"Fastest Lap": Q2LapData[0],
 						"FWing": Q2LapData[1],
 						"RWing": Q2LapData[2],
 						"Engine": Q2LapData[3],
@@ -332,84 +391,339 @@ def calculate(tab):
 						"Gear": Q2LapData[5],
 						"Suspension": Q2LapData[6],
 						"Compound": Q2LapData[7],
-						"Risk": Q2LapData[8],
+						"Risk O/D": Q2LapData[8],
 						"Supplier": Q2LapData[9]
 					}
+					sessionDicts.append(Q2LapDict)
 				except Exception:
-					logger.exception("Pre-Race analysis failed - user probably hasn't done qualifying yet")
+					logger.exception("Pre-Race analysis failed in Q2 - user probably hasn't done Q2 yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Q2 Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 					return
 
 				# Setup
-				tree = html.fromstring(SetupResult.content)
-				SetupDict = {}
-				# Car Setup
-				SetupDict["FWing"] = str(tree.xpath("//input[contains(@id, 'FWing')]/@value")[0])
-				SetupDict["RWing"] = str(tree.xpath("//input[contains(@id, 'RWing')]/@value")[0])
-				SetupDict["Engine"] = str(tree.xpath("//input[contains(@id, 'Engine')]/@value")[0])
-				SetupDict["Brakes"] = str(tree.xpath("//input[contains(@id, 'Brakes')]/@value")[0])
-				SetupDict["Gear"] = str(tree.xpath("//input[contains(@id, 'Gear')]/@value")[0])
-				SetupDict["Suspension"] = str(tree.xpath("//input[contains(@id, 'Suspension')]/@value")[0])
-				# Fuel
-				SetupDict["FuelStart"] = str(tree.xpath("//input[contains(@name, 'FuelStart')]/@value")[0])
-				SetupDict["FuelStop1"] = str(tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")[0])
-				SetupDict["FuelStop2"] = str(tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")[0])
-				SetupDict["FuelStop3"] = str(tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")[0])
-				SetupDict["FuelStop4"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
-				SetupDict["FuelStop5"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
-				# Risks
-				SetupDict["RiskOver"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0])
-				SetupDict["RiskDefend"] = str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
-				SetupDict["DriverRisk"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0])
-				SetupDict["RiskWet"] = str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
-				SetupDict["DriverRiskProb"] = str(tree.xpath("//input[contains(@name, 'DriverRiskProb')]/@value")[0])
-				# Boosts
-				SetupDict["BoostLap1"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0])
-				SetupDict["BoostLap2"] = str(tree.xpath("//input[contains(@name, 'BoostLap2')]/@value")[0])
-				SetupDict["BoostLap3"] = str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
+				try:
+					logger.info("Anlysing race setup")
+					tree = html.fromstring(SetupResult.content)
+					SetupDict = {}
+					# Session Information
+					SetupDict["RaceID"] = raceID
+					SetupDict["Session"] = "Setup"
+					# Car Setup
+					SetupDict["FWing"] = str(tree.xpath("//input[contains(@id, 'FWing')]/@value")[0])
+					SetupDict["RWing"] = str(tree.xpath("//input[contains(@id, 'RWing')]/@value")[0])
+					SetupDict["Engine"] = str(tree.xpath("//input[contains(@id, 'Engine')]/@value")[0])
+					SetupDict["Brakes"] = str(tree.xpath("//input[contains(@id, 'Brakes')]/@value")[0])
+					SetupDict["Gear"] = str(tree.xpath("//input[contains(@id, 'Gear')]/@value")[0])
+					SetupDict["Suspension"] = str(tree.xpath("//input[contains(@id, 'Suspension')]/@value")[0])
+					# Fuel
+					SetupDict["Fuel Start"] = str(tree.xpath("//input[contains(@name, 'FuelStart')]/@value")[0])
+					SetupDict["Stop 1 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop1')]/@value")[0])
+					SetupDict["Stop 2 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop2')]/@value")[0])
+					SetupDict["Stop 3 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop3')]/@value")[0])
+					SetupDict["Stop 4 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop4')]/@value")[0])
+					SetupDict["Stop 5 Refuel"] = str(tree.xpath("//input[contains(@name, 'FuelStop5')]/@value")[0])
+					# Risks
+					SetupDict["Risk O/D"] = str(tree.xpath("//input[contains(@name, 'RiskOver')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskDefend')]/@value")[0])
+					SetupDict["Risk CT"] = str(tree.xpath("//input[@name='DriverRisk']/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'RiskWet')]/@value")[0])
+					# Boosts
+					SetupDict["Boosts"] = str(tree.xpath("//input[contains(@name, 'BoostLap1')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'BoostLap2')]/@value")[0]) + "/" + str(tree.xpath("//input[contains(@name, 'BoostLap3')]/@value")[0])
+					sessionDicts.append(SetupDict)
+				except Exception:
+					logger.exception("Pre-Race analysis failed in race setup - user probably hasn't done race setup yet")
+					logger.info("Updating status label to notify user of completed calculations")
+					warningLabel.set("Setup Not Done")
+					foregroundColour("Status.Label", "#FF0000")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 
 				# Write the data to file
-				logger.info("Writing pre-race analysis to CSV")
-				with open("PreRace.csv", "w", newline = "") as csvFile:
-					fieldnames = [
-						"LapTime",
-						"FWing",
-						"RWing",
-						"Engine",
-						"Brakes",
-						"Gear",
-						"Suspension",
-						"Compound",
-						"Risk",
-						"Supplier",
-						"FuelStart",
-						"FuelStop1",
-						"FuelStop2",
-						"FuelStop3",
-						"FuelStop4",
-						"FuelStop5",
-						"RiskOver",
-						"RiskDefend",
-						"DriverRisk",
-						"RiskWet",
-						"DriverRiskProb",
-						"BoostLap1",
-						"BoostLap2",
-						"BoostLap3"
-					]
+				try:
+					logger.info("Writing pre-race analysis to CSV")
+					with open("RaceData.csv", "a", newline = "") as csvFile:
+						fieldnames = [
+							"RaceID",
+							"Session",
+							"Fastest Lap",
+							"FWing",
+							"RWing",
+							"Engine",
+							"Brakes",
+							"Gear",
+							"Suspension",
+							"Compound",
+							"Supplier",
+							"Risk O/D",
+							"Risk CT",
+							"Boosts",
+							"Fuel Start",
+							"Stop 1 Lap",
+							"Stop 1 Tyres/Fuel",
+							"Stop 1 Refuel",
+							"Stop 1 Time",
+							"Stop 2 Lap",
+							"Stop 2 Tyres/Fuel",
+							"Stop 2 Refuel",
+							"Stop 2 Time",
+							"Stop 3 Lap",
+							"Stop 3 Tyres/Fuel",
+							"Stop 3 Refuel",
+							"Stop 3 Time",
+							"Stop 4 Lap",
+							"Stop 4 Tyres/Fuel",
+							"Stop 4 Refuel",
+							"Stop 4 Time",
+							"Stop 5 Lap",
+							"Stop 5 Tyres/Fuel",
+							"Stop 5 Refuel",
+							"Stop 5 Time",
+							"Fuel End",
+							"Tyres End",
+							"Finances",
+							"CHA Level/Start/End",
+							"ENG Level/Start/End",
+							"FWI Level/Start/End",
+							"RWI Level/Start/End",
+							"UND Level/Start/End",
+							"SID Level/Start/End",
+							"COL Level/Start/End",
+							"GEA Level/Start/End",
+							"BRA Level/Start/End",
+							"SUS Level/Start/End",
+							"ELE Level/Start/End",
+							"Energy Start",
+							"Energy End",
+							"Driver Stats Start",
+							"Driver Stats Change"
+						]
 
-					try:
+						logger.info("Writing pre-race data to CSV file")
 						writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
-						writer.writeheader()
-
-						writer.writerow(Q1LapDict)
-						writer.writerow(Q2LapDict)
-						writer.writerow(SetupDict)
-					except Exception:
-						logger.exception("Unable to write Pre-Race analysis to CSV file")
-
+						if len(pastSessionData) == 0:
+							writer.writeheader()
+						for sessionDict in sessionDicts:
+							if not any(session["RaceID"] == sessionDict["RaceID"] and session["Session"] == sessionDict["Session"] for session in pastSessionData):
+								try:
+									logger.info("Writing session to data file")
+									writer.writerow(sessionDict)
+								except Exception:
+									logger.exception("Unable to write session to data file")
+							else:
+								logger.warning("Session already exists in RaceData.csv")
+				except Exception:
+					logger.exception("Unable to open data file for analysis - file might be open in another application")
+					warningLabel.set("File error: permission denied")
+					foregroundColour("Status.Label", "Red")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
+						
 			elif(raceState == "Post-Race"):
 				logger.info("Calculating for Post-Race")
-				pass
+				# Creating raceID
+				if(not raceNumber == "1"):
+					raceNumber = str(int(raceNumber) - 1)
+					if(len(raceNumber) == 1):
+						raceNumber = "0" + raceNumber
+				else:
+					seasonNumber = str(int(seasonNumber) - 1)
+					raceNumber == "17"
+				raceID = "S" + seasonNumber + "R" + raceNumber
+
+				# Empty dictionary for the race information
+				raceDict = {}
+
+				# Assign values to the race dictionary - make sure not to bloat the CSV file!
+				raceDict["RaceID"] = raceID
+				raceDict["Session"] = "Race"
+
+				# Define the race URL and get page data
+				raceURL = "https://www.gpro.net/gb/RaceAnalysis.asp"
+				raceResult = session.get(raceURL, headers=dict(referer=raceURL))
+				tree = html.fromstring(raceResult.content)
+
+				# Find setup informaiton
+				raceSetupSearch = tree.xpath("//td[contains(text(), 'Race')]/../td/text()")
+				raceSetup = [str(element) for element in raceSetupSearch]
+				raceSetup.remove("Race")
+				raceDict["FWing"] = raceSetup[0]
+				raceDict["RWing"] = raceSetup[1]
+				raceDict["Engine"] = raceSetup[2]
+				raceDict["Brakes"] = raceSetup[3]
+				raceDict["Gear"] = raceSetup[4]
+				raceDict["Suspension"] = raceSetup[5]
+				raceDict["Compound"] = raceSetup[6]
+				
+				# Find race risks
+				raceRiskSearch = tree.xpath("//th[contains(text(), 'Overtake')]/../../tr[7]/td/text()")
+				raceRisk = [str(element) for element in raceRiskSearch]
+				raceDict["Risk O/D"] = str(raceRisk[0]) + "/" + str(raceRisk[1])
+				raceDict["Risk CT"] = str(raceRisk[2] + "/" + str(raceRisk[3]))
+
+				# Tyre supplier
+				raceDict["Supplier"] = tree.xpath("normalize-space(//img[contains(@src, 'suppliers')]/@title)")
+
+				# Find driver stats and changes
+				raceDriverStatSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../td/text()")
+				raceDriverChangeSearch = tree.xpath("//a[contains(@href, 'DriverProfile.asp')]/../../../tr[4]/td/text()")
+				raceDriverStats = []
+				raceDriverChange = []
+				for element in raceDriverStatSearch:
+					try:
+						raceDriverStats.append(re.findall(r"\d+", str(element))[0])
+					except:
+						pass
+				for element in raceDriverChangeSearch:
+					try:
+						raceDriverChange.append(re.findall(r"\d+", str(element))[0])
+					except:
+						pass
+				raceDict["Driver Stats Start"] = raceDriverStats
+				raceDict["Driver Stats Change"] = raceDriverChange
+
+				# Find driver energy
+				raceEnergyStartSearch = tree.xpath("normalize-space(//td[contains(@title, 'Before the race')]/div[contains(@class, 'barLabel')]/text())")
+				raceEnergyEndSearch = tree.xpath("normalize-space(//td[contains(@title, 'After the race')]/div[contains(@class, 'barLabel')]/text())")
+				raceDict["Energy Start"] = raceEnergyStartSearch
+				raceDict["Energy End"] = raceEnergyEndSearch
+
+				# Start and Finish positions
+				racePositionSearch = tree.xpath("//th[contains(text(), 'Positions')]/../../tr[3]/td/text()")
+				racePosition = [str(element) for element in racePositionSearch]
+				raceDict["Start Position"] = racePosition[0]
+				raceDict["End Position"] = racePosition[1]
+
+				# Fastest lap time
+				raceDict["Fastest Lap"] = tree.xpath("normalize-space(//font[contains(@color, 'lime') and contains(text(), ':')]/text())")
+
+				# Start fuel
+				raceFuelStartSearch = tree.xpath("normalize-space(//div[contains(text(), 'Start fuel:')]/b/text())")
+				raceDict["Fuel Start"] = re.findall(r"\d+", raceFuelStartSearch)[0]
+
+				# Stops
+				raceStopsSearch = tree.xpath("//td[starts-with(text(), 'Stop')]/..//text()")
+				raceStops = []
+				for element in raceStopsSearch:
+					try:
+						raceStops.append(re.findall(r"[a-zA-Z0-9\. \u00a0]+", str(element))[0])
+					except:
+						pass
+				for i in range(len(raceStops) // 7):
+					raceDict["Stop " + str(i + 1) + " Lap"] = raceStops[(i * 7) + 1]
+					raceDict["Stop " + str(i + 1) + " Tyres/Fuel"] = str(raceStops[(i * 7) + 3]) + "/" + str(raceStops[(i * 7) + 4])
+					raceDict["Stop " + str(i + 1) + " Refuel"] = raceStops[(i * 7) + 5]
+					raceDict["Stop " + str(i + 1) + " Time"] = raceStops[(i * 7) + 6]
+
+				# End condition
+				raceTyreEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Tyres condition after finish:')]/b//text())")
+				raceDict["Tyres End"] = raceTyreEndSearch
+
+				# End fuel
+				raceFuelEndSearch = tree.xpath("normalize-space(//p[contains(text(), 'Fuel left in the car after finish:')]/b/text())")
+				raceDict["Fuel End"] = raceFuelEndSearch
+
+				# Finances
+				raceFinancesTotalSearch = tree.xpath("normalize-space(//td[contains(text(), 'Total:')]/../td[2]/text())")
+				raceFinancesBalanceSearch = tree.xpath("normalize-space(//td[contains(text(), 'Current balance')]/../td[2]//text())")
+				raceDict["Finances"] = raceFinancesTotalSearch + " / " + raceFinancesBalanceSearch
+
+				# Car parts
+				raceCarSearch = tree.xpath("//b[contains(text(), 'Cha')]/../../../tr/td/text()")
+				raceCar = [str(element) for element in raceCarSearch]
+				
+				raceDict["CHA Level/Start/End"] = str(raceCar[0]) + "/" + str(raceCar[11]) + "/" + str(raceCar[22])
+				raceDict["ENG Level/Start/End"] = str(raceCar[1]) + "/" + str(raceCar[12]) + "/" + str(raceCar[23])
+				raceDict["FWI Level/Start/End"] = str(raceCar[2]) + "/" + str(raceCar[13]) + "/" + str(raceCar[24])
+				raceDict["RWI Level/Start/End"] = str(raceCar[3]) + "/" + str(raceCar[14]) + "/" + str(raceCar[25])
+				raceDict["UND Level/Start/End"] = str(raceCar[4]) + "/" + str(raceCar[15]) + "/" + str(raceCar[26])
+				raceDict["SID Level/Start/End"] = str(raceCar[5]) + "/" + str(raceCar[16]) + "/" + str(raceCar[27])
+				raceDict["COL Level/Start/End"] = str(raceCar[6]) + "/" + str(raceCar[17]) + "/" + str(raceCar[28])
+				raceDict["GEA Level/Start/End"] = str(raceCar[7]) + "/" + str(raceCar[18]) + "/" + str(raceCar[29])
+				raceDict["BRA Level/Start/End"] = str(raceCar[8]) + "/" + str(raceCar[19]) + "/" + str(raceCar[30])
+				raceDict["SUS Level/Start/End"] = str(raceCar[9]) + "/" + str(raceCar[20]) + "/" + str(raceCar[31])
+				raceDict["ELE Level/Start/End"] = str(raceCar[10]) + "/" + str(raceCar[21]) + "/" + str(raceCar[32])
+
+				# Write the data to file
+				try:
+					logger.info("Writing pre-race analysis to CSV")
+					with open("RaceData.csv", "a", newline = "") as csvFile:
+						fieldnames = [
+							"RaceID",
+							"Session",
+							"Fastest Lap",
+							"FWing",
+							"RWing",
+							"Engine",
+							"Brakes",
+							"Gear",
+							"Suspension",
+							"Compound",
+							"Supplier",
+							"Risk O/D",
+							"Risk CT",
+							"Boosts",
+							"Start Position",
+							"End Position",
+							"Fuel Start",
+							"Stop 1 Lap",
+							"Stop 1 Tyres/Fuel",
+							"Stop 1 Refuel",
+							"Stop 1 Time",
+							"Stop 2 Lap",
+							"Stop 2 Tyres/Fuel",
+							"Stop 2 Refuel",
+							"Stop 2 Time",
+							"Stop 3 Lap",
+							"Stop 3 Tyres/Fuel",
+							"Stop 3 Refuel",
+							"Stop 3 Time",
+							"Stop 4 Lap",
+							"Stop 4 Tyres/Fuel",
+							"Stop 4 Refuel",
+							"Stop 4 Time",
+							"Stop 5 Lap",
+							"Stop 5 Tyres/Fuel",
+							"Stop 5 Refuel",
+							"Stop 5 Time",
+							"Fuel End",
+							"Tyres End",
+							"Finances",
+							"CHA Level/Start/End",
+							"ENG Level/Start/End",
+							"FWI Level/Start/End",
+							"RWI Level/Start/End",
+							"UND Level/Start/End",
+							"SID Level/Start/End",
+							"COL Level/Start/End",
+							"GEA Level/Start/End",
+							"BRA Level/Start/End",
+							"SUS Level/Start/End",
+							"ELE Level/Start/End",
+							"Energy Start",
+							"Energy End",
+							"Driver Stats Start",
+							"Driver Stats Change"
+						]
+
+						logger.info("Writing pre-race data to CSV file")
+						writer = csv.DictWriter(csvFile, fieldnames = fieldnames)
+						if len(pastSessionData) == 0:
+							writer.writeheader()
+						if not any(session["RaceID"] == raceID and session["Session"] == "Race" for session in pastSessionData):
+							try:
+								logger.info("Writing session to data file")
+								writer.writerow(raceDict)
+							except Exception:
+								logger.exception("Unable to write session to data file")
+						else:
+							logger.warning("Session already exists in RaceData.csv")
+				except Exception:
+					logger.exception("Unable to open data file for analysis - file might be open in another application")
+					warningLabel.set("File error: permission denied")
+					foregroundColour("Status.Label", "Red")
+					root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
+					return
 			else:
 				logger.error("Unable to get session information, so unable to perform analysis, this shouldn't be possible with radio buttons")
 				warningLabel.set("Error")
@@ -425,22 +739,26 @@ def calculate(tab):
 		logger.exception("Something went wrong with calculations, see exception")
 
 def fillWear():
+	logger.info("Starting fillWear() function")
 	try:
 		username = entryUsername.get()
 		password = entryPassword.get()
 
 		if(not checkLogin(username, password)):
+			logger.warning("Incorrect login details provided by user")
 			warningLabel.set("Incorrect Login Details")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 		elif(not checkTeam(username, password)):
+			logger.warning("User not in team Viper")
 			warningLabel.set("VIPER Family Team Only")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 
 		# Create our logon payload. 'hiddenToken' may change at a later date.
+		logger.info("Starting GPRO session for wear fill")
 		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 		
 		# Logon to GPRO using the logon information provided and store that under our session
@@ -452,6 +770,7 @@ def fillWear():
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 
 		# Request the car information page and scrape the car character and part level and wear data
+		logger.info("Getting car wear information")
 		carResult = session.get(carURL, headers=dict(referer=carURL))
 		tree = html.fromstring(carResult.content)
 
@@ -525,22 +844,25 @@ def fillWear():
 		logger.exception("Unable to fill wear, see exception for details")
 
 def fillProfile():
+	logger.info("Starting fillProfile() function")
 	try:
 		username = entryUsername.get()
 		password = entryPassword.get()
 
 		if(not checkLogin(username, password)):
+			logger.warning("Incorrect login details provided by user")
 			warningLabel.set("Incorrect Login Details")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
 			return
 		elif(not checkTeam(username, password)):
+			logger.warning("User not in team Viper")
 			warningLabel.set("VIPER Family Team Only")
 			foregroundColour("Status.Label", "Red")
 			root.after(1000, lambda: foregroundColour("Status.Label", "Black"))
-			return
 
 		# Create our logon payload. 'hiddenToken' may change at a later date.
+		logger.info("Starting GPRO session for profile fill")
 		logonData = {'textLogin':username, 'textPassword':password, 'hiddenToken':'9da482f717cf1319f10f55e35ab767a5', 'Logon':'Login', 'LogonFake':'Sign in'}
 		
 		# Logon to GPRO using the logon information provided and store that under our session
@@ -552,6 +874,7 @@ def fillProfile():
 		carURL = "https://www.gpro.net/gb/UpdateCar.asp"
 
 		# Request the car information page and scrape the car character and part level and wear data
+		logger.info("Getting car profile data")
 		carResult = session.get(carURL, headers=dict(referer=carURL))
 		tree = html.fromstring(carResult.content)
 
@@ -1030,7 +1353,7 @@ labelsStatus = []
 # Build the pages
 # Setup page
 # BUTTONS
-ttk.Button(frameSetup, text = "Calculate", command = threadController).grid(column = 1, row = 4, sticky = E+W)
+ttk.Button(frameSetup, text = "Calculate", command = calculateThreadController).grid(column = 1, row = 4, sticky = E+W)
 rememberCredentials = ttk.Checkbutton(frameSetup, text = "Remember Credentials", onvalue = 1, offvalue = 0, variable = inputRememberCredentials)
 rememberCredentials.grid(column = 1, row = 2, sticky = E+W)
 
@@ -1074,7 +1397,7 @@ ttk.Label(frameSetup, textvariable = suspension).grid(column = 6, row = 5)
 
 # Strategy page
 # BUTTONS
-ttk.Button(frameStrategy, text = "Calculate", command = threadController).grid(column = 9, columnspan = 2, row = 1, sticky = E+W)
+ttk.Button(frameStrategy, text = "Calculate", command = calculateThreadController).grid(column = 9, columnspan = 2, row = 1, sticky = E+W)
 
 # RADIO
 
@@ -1146,8 +1469,8 @@ labelsTotal = [labelExtraTotal, labelSoftTotal, labelMediumTotal, labelHardTotal
 
 # Wear page
 # BUTTONS
-ttk.Button(frameWear, text = "Calculate", command = threadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
-ttk.Button(frameWear, text = "Fill", command = fillWear).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Calculate", command = calculateThreadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameWear, text = "Fill", command = fillThreadController).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
 # RADIO
 # ENTRY
 ttk.Entry(frameWear, width = 5, textvariable = wearClearTrackRisk, validate = "key", validatecommand = (vcmdInt, '%P'), justify = "center").grid(column = 7, row = 0, sticky = W+E)
@@ -1238,8 +1561,8 @@ endLabels = [labelEndChassis, labelEndEngine, labelEndFWing, labelEndRWing, labe
 
 # Profile Page
 # BUTTONS
-ttk.Button(frameProfile, text = "Fill", command = fillProfile).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
-ttk.Button(frameProfile, text = "Calculate", command = threadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameProfile, text = "Fill", command = fillThreadController).grid(column = 0, columnspan = 2, row = 0, sticky = E+W)
+ttk.Button(frameProfile, text = "Calculate", command = calculateThreadController).grid(column = 2, columnspan = 2, row = 0, sticky = E+W)
 
 # ENTRY
 ttk.Entry(frameProfile, width = 5, textvariable = profilelevelChassis, justify = "center", validate = "key", validatecommand = (vcmdInt, '%P')).grid(column = 1, row = 2)
@@ -1298,7 +1621,7 @@ for part in PHA:
 
 # Analysis Page
 # BUTTONS
-ttk.Button(frameAnalysis, text = "Calculate", command = threadController).grid(column = 0, columnspan = 2, row = 0, sticky = E+W, padx = 5, pady = 5)
+ttk.Button(frameAnalysis, text = "Calculate", command = calculateThreadController).grid(column = 0, columnspan = 2, row = 0, sticky = E+W, padx = 5, pady = 5)
 
 # RADIOS
 radioQ1 = ttk.Radiobutton(frameAnalysis, text = "Pre-Race", variable = inputAnalysis, value = "Pre-Race").grid(column = 3, row = 0, sticky = (W, E), padx = 5, pady = 5)
@@ -1322,7 +1645,7 @@ for child in frameAnalysis.winfo_children(): child.grid_configure(padx = 5, pady
 
 # Set some QOL things, like auto focus for text entry and how to handle an "Enter" press
 entryUsername.focus()
-root.bind('<Return>', threadController)
+root.bind('<Return>', calculateThreadController)
 root.resizable(False, False)
 
 # Pack the notebook after doing everything else to set the window size and organize everything

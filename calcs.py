@@ -54,21 +54,21 @@ def setupCalc(username, password, weather, sessionTemp):
 	rTempRangeThree = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[1]/text())"))
 	rTempRangeFour = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[2]/text())"))
 	# This returns results like "Temp: 12*-17*", but we want just integers, so clean up the values
-	rTempMinOne = int((re.findall("\d+", rTempRangeOne))[0])
-	rTempMaxOne = int((re.findall("\d+", rTempRangeOne))[1])
-	rTempMinTwo = int((re.findall("\d+", rTempRangeTwo))[0])
-	rTempMaxTwo = int((re.findall("\d+", rTempRangeTwo))[1])
-	rTempMinThree = int((re.findall("\d+", rTempRangeThree))[0])
-	rTempMaxThree = int((re.findall("\d+", rTempRangeThree))[1])
-	rTempMinFour = int((re.findall("\d+", rTempRangeFour))[0])
-	rTempMaxFour = int((re.findall("\d+", rTempRangeFour))[1])
+	rTempMinOne = int((re.findall(r"\d+", rTempRangeOne))[0])
+	rTempMaxOne = int((re.findall(r"\d+", rTempRangeOne))[1])
+	rTempMinTwo = int((re.findall(r"\d+", rTempRangeTwo))[0])
+	rTempMaxTwo = int((re.findall(r"\d+", rTempRangeTwo))[1])
+	rTempMinThree = int((re.findall(r"\d+", rTempRangeThree))[0])
+	rTempMaxThree = int((re.findall(r"\d+", rTempRangeThree))[1])
+	rTempMinFour = int((re.findall(r"\d+", rTempRangeFour))[0])
+	rTempMaxFour = int((re.findall(r"\d+", rTempRangeFour))[1])
 	# Find the averages of these temps for the setup
 	rTemp = ((rTempMinOne + rTempMaxOne) + (rTempMinTwo + rTempMaxTwo) + (rTempMinThree + rTempMaxThree) + (rTempMinFour + rTempMaxFour)) / 8
 	# Using the race strategy page requested earlier, scrape the qualifying weather data
 	qOneTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherQ')]/../text()[contains(., 'Temp')])"))
-	qOneTemp = int((re.findall("\d+", qOneTemp))[0])
+	qOneTemp = int((re.findall(r"\d+", qOneTemp))[0])
 	qTwoTemp = str(tree.xpath("normalize-space(//img[contains(@name, 'WeatherR')]/../text()[contains(., 'Temp')])"))
-	qTwoTemp = int((re.findall("\d+", qTwoTemp))[0])
+	qTwoTemp = int((re.findall(r"\d+", qTwoTemp))[0])
 
 	# Check the user selected session and assign the relevant temperature
 	if(sessionTemp == "Race"):
@@ -96,48 +96,48 @@ def setupCalc(username, password, weather, sessionTemp):
 	# And wear. The IF statements here are because if a part is over 90% worn, it's get a "font" container that breaks the normal check
 	carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/text())"))
 	if(carWearChassis == ""):
-		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"));
-	carWearChassis = int((re.findall("\d+", carWearChassis))[0])
-	carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/text())"))
+		carWearChassis = str(tree.xpath("normalize-space(//b[contains(text(), 'Chassis')]/../../td[4]/font/text())"))
+	carWearChassis = int((re.findall(r"\d+", carWearChassis))[0])
+	carWearEngine = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/text())"))
 	if(carWearEngine == ""):
-		carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/font/text())"));
-	carWearEngine = int((re.findall("\d+", carWearEngine))[0])
-	carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/text())"))
+		carWearEngine = str(tree.xpath("normalize-space(//b[contains(text(), 'Engine')]/../../td[4]/font/text())"))
+	carWearEngine = int((re.findall(r"\d+", carWearEngine))[0])
+	carWearFrontWing = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/text())"))
 	if(carWearFrontWing == ""):
-		carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/font/text())"));
-	carWearFrontWing = int((re.findall("\d+", carWearFrontWing))[0])
-	carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/text())"))
+		carWearFrontWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Front wing')]/../../td[4]/font/text())"))
+	carWearFrontWing = int((re.findall(r"\d+", carWearFrontWing))[0])
+	carWearRearWing = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/text())"))
 	if(carWearRearWing == ""):
-		carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/font/text())"));
-	carWearRearWing = int((re.findall("\d+", carWearRearWing))[0])
-	carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/text())"))
+		carWearRearWing = str(tree.xpath("normalize-space(//b[contains(text(), 'Rear wing')]/../../td[4]/font/text())"))
+	carWearRearWing = int((re.findall(r"\d+", carWearRearWing))[0])
+	carWearUnderbody = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/text())"))
 	if(carWearUnderbody == ""):
-		carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/font/text())"));
-	carWearUnderbody = int((re.findall("\d+", carWearUnderbody))[0])
-	carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/text())"))
+		carWearUnderbody = str(tree.xpath("normalize-space(//b[contains(text(), 'Underbody')]/../../td[4]/font/text())"))
+	carWearUnderbody = int((re.findall(r"\d+", carWearUnderbody))[0])
+	carWearSidepod = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/text())"))
 	if(carWearSidepod == ""):
-		carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/font/text())"));
-	carWearSidepod = int((re.findall("\d+", carWearSidepod))[0])
-	carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/text())"))
+		carWearSidepod = str(tree.xpath("normalize-space(//b[contains(text(), 'Sidepods')]/../../td[4]/font/text())"))
+	carWearSidepod = int((re.findall(r"\d+", carWearSidepod))[0])
+	carWearCooling = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/text())"))
 	if(carWearCooling == ""):
-		carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/font/text())"));
-	carWearCooling = int((re.findall("\d+", carWearCooling))[0])
-	carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/text())"))
+		carWearCooling = str(tree.xpath("normalize-space(//b[contains(text(), 'Cooling')]/../../td[4]/font/text())"))
+	carWearCooling = int((re.findall(r"\d+", carWearCooling))[0])
+	carWearGears = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/text())"))
 	if(carWearGears == ""):
-		carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/font/text())"));
-	carWearGears = int((re.findall("\d+", carWearGears))[0])
-	carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/text())"))
+		carWearGears = str(tree.xpath("normalize-space(//b[contains(text(), 'Gearbox')]/../../td[4]/font/text())"))
+	carWearGears = int((re.findall(r"\d+", carWearGears))[0])
+	carWearBrakes = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/text())"))
 	if(carWearBrakes == ""):
-		carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/font/text())"));
-	carWearBrakes = int((re.findall("\d+", carWearBrakes))[0])
-	carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/text())"))
+		carWearBrakes = str(tree.xpath("normalize-space(//b[contains(text(), 'Brakes')]/../../td[4]/font/text())"))
+	carWearBrakes = int((re.findall(r"\d+", carWearBrakes))[0])
+	carWearSuspension = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/text())"))
 	if(carWearSuspension == ""):
-		carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/font/text())"));
-	carWearSuspension = int((re.findall("\d+", carWearSuspension))[0])
-	carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/text())"))
+		carWearSuspension = str(tree.xpath("normalize-space(//b[contains(text(), 'Suspension')]/../../td[4]/font/text())"))
+	carWearSuspension = int((re.findall(r"\d+", carWearSuspension))[0])
+	carWearElectronics = str(tree.xpath(r"normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/text())"))
 	if(carWearElectronics == ""):
-		carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"));
-	carWearElectronics = int((re.findall("\d+", carWearElectronics))[0])
+		carWearElectronics = str(tree.xpath("normalize-space(//b[contains(text(), 'Electronics')]/../../td[4]/font/text())"))
+	carWearElectronics = int((re.findall(r"\d+", carWearElectronics))[0])
 	
 	
 	# Setup calculations
@@ -218,9 +218,9 @@ def setupCalc(username, password, weather, sessionTemp):
 	weather = weather.upper()
 
 	if(weather != "WET"):
-		setupWeather = baseOffsets["wingWeatherDry"] * sessionTemp * 2;
+		setupWeather = baseOffsets["wingWeatherDry"] * sessionTemp * 2
 	else:
-		setupWeather = ((baseOffsets["wingWeatherWet"] * sessionTemp) + baseOffsets["wingWeatherOffset"]) * 2;
+		setupWeather = ((baseOffsets["wingWeatherWet"] * sessionTemp) + baseOffsets["wingWeatherOffset"]) * 2
 	setupDriver = driverTalent * (trackBaseWingsSetup + setupWeather) * baseOffsets["wingDriverMultiplier"]
 	setupCarLevel = (carLevelOffsets[0][0] * carLevelChassis) + (carLevelOffsets[0][1] * carLevelFrontWing) + (carLevelOffsets[0][1] * carLevelRearWing) + (carLevelOffsets[0][2] * carLevelUnderbody)
 	setupCarWear = ((carWearOffsets[0][0] * carWearChassis) + (carWearOffsets[0][1] * carWearFrontWing) + (carWearOffsets[0][1] * carWearRearWing) + (carWearOffsets[0][2] * carWearUnderbody))
@@ -236,9 +236,9 @@ def setupCalc(username, password, weather, sessionTemp):
 
 	# Engine
 	if(weather != "WET"):
-		setupWeather = baseOffsets["engineWeatherDry"] * sessionTemp;
+		setupWeather = baseOffsets["engineWeatherDry"] * sessionTemp
 	else:
-		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"]);
+		setupWeather = ((baseOffsets["engineWeatherWet"] * sessionTemp) + baseOffsets["engineWeatherOffset"])
 	setupDriver = (driverOffsets[0][0] * driverAggressiveness) + (driverExperience * (((trackBaseEngineSetup + setupWeather) * baseOffsets["engineDriverMultiplier"]) + baseOffsets["engineDriverOffset"]))
 	setupCarLevel = ((carLevelOffsets[1][0] * carLevelEngine) + (carLevelOffsets[1][1] * carLevelCooling) + (carLevelOffsets[1][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[1][0] * carWearEngine) + (carWearOffsets[1][1] * carWearCooling) + (carWearOffsets[1][2] * carWearElectronics))
@@ -246,9 +246,9 @@ def setupCalc(username, password, weather, sessionTemp):
 
 	# Brakes
 	if(weather != "WET"):
-		setupWeather = baseOffsets["brakesWeatherDry"] * sessionTemp;
+		setupWeather = baseOffsets["brakesWeatherDry"] * sessionTemp
 	else:
-		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"]);
+		setupWeather = ((baseOffsets["brakesWeatherWet"] * sessionTemp) + baseOffsets["brakesWeatherOffset"])
 	setupDriver = (driverOffsets[1][0] * driverTalent)
 	setupCarLevel = ((carLevelOffsets[2][0] * carLevelChassis) + (carLevelOffsets[2][1] * carLevelBrakes) + (carLevelOffsets[2][2] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[2][0] * carWearChassis) + (carWearOffsets[2][1] * carWearBrakes) + (carWearOffsets[2][2] * carWearElectronics))
@@ -256,9 +256,9 @@ def setupCalc(username, password, weather, sessionTemp):
 
 	# Gears
 	if(weather != "WET"):
-		setupWeather = baseOffsets["gearsWeatherDry"] * sessionTemp;
+		setupWeather = baseOffsets["gearsWeatherDry"] * sessionTemp
 	else:
-		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"]);
+		setupWeather = ((baseOffsets["gearsWeatherWet"] * sessionTemp) + baseOffsets["gearsWeatherOffset"])
 	setupDriver = (driverOffsets[2][0] * driverConcentration)
 	setupCarLevel = ((carLevelOffsets[3][0] * carLevelGears) + (carLevelOffsets[3][1] * carLevelElectronics))
 	setupCarWear = ((carWearOffsets[3][0] * carWearGears) + (carWearOffsets[3][1] * carWearElectronics))
@@ -266,9 +266,9 @@ def setupCalc(username, password, weather, sessionTemp):
 
 	# Suspension
 	if(weather != "WET"):
-		setupWeather = baseOffsets["suspensionWeatherDry"] * sessionTemp;
+		setupWeather = baseOffsets["suspensionWeatherDry"] * sessionTemp
 	else:
-		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"]);
+		setupWeather = ((baseOffsets["suspensionWeatherWet"] * sessionTemp) + baseOffsets["suspensionWeatherOffset"])
 	if(weather != "WET"):
 		setupDriver = (driverOffsets[3][0] * driverExperience) + (driverOffsets[3][1] * driverWeight)
 	else:
@@ -329,7 +329,10 @@ def strategyCalc(username, password, minimumWear, laps):
 	trackLapDistance = trackLapDistance.replace(" ", "")
 	trackLapDistanceFloat = float(re.search("\d+\.\d+", trackLapDistance).group())
 	trackDistance = str(tree.xpath("normalize-space(//td[contains(text(), 'Race distance:')]/../td[2]/text())"))
-	trackDistanceFloat = float(re.search("\d+\.\d+", trackDistance).group())
+	try:
+		trackDistanceFloat = float(re.search("\d+\.\d+", trackDistance).group())
+	except:
+		trackDistanceFloat = float(re.search("\d+", trackDistance).group())
 	trackPitInOut = str(tree.xpath("normalize-space(//td[contains(text(), 'Time in/out of pits:')]/../td[2]/text())"))
 	try:
 		trackPitInOutFloat = float(re.search("\d+\.\d+", trackPitInOut).group())
@@ -365,14 +368,14 @@ def strategyCalc(username, password, minimumWear, laps):
 	rTempRangeThree = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[1]/text())"))
 	rTempRangeFour = str(tree.xpath("normalize-space(//td[contains(text(), 'Temp')]/../../tr[4]/td[2]/text())"))
 	# This returns results like "Temp: 12*-17*", but we want just integers, so clean up the values
-	rTempMinOne = int((re.findall("\d+", rTempRangeOne))[0])
-	rTempMaxOne = int((re.findall("\d+", rTempRangeOne))[1])
-	rTempMinTwo = int((re.findall("\d+", rTempRangeTwo))[0])
-	rTempMaxTwo = int((re.findall("\d+", rTempRangeTwo))[1])
-	rTempMinThree = int((re.findall("\d+", rTempRangeThree))[0])
-	rTempMaxThree = int((re.findall("\d+", rTempRangeThree))[1])
-	rTempMinFour = int((re.findall("\d+", rTempRangeFour))[0])
-	rTempMaxFour = int((re.findall("\d+", rTempRangeFour))[1])
+	rTempMinOne = int((re.findall(r"\d+", rTempRangeOne))[0])
+	rTempMaxOne = int((re.findall(r"\d+", rTempRangeOne))[1])
+	rTempMinTwo = int((re.findall(r"\d+", rTempRangeTwo))[0])
+	rTempMaxTwo = int((re.findall(r"\d+", rTempRangeTwo))[1])
+	rTempMinThree = int((re.findall(r"\d+", rTempRangeThree))[0])
+	rTempMaxThree = int((re.findall(r"\d+", rTempRangeThree))[1])
+	rTempMinFour = int((re.findall(r"\d+", rTempRangeFour))[0])
+	rTempMaxFour = int((re.findall(r"\d+", rTempRangeFour))[1])
 	# Find the averages of these temps for the setup
 	rTemp = ((rTempMinOne + rTempMaxOne) + (rTempMinTwo + rTempMaxTwo) + (rTempMinThree + rTempMaxThree) + (rTempMinFour + rTempMaxFour)) / 8
 
