@@ -611,7 +611,7 @@ def calculate(tab):
 						pass
 				for i in range(len(raceStops) // 7):
 					raceDict["Stop " + str(i + 1) + " Lap"] = raceStops[(i * 7) + 1]
-					raceDict["Stop " + str(i + 1) + " Tyres/Fuel"] = str(raceStops[(i * 7) + 3]) + "/" + str(raceStops[(i * 7) + 4])
+					raceDict["Stop " + str(i + 1) + " Tyres/Fuel"] = str(raceStops[(i * 7) + 3]) + "% / " + str(raceStops[(i * 7) + 4]) + "%"
 					raceDict["Stop " + str(i + 1) + " Refuel"] = raceStops[(i * 7) + 5]
 					raceDict["Stop " + str(i + 1) + " Time"] = raceStops[(i * 7) + 6]
 
