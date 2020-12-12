@@ -74,6 +74,8 @@ try:
 	logger.info("Login data file read successfully")
 except:
 	logger.info("Unable to open or read login data file, setting credential check to 0")
+	username = ""
+	password = ""
 	credentialCheck = 0
 finally:
 	logger.info("Closing login data file")
