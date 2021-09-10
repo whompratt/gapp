@@ -1,5 +1,7 @@
 # GAPP
 
+* GAPP IS NO LONGER MAINTAINED - PLEASE FEEL FREE TO FORK THIS APP AND TAKE IT OVER *
+
 GPRO Setup and Strategy APP
 
 GAPP will let you calculate the optimal setup for your in each session, with differing weather conditions.
